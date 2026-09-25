@@ -40,7 +40,7 @@
     #station { min-width: 260px; }
     .controls label { max-width: 100%; }
     select { max-width: 100%; }
-    .stat { flex: 1 1 140px; }
+    .stat { flex: 1 1 150px; }
     .stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
     .stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; min-width: 150px; }
     .stat .v { font-size: 1.35rem; font-weight: 600; line-height: 1.25; }
@@ -211,10 +211,18 @@
 
       // Summary tiles for the main year
       const st = stats(sel, med, isCurrent);
+      const peakOf = y => Math.max(...data.years[y].filter(v => v != null));
+      const otherPeaks = others.map(peakOf).filter(Number.isFinite);
+      const avgPeak = otherPeaks.length ? otherPeaks.reduce((a, b) => a + b, 0) / otherPeaks.length : null;
+      const ordinal = n => n + (["th", "st", "nd", "rd"][(n % 100 - 20) % 10] || ["th", "st", "nd", "rd"][n % 100] || "th");
+      const rank = st.peakIdx >= 0 ? 1 + otherPeaks.filter(p => p > st.peak).length : null;
+      const total = otherPeaks.length + 1;
       const tiles = [
-        [st.pct == null ? "--" : st.pct + "%", isCurrent ? (st.lastIdx >= 0 ? `of median on ${fmt(st.lastIdx, wy)}` : "of median") : `of median on April 1, ${wy}`],
-        [st.peakIdx >= 0 ? st.peak.toFixed(1) + " in" : "--", st.peakIdx >= 0 ? `peak SWE, ${fmt(st.peakIdx, wy)}` : "peak SWE"],
-        [others.length, "other seasons in the median"]
+        [st.peakIdx >= 0 ? st.peak.toFixed(1) + " in" : "--",
+         st.peakIdx >= 0 ? `peak SWE${isCurrent ? " so far" : ""}, ${fmt(st.peakIdx, wy)}` : "peak SWE"],
+        [avgPeak == null ? "--" : avgPeak.toFixed(1) + " in", "average peak SWE, other seasons"],
+        [others.length, "other seasons on record"],
+        [rank == null ? "--" : `${ordinal(rank)} of ${total}`, `peak SWE rank (1st = biggest)${isCurrent ? ", so far" : ""}`]
       ];
       $("stats").innerHTML = tiles.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
 
