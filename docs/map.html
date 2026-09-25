@@ -27,12 +27,12 @@
     .key { background: #fff; color: #1f2328; padding: 6px 10px; border-radius: 6px; font-size: .82rem; line-height: 1.7;
            box-shadow: 0 1px 4px rgba(0,0,0,.25); }
     .sym { display: inline-block; vertical-align: middle; margin-right: 6px; }
-    .tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
-           border-bottom: 12px solid var(--resort); }
+    .tri { width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent;
+           border-bottom: 14px solid var(--resort); }
     .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--station); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--station); }
     .dash { width: 16px; border-top: 2px dashed #6e7781; }
-    .resort-icon div { width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent;
-                       border-bottom: 15px solid var(--resort); filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }
+    .resort-icon div { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent;
+                       border-bottom: 24px solid var(--resort); filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }
     .leaflet-popup-content { margin: 10px 12px; font-size: .88rem; line-height: 1.45; }
     .leaflet-popup-content b { font-size: .95rem; }
     .table-wrap { overflow-x: auto; }
@@ -100,7 +100,7 @@
     };
     key.addTo(map);
 
-    const resortIcon = L.divIcon({ className: "resort-icon", html: "<div></div>", iconSize: [18, 15], iconAnchor: [9, 12] });
+    const resortIcon = L.divIcon({ className: "resort-icon", html: "<div></div>", iconSize: [28, 24], iconAnchor: [14, 16] });
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const miles = (a, b) => {                       // great-circle distance
       const R = 3958.8, r = x => x * Math.PI / 180;
