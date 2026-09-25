@@ -1,0 +1,173 @@
+{
+  "utah": [
+    {
+      "site": "Snowbird",
+      "station": "Snowbird",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Snowbird.csv"
+    },
+    {
+      "site": "Alta",
+      "station": "Brighton",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Brighton.csv"
+    },
+    {
+      "site": "Powder Mtn (Little Bear)",
+      "station": "Little Bear",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Little%20Bear.csv"
+    },
+    {
+      "site": "Solitude",
+      "station": "Mill-D North",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Mill-D%20North.csv"
+    }
+  ],
+  "wyoming-montana": [
+    {
+      "site": "Jackson",
+      "station": "Phillips Bench",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Phillips%20Bench.csv"
+    },
+    {
+      "site": "Targee",
+      "station": "Grand Targhee",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Grand%20Targhee.csv"
+    },
+    {
+      "site": "Big Sky",
+      "station": "Lone Mountain",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Lone%20Mountain.csv"
+    },
+    {
+      "site": "Bridger",
+      "station": "Sacajawea",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Sacajawea.csv"
+    }
+  ],
+  "mount-bachelor": [
+    {
+      "site": "Mckensize (NNE)",
+      "station": "Mckenzie",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Mckenzie.csv"
+    },
+    {
+      "site": "Three Creek (NE)",
+      "station": "Three Creeks Meadow",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Three%20Creeks%20Meadow.csv"
+    },
+    {
+      "site": "Roaring River (NW)",
+      "station": "Roaring River",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Roaring%20River.csv"
+    },
+    {
+      "site": "Irish Taylor (SSW)",
+      "station": "Irish Taylor",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Irish%20Taylor.csv"
+    }
+  ],
+  "california": [
+    {
+      "site": "Mammoth Pass",
+      "station": "Mammoth Pass (MHP)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/MHP:CA:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+    },
+    {
+      "site": "Kirkwood",
+      "station": "Carson Pass",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CA/Carson%20Pass.csv"
+    },
+    {
+      "site": "Heavenly",
+      "station": "Heavenly Valley",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CA/Heavenly%20Valley.csv"
+    },
+    {
+      "site": "Palisades",
+      "station": "Palisades Tahoe",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CA/Palisades%20Tahoe.csv"
+    }
+  ],
+  "bc-idaho": [
+    {
+      "site": "Whistler (North, Tenquille Lake)",
+      "station": "Tenquille Lake (1D06P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1D06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+    },
+    {
+      "site": "Whistler (West, Squamish Upper)",
+      "station": "Squamish Upper (3A25P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customChartReport/daily/start_of_period/3A25P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false&useLogScale=false"
+    },
+    {
+      "site": "Revelstoke",
+      "station": "Mount Revelstoke (2A06P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+    },
+    {
+      "site": "Schweitzer",
+      "station": "Schweitzer Basin",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
+    }
+  ],
+  "colorado-north": [
+    {
+      "site": "Steamboat",
+      "station": "Dry Lake",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Dry%20Lake.csv"
+    },
+    {
+      "site": "A-Basin",
+      "station": "Grizzly Peak",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Grizzly%20Peak.csv"
+    },
+    {
+      "site": "Vail",
+      "station": "Vail Mountain",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Vail%20Mountain.csv"
+    },
+    {
+      "site": "Aspen",
+      "station": "Independence Pass",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Independence%20Pass.csv"
+    }
+  ],
+  "colorado-south": [
+    {
+      "site": "Crested Butte",
+      "station": "Butte",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Butte.csv"
+    },
+    {
+      "site": "Telluride",
+      "station": "Red Mountain Pass",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Red%20Mountain%20Pass.csv"
+    },
+    {
+      "site": "Silverton",
+      "station": "Molas Lake",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Molas%20Lake.csv"
+    },
+    {
+      "site": "Wolf Creek",
+      "station": "Wolf Creek Summit",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Wolf%20Creek%20Summit.csv"
+    }
+  ],
+  "washington": [
+    {
+      "site": "Crystal Mountain",
+      "station": "Morse Lake",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WA/Morse%20Lake.csv"
+    },
+    {
+      "site": "Stevens Pass",
+      "station": "Stevens Pass",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WA/Stevens%20Pass.csv"
+    },
+    {
+      "site": "Mount Baker",
+      "station": "Wells Creek",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WA/Wells%20Creek.csv"
+    }
+  ]
+}
