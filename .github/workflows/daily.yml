@@ -11,6 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30      # stop a stuck run instead of waiting hours
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

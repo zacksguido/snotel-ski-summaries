@@ -13,6 +13,7 @@ import io
 import json
 import os
 import sys
+import time
 import warnings
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -144,7 +145,7 @@ def station_metadata() -> dict:
     Falls back to the last saved values if the service can't be reached."""
     try:
         r = requests.get(AWDB_STATIONS, params={"stationTriplets": ",".join(TRIPLETS.values())},
-                         timeout=60, headers={"User-Agent": "snotel-ski-summaries"})
+                         timeout=(10, 45), headers={"User-Agent": "snotel-ski-summaries"})
         r.raise_for_status()
         by_triplet = {d["stationTriplet"]: d for d in r.json()}
         return {k: dict(lat=by_triplet[t]["latitude"], lon=by_triplet[t]["longitude"],
@@ -216,9 +217,17 @@ def current_water_year(today: date) -> int:
 def fetch_csv(key: str, url: str) -> str:
     if LOCAL_DATA_DIR:
         return (Path(LOCAL_DATA_DIR) / f"{key}.csv").read_text()
-    r = requests.get(url, timeout=120, headers={"User-Agent": "snotel-ski-summaries"})
-    r.raise_for_status()
-    return r.text
+    # Short timeout with a few retries, so one slow NRCS response can't stall the whole run
+    last_err = None
+    for attempt in range(3):
+        try:
+            r = requests.get(url, timeout=(10, 45), headers={"User-Agent": "snotel-ski-summaries"})
+            r.raise_for_status()
+            return r.text
+        except requests.RequestException as err:
+            last_err = err
+            time.sleep(5 * (attempt + 1))
+    raise last_err
 
 
 def wide_from_site_plot(text: str) -> tuple[pd.DataFrame, int]:
