@@ -15,10 +15,13 @@
     header { padding-top: 32px; }
     h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
     .sub { margin: 0; color: var(--muted); }
-    nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
-    nav a { color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
-    nav a:hover { border-color: var(--muted); }
-    section { padding-top: 24px; }
+    [role=tablist] { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 16px; }
+    [role=tab] { font: inherit; font-size: .9rem; color: var(--ink); background: transparent; cursor: pointer;
+                 border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+    [role=tab]:hover { border-color: var(--muted); }
+    [role=tab][aria-selected=true] { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+    [role=tab]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    section[hidden] { display: none; }
     figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
     figure img { display: block; width: 100%; height: auto; }
     .src { margin: 8px 2px 0; font-size: .9rem; color: var(--muted); }
@@ -32,16 +35,7 @@
     <h1>SNOTEL Ski Summaries</h1>
     <p class="sub">Snow water equivalent at SNOTEL stations near western ski areas, compared with each station's median. Updated daily.</p>
     <p class="sub">Figures last generated: <span id="stamp">—</span></p>
-    <nav>
-      <a href="#utah">Utah</a>
-      <a href="#wyoming-montana">Wyoming &amp; Montana</a>
-      <a href="#mount-bachelor">Mount Bachelor</a>
-      <a href="#california">California</a>
-      <a href="#bc-idaho">BC &amp; Idaho</a>
-      <a href="#colorado-north">Colorado (north)</a>
-      <a href="#colorado-south">Colorado (south)</a>
-      <a href="#washington">Washington</a>
-    </nav>
+    <div role="tablist" aria-label="Regions" id="tabs"></div>
   </header>
 
   <main id="figs"></main>
@@ -61,12 +55,47 @@
     ];
     const v = Date.now().toString().slice(0, -5);  // refresh cached images roughly every 100 s
     const main = document.getElementById("figs");
+    const tabs = document.getElementById("tabs");
     for (const [id, name] of regions) {
+      const t = document.createElement("button");
+      t.type = "button"; t.role = "tab"; t.id = "tab-" + id; t.textContent = name;
+      t.setAttribute("aria-controls", id);
+      t.addEventListener("click", () => show(id, true));
+      tabs.appendChild(t);
+
       const s = document.createElement("section");
-      s.id = id;
-      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas" loading="lazy"></figure><p class="src"></p>`;
+      s.id = id; s.role = "tabpanel"; s.hidden = true;
+      s.setAttribute("aria-labelledby", "tab-" + id);
+      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas"></figure><p class="src"></p>`;
       main.appendChild(s);
     }
+
+    function show(id, updateUrl) {
+      if (!regions.some(r => r[0] === id)) id = regions[0][0];
+      for (const [rid] of regions) {
+        const on = rid === id;
+        document.getElementById(rid).hidden = !on;
+        const t = document.getElementById("tab-" + rid);
+        t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+      }
+      if (updateUrl) history.replaceState(null, "", "#" + id);
+    }
+
+    // Arrow keys move between tabs
+    tabs.addEventListener("keydown", e => {
+      const ids = regions.map(r => r[0]);
+      const cur = ids.indexOf(document.activeElement.id.replace("tab-", ""));
+      if (cur < 0) return;
+      let next = null;
+      if (e.key === "ArrowRight") next = (cur + 1) % ids.length;
+      if (e.key === "ArrowLeft") next = (cur - 1 + ids.length) % ids.length;
+      if (next === null) return;
+      e.preventDefault(); show(ids[next], true); document.getElementById("tab-" + ids[next]).focus();
+    });
+
+    show(location.hash.slice(1), false);
+    window.addEventListener("hashchange", () => show(location.hash.slice(1), false));
+
     fetch("figures/stations.json?v=" + v)
       .then(r => r.ok ? r.json() : {})
       .then(all => {

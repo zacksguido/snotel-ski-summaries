@@ -106,7 +106,6 @@ REGIONS = [
 MEDIAN_FILL = (222 / 255, 235 / 255, 247 / 255)
 CURRENT_LINE = (33 / 255, 113 / 255, 181 / 255)
 TITLE_COLOR = (236 / 255, 112 / 255, 20 / 255)
-HEADING_COLOR = (102 / 255, 37 / 255, 6 / 255)
 XTICKS = [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 336, 366]
 XLABELS = ["Oct1", "Nov1", "Dec1", "Jan1", "Feb1", "Mar1", "Apr1", "May1",
            "Jun1", "Jul1", "Aug1", "Sep1", "Sep30"]
@@ -243,9 +242,8 @@ def main() -> int:
     for fname, heading, keys in REGIONS:
         print(f"{heading}")
         fig, axes = plt.subplots(len(keys), 1, figsize=(8, 10))
-        fig.subplots_adjust(top=0.88, bottom=0.04, left=0.11, right=0.97, hspace=0.6)
-        fig.text(0.125, 0.975, heading, fontsize=24, color=HEADING_COLOR,
-                 fontweight="bold", va="top")
+        # Region name is shown in the webpage tab, so no heading on the figure itself
+        fig.subplots_adjust(top=0.95, bottom=0.04, left=0.11, right=0.97, hspace=0.6)
         for ax, key in zip(np.atleast_1d(axes), keys):
             try:
                 s = summarize(key, today)
