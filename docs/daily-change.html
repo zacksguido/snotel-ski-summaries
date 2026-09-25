@@ -22,12 +22,15 @@
     .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .theme-toggle svg { width: 16px; height: 16px; }
     @media (max-width: 600px) { .theme-toggle { position: static; margin-bottom: 12px; } }
+    :root { --r1: #2a78d6; --r2: #eb6834; --r3: #1baf7a; --r4: #eda100; --r5: #e87ba4; --r6: #008300; --r7: #4a3aa7; --r8: #e34948; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; } }
+    :root[data-theme="dark"] { --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; }
     :root { --gain: #1f6fb2; --gain-bg: 33,113,181; --loss: #b4461b; --loss-bg: 217,95,2; }
     @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gain: #79b8ff; --loss: #f5a06b; } }
     :root[data-theme="dark"] { --gain: #79b8ff; --loss: #f5a06b; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
-    header, main, footer { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    header, main, footer { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
     header { padding-top: 32px; }
     h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
     h2 { margin: 8px 0 4px; font-size: 1.35rem; }
@@ -39,13 +42,19 @@
     .note { color: var(--muted); font-size: .9rem; margin: 4px 0 14px; max-width: 75ch; }
     .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
     table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-    th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th, td { padding: 7px 9px; border-bottom: 1px solid var(--line); white-space: nowrap; }
     th { text-align: left; color: var(--muted); font-size: .8rem; font-weight: 600; position: sticky; top: 0; background: var(--bg); }
     th.num, td.num { text-align: right; }
     th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
     th button:hover { color: var(--ink); }
     th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     th[aria-sort] button { color: var(--ink); }
+    td.st { border-left: 5px solid var(--rc); }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--rc); margin-right: 7px; vertical-align: middle; }
+    td.rg { color: var(--muted); font-size: .85rem; white-space: normal; min-width: 120px; }
+    td.st { white-space: normal; min-width: 170px; }
+    .regions { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; margin: 0 2px 12px; }
+    .regions span { display: inline-flex; align-items: center; }
     tr.region td { font-weight: 600; color: var(--accent); background: transparent; padding-top: 14px; border-bottom-color: var(--line); }
     td.st .ski { color: var(--muted); }
     td.chg { font-variant-numeric: tabular-nums; font-weight: 600; }
@@ -76,12 +85,14 @@
 
   <main>
     <h2>Daily Snow Change</h2>
-    <p class="note" id="asof">Change in snow water equivalent (SWE), in inches, over the previous 1, 3, 5, and 7 days, ending on each station's latest reading. Click a column heading to sort.</p>
+    <p class="note" id="asof">Change in snow water equivalent (SWE), in inches, over the previous 1, 3, 5, and 7 days, ending on each station's latest reading. Stations are colored by region. Click any column heading to sort the whole table, for example by the biggest 1-day gain.</p>
+    <div class="regions" id="regions" aria-label="Region colors"></div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th data-k="station"><button type="button">Station (ski area)</button></th>
+            <th data-k="region"><button type="button">Region</button></th>
             <th class="num" data-k="latest"><button type="button">SWE now</button></th>
             <th data-k="date"><button type="button">As of</button></th>
             <th class="num" data-k="d1"><button type="button">1 day</button></th>
@@ -118,6 +129,8 @@
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const fmtDate = d => { if (!d) return "—"; const [y, m, dd] = d.split("-").map(Number); return `${MONTHS[m - 1]} ${dd}`; };
     let rows = [], sortKey = null, sortDir = -1, newest = null;
+    const RIDS = Object.keys(REGION_NAMES);
+    const rc = id => `var(--r${RIDS.indexOf(id) + 1})`;
 
     function label(r) {
       const st = r.station.replace(/\s*\([^)]*\)$/, "");
@@ -133,28 +146,20 @@
     }
     function row(r) {
       const stale = r.date && newest && r.date < newest;
-      return `<tr><td class="st">${label(r)}</td><td class="num">${r.latest == null ? "—" : r.latest.toFixed(1) + " in"}</td>` +
+      return `<tr style="--rc:${rc(r.region)}"><td class="st">${label(r)}</td>` +
+             `<td class="rg"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[r.region])}</td><td class="num">${r.latest == null ? "—" : r.latest.toFixed(1) + " in"}</td>` +
              `<td class="${stale ? "stale" : ""}">${fmtDate(r.date)}</td>${chg(r.d1)}${chg(r.d3)}${chg(r.d5)}${chg(r.d7)}</tr>`;
     }
     function draw() {
-      let html = "";
-      if (!sortKey) {
-        for (const [id, name] of Object.entries(REGION_NAMES)) {
-          const list = rows.filter(r => r.region === id);
-          if (!list.length) continue;
-          html += `<tr class="region"><td colspan="7">${esc(name)}</td></tr>` + list.map(row).join("");
-        }
-      } else {
-        const val = r => sortKey === "station" ? r.station.toLowerCase() : r[sortKey];
-        const sorted = [...rows].sort((a, b) => {
-          const va = val(a), vb = val(b);
-          if (va == null && vb == null) return 0;
-          if (va == null) return 1;
-          if (vb == null) return -1;
-          return (va < vb ? -1 : va > vb ? 1 : 0) * sortDir;
-        });
-        html = sorted.map(row).join("");
-      }
+      const val = r => sortKey === "station" ? r.station.toLowerCase() : sortKey === "region" ? RIDS.indexOf(r.region) : r[sortKey];
+      const list = !sortKey ? rows : [...rows].sort((a, b) => {
+        const va = val(a), vb = val(b);
+        if (va == null && vb == null) return 0;
+        if (va == null) return 1;                     // missing values always at the bottom
+        if (vb == null) return -1;
+        return (va < vb ? -1 : va > vb ? 1 : 0) * sortDir;
+      });
+      const html = list.map(row).join("");
       document.getElementById("rows").innerHTML = html;
       for (const th of document.querySelectorAll("th[data-k]")) {
         if (th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir > 0 ? "ascending" : "descending");
@@ -167,9 +172,9 @@
       const th = e.target.closest("th[data-k]"); if (!th) return;
       const k = th.dataset.k;
       if (sortKey === k) {
-        if (sortDir === (k === "station" ? 1 : -1)) sortDir = -sortDir;   // second click flips
-        else { sortKey = null; }                                         // third click: back to regions
-      } else { sortKey = k; sortDir = k === "station" ? 1 : -1; }
+        if (sortDir === ((k === "station" || k === "region") ? 1 : -1)) sortDir = -sortDir;   // second click flips
+        else { sortKey = null; }                                                             // third click: original order
+      } else { sortKey = k; sortDir = (k === "station" || k === "region") ? 1 : -1; }
       draw();
     });
 
@@ -180,9 +185,11 @@
         newest = rows.map(r => r.date).filter(Boolean).sort().pop() || null;
         if (newest) document.getElementById("asof").insertAdjacentHTML("beforeend",
           ` Latest readings are from <b>${fmtDate(newest)}, ${newest.slice(0, 4)}</b>.`);
+        document.getElementById("regions").innerHTML = RIDS.map(id =>
+          `<span style="--rc:${rc(id)}"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[id])}</span>`).join("");
         draw();
       })
-      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="7">The table could not be loaded.</td></tr>`; console.error(err); });
+      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="8">The table could not be loaded.</td></tr>`; console.error(err); });
   </script>
   <script>
     // Light/dark mode toggle (remembers the choice on this device)
