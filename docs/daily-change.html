@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Snow Change · SNOTEL Ski Summaries</title>
+  <script>
+    // Apply a saved light/dark choice before the page draws (avoids a flash)
+    try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <style>
+    :root { --ink: #1f2328; --muted: #57606a; --line: #d8dee4; --accent: #662506; --bg: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    }
+    :root[data-theme="dark"] { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    header { position: relative; }
+    .theme-toggle { position: absolute; top: 28px; right: 16px; display: inline-flex; align-items: center; gap: 6px;
+                    font: inherit; font-size: .85rem; color: var(--ink); background: transparent; cursor: pointer;
+                    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+    .theme-toggle:hover { border-color: var(--muted); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .theme-toggle svg { width: 16px; height: 16px; }
+    @media (max-width: 600px) { .theme-toggle { position: static; margin-bottom: 12px; } }
+    :root { --gain: #1f6fb2; --gain-bg: 33,113,181; --loss: #b4461b; --loss-bg: 217,95,2; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gain: #79b8ff; --loss: #f5a06b; } }
+    :root[data-theme="dark"] { --gain: #79b8ff; --loss: #f5a06b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
+    header, main, footer { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 32px; }
+    h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
+    h2 { margin: 8px 0 4px; font-size: 1.35rem; }
+    .sub { margin: 0; color: var(--muted); }
+    .pages { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 20px; font-size: .95rem; }
+    .pages a { white-space: nowrap; color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+    .pages a:hover { border-color: var(--line); }
+    .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    .note { color: var(--muted); font-size: .9rem; margin: 4px 0 14px; max-width: 75ch; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { text-align: left; color: var(--muted); font-size: .8rem; font-weight: 600; position: sticky; top: 0; background: var(--bg); }
+    th.num, td.num { text-align: right; }
+    th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+    th button:hover { color: var(--ink); }
+    th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    th[aria-sort] button { color: var(--ink); }
+    tr.region td { font-weight: 600; color: var(--accent); background: transparent; padding-top: 14px; border-bottom-color: var(--line); }
+    td.st .ski { color: var(--muted); }
+    td.chg { font-variant-numeric: tabular-nums; font-weight: 600; }
+    td.chg.up { color: var(--gain); }
+    td.chg.down { color: var(--loss); }
+    td.chg.zero, td.na { color: var(--muted); font-weight: 400; }
+    td.stale { color: var(--muted); font-style: italic; }
+    .key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .85rem; color: var(--muted); margin: 10px 2px 0; }
+    .key b { font-weight: 600; }
+    .key .up { color: var(--gain); } .key .down { color: var(--loss); }
+    footer { color: var(--muted); font-size: .85rem; padding: 28px 16px 40px; }
+    footer a { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <header>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode"></button>
+    <h1>SNOTEL Ski Summaries</h1>
+    <p class="sub">How much snow water each station gained or lost over the last few days.</p>
+    <nav class="pages" aria-label="Pages">
+      <a href="./">Snow charts</a>
+      <a href="daily-change.html" aria-current="page">Daily Snow Change</a>
+      <a href="map.html">Station map</a>
+      <a href="archive.html">Archive</a>
+      <a href="about.html">About the data</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Daily Snow Change</h2>
+    <p class="note" id="asof">Change in snow water equivalent (SWE), in inches, over the previous 1, 3, 5, and 7 days, ending on each station's latest reading. Click a column heading to sort.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-k="station"><button type="button">Station (ski area)</button></th>
+            <th class="num" data-k="latest"><button type="button">SWE now</button></th>
+            <th data-k="date"><button type="button">As of</button></th>
+            <th class="num" data-k="d1"><button type="button">1 day</button></th>
+            <th class="num" data-k="d3"><button type="button">3 days</button></th>
+            <th class="num" data-k="d5"><button type="button">5 days</button></th>
+            <th class="num" data-k="d7"><button type="button">7 days</button></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="key">
+      <span><b class="up">▲ +1.2</b> gain (usually new snow)</span>
+      <span><b class="down">▼ −0.8</b> loss (usually melt)</span>
+      <span>— no reading that day</span>
+      <span><i>Dates in italics</i> are older than the newest reading</span>
+    </div>
+  </main>
+
+  <footer>
+    Changes compare each station's latest reading with its reading 1, 3, 5, and 7 days earlier. SWE measures the water in the snowpack,
+    so settling alone doesn't change it; a gain is roughly new snow's water content, not its depth.
+    Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.
+    <a href="about.html">More about the data</a>.
+  </footer>
+
+  <script>
+    const REGION_NAMES = {
+      "utah": "Utah", "wyoming-montana": "Wyoming & Montana", "mount-bachelor": "Mount Bachelor",
+      "california": "California", "bc-idaho": "BC & Idaho", "colorado-north": "Colorado (north-central)",
+      "colorado-south": "Colorado (south-central)", "washington": "Washington"
+    };
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const fmtDate = d => { if (!d) return "—"; const [y, m, dd] = d.split("-").map(Number); return `${MONTHS[m - 1]} ${dd}`; };
+    let rows = [], sortKey = null, sortDir = -1, newest = null;
+
+    function label(r) {
+      const st = r.station.replace(/\s*\([^)]*\)$/, "");
+      return st.toLowerCase() === r.ski_area.toLowerCase() ? esc(st) : `${esc(st)} <span class="ski">(${esc(r.ski_area)})</span>`;
+    }
+    function chg(v) {
+      if (v == null) return `<td class="num na">—</td>`;
+      const cls = v > 0 ? "up" : v < 0 ? "down" : "zero";
+      const a = Math.min(Math.abs(v) / 3, 1);                         // tint strength, full at 3 in
+      const bg = v > 0 ? `rgba(var(--gain-bg),${(a * .22).toFixed(3)})` : v < 0 ? `rgba(var(--loss-bg),${(a * .22).toFixed(3)})` : "transparent";
+      const txt = v > 0 ? `▲ +${v.toFixed(1)}` : v < 0 ? `▼ −${Math.abs(v).toFixed(1)}` : "0.0";
+      return `<td class="num chg ${cls}" style="background:${bg}">${txt}</td>`;
+    }
+    function row(r) {
+      const stale = r.date && newest && r.date < newest;
+      return `<tr><td class="st">${label(r)}</td><td class="num">${r.latest == null ? "—" : r.latest.toFixed(1) + " in"}</td>` +
+             `<td class="${stale ? "stale" : ""}">${fmtDate(r.date)}</td>${chg(r.d1)}${chg(r.d3)}${chg(r.d5)}${chg(r.d7)}</tr>`;
+    }
+    function draw() {
+      let html = "";
+      if (!sortKey) {
+        for (const [id, name] of Object.entries(REGION_NAMES)) {
+          const list = rows.filter(r => r.region === id);
+          if (!list.length) continue;
+          html += `<tr class="region"><td colspan="7">${esc(name)}</td></tr>` + list.map(row).join("");
+        }
+      } else {
+        const val = r => sortKey === "station" ? r.station.toLowerCase() : r[sortKey];
+        const sorted = [...rows].sort((a, b) => {
+          const va = val(a), vb = val(b);
+          if (va == null && vb == null) return 0;
+          if (va == null) return 1;
+          if (vb == null) return -1;
+          return (va < vb ? -1 : va > vb ? 1 : 0) * sortDir;
+        });
+        html = sorted.map(row).join("");
+      }
+      document.getElementById("rows").innerHTML = html;
+      for (const th of document.querySelectorAll("th[data-k]")) {
+        if (th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir > 0 ? "ascending" : "descending");
+        else th.removeAttribute("aria-sort");
+        const b = th.querySelector("button");
+        b.textContent = b.textContent.replace(/ [▲▼↕]$/, "") + (th.dataset.k === sortKey ? (sortDir > 0 ? " ▲" : " ▼") : "");
+      }
+    }
+    document.querySelector("thead").addEventListener("click", e => {
+      const th = e.target.closest("th[data-k]"); if (!th) return;
+      const k = th.dataset.k;
+      if (sortKey === k) {
+        if (sortDir === (k === "station" ? 1 : -1)) sortDir = -sortDir;   // second click flips
+        else { sortKey = null; }                                         // third click: back to regions
+      } else { sortKey = k; sortDir = k === "station" ? 1 : -1; }
+      draw();
+    });
+
+    fetch("data/changes.json?v=" + Date.now().toString().slice(0, -5))
+      .then(r => r.json())
+      .then(d => {
+        rows = d.stations;
+        newest = rows.map(r => r.date).filter(Boolean).sort().pop() || null;
+        if (newest) document.getElementById("asof").insertAdjacentHTML("beforeend",
+          ` Latest readings are from <b>${fmtDate(newest)}, ${newest.slice(0, 4)}</b>.`);
+        draw();
+      })
+      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="7">The table could not be loaded.</td></tr>`; console.error(err); });
+  </script>
+  <script>
+    // Light/dark mode toggle (remembers the choice on this device)
+    (function () {
+      const btn = document.getElementById("theme-toggle");
+      const root = document.documentElement;
+      const sys = window.matchMedia("(prefers-color-scheme: dark)");
+      const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+      const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+      const current = () => root.dataset.theme || (sys.matches ? "dark" : "light");
+      function render() {
+        const dark = current() === "dark";
+        btn.innerHTML = (dark ? sun : moon) + (dark ? "Light mode" : "Dark mode");
+        btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      }
+      btn.addEventListener("click", () => {
+        const next = current() === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        render();
+      });
+      sys.addEventListener("change", render);
+      render();
+    })();
+  </script>
+</body>
+</html>

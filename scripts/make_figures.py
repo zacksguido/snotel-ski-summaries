@@ -290,6 +290,34 @@ def save_archive(key: str, wide: pd.DataFrame, cur_year: int, por: int) -> None:
     ARCHIVE_INDEX[key] = [int(y) for y in years]
 
 
+CHANGES = {}
+CHANGE_DAYS = (1, 3, 5, 7)
+
+
+def recent_changes(key: str, wide: pd.DataFrame, wy: int) -> None:
+    """SWE change over the last 1, 3, 5 and 7 days, ending on the latest reading."""
+    parts = []
+    for y in (wy - 1, wy):
+        if y not in wide.columns:
+            continue
+        col = wide[y]
+        dates = [datetime.strptime(f"{y - 1 if int(d[:2]) >= 10 else y}-{d}", "%Y-%m-%d") if d != "02-29" or
+                 (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)) else None for d in WY_DAYS]
+        parts += [(dt, v) for dt, v in zip(dates, col.to_numpy(dtype=float)) if dt is not None]
+    series = pd.Series({dt: v for dt, v in parts}, dtype=float).sort_index()
+    valid = series.dropna()
+    if valid.empty:
+        CHANGES[key] = dict(latest=None, date=None, **{f"d{n}": None for n in CHANGE_DAYS})
+        return
+    last_date = valid.index[-1]
+    latest = float(valid.iloc[-1])
+    row = dict(latest=round(latest, 1), date=last_date.strftime("%Y-%m-%d"))
+    for n in CHANGE_DAYS:
+        before = series.get(last_date - pd.Timedelta(days=n))
+        row[f"d{n}"] = None if before is None or np.isnan(before) else round(latest - float(before), 1)
+    CHANGES[key] = row
+
+
 def summarize(key: str, today: date) -> dict:
     st = STATIONS[key]
     text = fetch_csv(key, st["url"])
@@ -298,8 +326,9 @@ def summarize(key: str, today: date) -> dict:
     else:
         wide, por = wide_from_report(text)
 
-    wide = fill_feb29(wide)
     wy = current_water_year(today)
+    recent_changes(key, wide, wy)          # before Feb 29 is filled in, so days line up with the calendar
+    wide = fill_feb29(wide)
     cur_year = wy if wy in wide.columns else max(wide.columns)
     hist = wide[[c for c in wide.columns if c < cur_year]]
     if por is None:
@@ -393,6 +422,11 @@ def main() -> int:
     index = [dict(key=k, title=STATIONS[k]["title"], station=STATIONS[k]["station"], region=fname,
                   region_name=heading, years=ARCHIVE_INDEX.get(k, []))
              for fname, heading, keys in REGIONS for k in keys]
+    resort_of = {k: name for name, (_, _, keys) in RESORTS.items() for k in keys}
+    changes = [dict(key=k, station=STATIONS[k]["station"], ski_area=resort_of[k], region=fname, region_name=heading,
+                    **CHANGES.get(k, dict(latest=None, date=None, **{f"d{n}": None for n in CHANGE_DAYS})))
+               for fname, heading, keys in REGIONS for k in keys]
+    (DATA_DIR / "changes.json").write_text(json.dumps(dict(days=list(CHANGE_DAYS), stations=changes), indent=1) + "\n")
     (DATA_DIR / "index.json").write_text(json.dumps(dict(current_year=wy, stations=index), indent=1) + "\n")
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
