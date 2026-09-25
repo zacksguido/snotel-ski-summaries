@@ -84,6 +84,11 @@
     th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
     th { color: var(--muted); font-weight: 600; font-size: .82rem; }
     tr.main td { font-weight: 600; }
+    h2.sec { font-size: 1.15rem; margin: 36px 0 2px; }
+    .ranks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 700px) { .ranks { grid-template-columns: 1fr; } }
+    caption { text-align: left; font-weight: 600; padding: 6px 8px; }
+    tr.hl td { background: rgba(33,113,181,.12); font-weight: 600; }
     td .sw { margin-right: 8px; vertical-align: middle; }
     footer { color: var(--muted); font-size: .85rem; padding: 32px 16px 40px; }
   </style>
@@ -131,6 +136,21 @@
       </table>
     </div>
     <p class="note" id="note"></p>
+
+    <h2 class="sec" id="rank-title">Biggest and smallest seasons</h2>
+    <p class="note" id="rank-sub"></p>
+    <div class="ranks">
+      <div class="table-wrap"><table>
+        <caption>Top 10 highest peak SWE (1 = highest)</caption>
+        <thead><tr><th>Rank</th><th>Water year</th><th>Peak SWE</th><th>Peak date</th></tr></thead>
+        <tbody id="top10"></tbody>
+      </table></div>
+      <div class="table-wrap"><table>
+        <caption>Top 10 lowest peak SWE (1 = lowest)</caption>
+        <thead><tr><th>Rank</th><th>Water year</th><th>Peak SWE</th><th>Peak date</th></tr></thead>
+        <tbody id="bottom10"></tbody>
+      </table></div>
+    </div>
   </main>
 
   <footer>
@@ -252,6 +272,23 @@
         };
         $("yrows").innerHTML = row(wy, sel, BLUE, true) + cmps.map(c => row(c.y, c.s, c.color, false)).join("");
       }
+
+      // Top 10 highest / lowest peak SWE seasons (complete seasons only)
+      const peaks = complete.map(y => {
+        const sr = seriesFor(data, y); let p = -1, pi = -1;
+        sr.forEach((v, i) => { if (v != null && v > p) { p = v; pi = i; } });
+        return { y, p, pi };
+      }).filter(r => r.pi >= 0).sort((a, b) => b.p - a.p);
+      const shown = new Set([wy, ...cmps.map(c => c.y)]);
+      const rankRows = list => list.map((r, k) =>
+        `<tr${shown.has(r.y) ? ' class="hl"' : ""}><td>${k + 1}</td><td>${r.y}</td><td>${r.p.toFixed(1)} in</td><td>${fmt(r.pi, Number(r.y))}</td></tr>`).join("");
+      const n = Math.min(10, peaks.length);
+      $("top10").innerHTML = rankRows(peaks.slice(0, n));
+      $("bottom10").innerHTML = rankRows(peaks.slice(-n).reverse());
+      $("rank-title").textContent = `Biggest and smallest seasons at ${data.station.replace(/\s*\([^)]*\)$/, "")}`;
+      $("rank-sub").textContent = `Ranked by peak SWE among ${peaks.length} complete seasons` +
+        (complete.length < Object.keys(data.years).length ? ` (the in-progress season is left out)` : "") +
+        `. Years shown in the chart are highlighted.`;
 
       // Scales
       const all = [...med, ...sel, ...cmps.flatMap(c => c.s)].filter(v => v != null);
