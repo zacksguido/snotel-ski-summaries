@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About the Data · SNOTEL Ski Summaries</title>
+  <style>
+    :root { --ink: #1f2328; --muted: #57606a; --line: #d8dee4; --accent: #662506; --bg: #ffffff; --soft: #f6f8fa; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; --soft: #161b22; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+    header, main, footer { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 32px; }
+    h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; line-height: 1.25; }
+    h2 { font-size: 1.25rem; margin: 40px 0 8px; line-height: 1.3; }
+    h3 { font-size: 1rem; margin: 20px 0 4px; }
+    p, li { max-width: 68ch; }
+    .sub { margin: 0; color: var(--muted); }
+    .pages { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0 8px; font-size: .95rem; }
+    .pages a { color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+    .pages a:hover { border-color: var(--line); }
+    .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    a { color: inherit; }
+    .toc { background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 24px 0 0; font-size: .95rem; }
+    .toc ol { margin: 4px 0 0; padding-left: 20px; }
+    figure { margin: 16px 0; }
+    .card { background: #fff; color: #1f2328; border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+    .card svg { display: block; width: 100%; height: auto; }
+    figcaption { color: var(--muted); font-size: .9rem; margin-top: 8px; }
+    .callouts { padding-left: 0; list-style: none; }
+    .callouts li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; margin: 10px 0; }
+    .num { width: 24px; height: 24px; border-radius: 50%; background: #662506; color: #fff; font-size: .8rem; font-weight: 700;
+           display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .example { background: var(--soft); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 12px 0; }
+    .example p { margin: 4px 0; }
+    table { border-collapse: collapse; font-size: .92rem; margin: 8px 0; }
+    th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-size: .85rem; }
+    footer { color: var(--muted); font-size: .85rem; padding: 32px 16px 40px; border-top: 1px solid var(--line); margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SNOTEL Ski Summaries</h1>
+    <p class="sub">What the charts show, where the numbers come from, and what to keep in mind when reading them.</p>
+    <nav class="pages" aria-label="Pages">
+      <a href="./">Snow charts</a>
+      <a href="map.html">Station map</a>
+      <a href="about.html" aria-current="page">About the data</a>
+    </nav>
+    <nav class="toc" aria-label="On this page">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#read">How to read a chart</a></li>
+        <li><a href="#swe">What is snow water equivalent?</a></li>
+        <li><a href="#snotel">Where the data come from</a></li>
+        <li><a href="#median">The median and percent of median</a></li>
+        <li><a href="#wateryear">Why the charts start on October 1</a></li>
+        <li><a href="#caveats">Things to keep in mind</a></li>
+        <li><a href="#updates">How the site is updated</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <main>
+    <h2 id="read">How to read a chart</h2>
+    <p>Each panel shows one snow station near a ski area. The example below is a made-up station, labeled the same way as the real charts.</p>
+
+    <figure>
+      <div class="card">
+        <svg viewBox="0 0 720 330" role="img" aria-label="Example chart: the shaded area is the typical snowpack for each day, and the blue line is this season's snowpack so far. Callouts mark the median, the current season, the latest reading, the percent of median, and the station details.">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#662506"/>
+            </marker>
+          </defs>
+          <!-- plot frame: x 70..690, y 40..270 -->
+          <g stroke="#e3e6ea" stroke-width="1">
+            <line x1="70" y1="40" x2="70" y2="270"/><line x1="121.7" y1="40" x2="121.7" y2="270"/>
+            <line x1="173.3" y1="40" x2="173.3" y2="270"/><line x1="225" y1="40" x2="225" y2="270"/>
+            <line x1="276.7" y1="40" x2="276.7" y2="270"/><line x1="328.3" y1="40" x2="328.3" y2="270"/>
+            <line x1="380" y1="40" x2="380" y2="270"/><line x1="431.7" y1="40" x2="431.7" y2="270"/>
+            <line x1="483.3" y1="40" x2="483.3" y2="270"/><line x1="535" y1="40" x2="535" y2="270"/>
+            <line x1="586.7" y1="40" x2="586.7" y2="270"/><line x1="638.3" y1="40" x2="638.3" y2="270"/>
+          </g>
+          <!-- median area -->
+          <path d="M70,270 L110,270 L140,262 L173,248 L225,222 L277,196 L328,170 L380,140 L420,122 L445,124 L483,160 L520,215 L545,262 L560,270 L690,270 Z"
+                fill="#deebf7" stroke="#1f2328" stroke-width="1"/>
+          <!-- current season line, through early March -->
+          <polyline points="70,270 118,270 128,264 150,258 173,256 200,236 225,230 250,214 277,212 300,200 328,196 348,188"
+                    fill="none" stroke="#2171b5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- latest point and median for that day -->
+          <line x1="348" y1="188" x2="348" y2="159" stroke="#662506" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="348" cy="188" r="5" fill="#fff" stroke="#662506" stroke-width="2"/>
+          <circle cx="348" cy="159" r="5" fill="#fff" stroke="#662506" stroke-width="2"/>
+          <!-- axes -->
+          <rect x="70" y="40" width="620" height="230" fill="none" stroke="#1f2328" stroke-width="1"/>
+          <g font-size="12" fill="#1f2328" text-anchor="middle">
+            <text x="70" y="288">Oct1</text><text x="173.3" y="288">Dec1</text><text x="276.7" y="288">Feb1</text>
+            <text x="380" y="288">Apr1</text><text x="483.3" y="288">Jun1</text><text x="586.7" y="288">Aug1</text><text x="690" y="288">Sep30</text>
+          </g>
+          <g font-size="12" fill="#1f2328" text-anchor="end">
+            <text x="62" y="274">0</text><text x="62" y="194">10</text><text x="62" y="114">20</text>
+          </g>
+          <text x="22" y="155" font-size="12" fill="#1f2328" text-anchor="middle" transform="rotate(-90 22 155)">SWE (inches)</text>
+          <!-- labels as on the real charts -->
+          <text x="84" y="72" font-size="20" fill="#1f2328">71%</text>
+          <text x="84" y="92" font-size="12" fill="#1f2328">of median SWE</text>
+          <g font-size="12" fill="#1f2328" text-anchor="end">
+            <text x="680" y="62">POR = 40 yrs</text><text x="680" y="78">Elev. = 8,500 ft</text><text x="680" y="94">Updated: Mar-08</text>
+          </g>
+          <text x="380" y="26" font-size="17" fill="#ec7014" text-anchor="middle">Example Station</text>
+          <!-- callouts -->
+          <g font-size="12" font-weight="700" fill="#fff" text-anchor="middle">
+            <circle cx="455" cy="200" r="11" fill="#662506"/><text x="455" y="204">1</text>
+            <circle cx="250" cy="248" r="11" fill="#662506"/><text x="250" y="252">2</text>
+            <circle cx="372" cy="200" r="11" fill="#662506"/><text x="372" y="204">3</text>
+            <circle cx="155" cy="72" r="11" fill="#662506"/><text x="155" y="76">4</text>
+            <circle cx="560" cy="78" r="11" fill="#662506"/><text x="560" y="82">5</text>
+            <circle cx="70" cy="308" r="11" fill="#662506"/><text x="70" y="312">6</text>
+          </g>
+          <line x1="250" y1="237" x2="250" y2="222" stroke="#662506" stroke-width="1.5" marker-end="url(#ah)"/>
+          <line x1="361" y1="196" x2="355" y2="192" stroke="#662506" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <figcaption>Example chart. The dashed segment compares the latest reading with the median for the same day; that comparison is the percentage in the top-left corner.</figcaption>
+    </figure>
+
+    <ol class="callouts">
+      <li><span class="num">1</span><div><strong>Shaded area: the typical season.</strong> For each day of the year, this is the median amount of water in the snowpack at this station over its period of record, not counting the current season. It shows the usual rhythm: snow builds through winter, peaks in spring, and melts out by summer.</div></li>
+      <li><span class="num">2</span><div><strong>Blue line: this season.</strong> The snowpack measured at the station each day since October 1. Where the line runs above the shaded area, there is more snow than usual for that date; below it, less.</div></li>
+      <li><span class="num">3</span><div><strong>The latest reading.</strong> The line stops at the most recent day with data. The gap between its end and the top of the shaded area is how far ahead or behind normal the station is right now.</div></li>
+      <li><span class="num">4</span><div><strong>Percent of median.</strong> The latest reading divided by the median for that same day. 100% is a typical year for this date; 71% means the snowpack holds a bit less than three-quarters of its usual water.</div></li>
+      <li><span class="num">5</span><div><strong>Station details.</strong> <em>POR</em> (period of record) is how many years of data the station has. <em>Elev.</em> is the station's elevation. <em>Updated</em> is the date of the latest reading.</div></li>
+      <li><span class="num">6</span><div><strong>Time axis.</strong> Each chart covers one water year, October 1 to September 30 (see <a href="#wateryear">below</a>).</div></li>
+    </ol>
+
+    <h2 id="swe">What is snow water equivalent?</h2>
+    <p>Snow water equivalent (SWE) is the depth of water you would get if you melted all the snow in the snowpack at one spot. It is reported in inches.</p>
+    <p>SWE is used instead of snow depth because depth changes as snow settles and compacts, even when no snow is added or lost. The amount of water stays the same, so SWE is a steadier measure of how much snow is really there. It is also what matters for water supply: it is the water that eventually flows into streams and reservoirs.</p>
+    <div class="example">
+      <p><strong>Rule of thumb:</strong> fresh, fluffy snow can be less than 10% water, while a settled spring snowpack is often 30–40% water. So 10 inches of SWE might be anywhere from about 2½ to more than 8 feet of snow on the ground, depending on how dense it is.</p>
+    </div>
+    <p>A short plateau in the blue line means no new snow and little melt. A sharp step up is a storm. A steady decline in spring is melt.</p>
+
+    <h2 id="snotel">Where the data come from</h2>
+    <p>The data are from the <strong>SNOTEL</strong> (SNOwpack TELemetry) network run by the USDA Natural Resources Conservation Service (NRCS). SNOTEL stations are automated sites in mountain areas across the western United States. Most measure SWE with a <em>snow pillow</em>: a large, fluid-filled bladder on the ground that weighs the snow sitting on it. The station reports readings automatically, and NRCS publishes them daily.</p>
+    <p>Four stations are run by other agencies and shared through the same NRCS system: Mammoth Pass (California's cooperative snow surveys) and the three British Columbia stations used for Whistler and Revelstoke (British Columbia's snow survey program). They also measure SWE automatically.</p>
+    <p>Each ski area on this site is represented by one nearby station (four for Mt. Bachelor, two for Whistler). The <a href="map.html">station map</a> shows where each station is relative to its ski area, and each chart's station name links to its data.</p>
+
+    <h2 id="median">The median and percent of median</h2>
+    <p>The <strong>median</strong> is the middle value. For each day of the year, the site lines up that day's SWE from every past season at the station and takes the one in the middle: half of past years had more snow on that date, and half had less.</p>
+    <p>The median is used rather than the average because a few huge or tiny snow years can pull an average up or down. The median is a better picture of a typical year.</p>
+    <div class="example">
+      <p><strong>Example:</strong> On March 1 the median SWE at a station is 20 inches. This year, the station reads 15 inches on March 1.</p>
+      <p>15 ÷ 20 = 0.75, so the chart shows <strong>75%</strong> of median.</p>
+    </div>
+    <h3>When the percent shows “--”</h3>
+    <p>Early in the fall and late in summer, the median is often zero because there is usually no snow on the ground. Percent of median can't be calculated when dividing by zero, so the chart shows “--”. Early in the season, percentages can also swing widely: a single storm in November can make a station read 300% of median, because the median is still very small.</p>
+
+    <h2 id="wateryear">Why the charts start on October 1</h2>
+    <p>Snow and water data are organized by <strong>water year</strong>, which runs from October 1 to September 30. It is named for the year it ends in: water year 2026 runs from October 1, 2025 to September 30, 2026. Starting in October keeps an entire winter's snow season on one chart instead of splitting it across two calendar years.</p>
+
+    <h2 id="caveats">Things to keep in mind</h2>
+    <ul>
+      <li><strong>A station is not the whole mountain.</strong> Each station measures snow at one spot and one elevation. Conditions on the slopes can differ, especially at different elevations, on different aspects, or where wind moves snow around.</li>
+      <li><strong>SWE is not a ski report.</strong> These charts show how much water is in the snowpack, not snow quality, new snow, or whether runs are open. Check the ski area's own report for that.</li>
+      <li><strong>Some stations are not right at the ski area.</strong> A few are several miles away or in a neighboring drainage. The <a href="map.html">station map</a> lists the distance for each.</li>
+      <li><strong>The data are provisional.</strong> NRCS publishes readings automatically and reviews them later. Occasional gaps, spikes, or stray points can appear and may be corrected afterward.</li>
+      <li><strong>Periods of record differ.</strong> A station with 45 years of data has a more reliable median than one with 20 years.</li>
+    </ul>
+
+    <h2 id="updates">How the site is updated</h2>
+    <p>Every morning at 7:00 AM Arizona time, a script downloads the latest data from NRCS, recalculates the medians, and redraws the charts. The time of the last update is shown at the top of the <a href="./">snow charts</a> page. Readings usually lag by a day.</p>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>SWE</td><td>Snow water equivalent: inches of water in the snowpack</td></tr>
+        <tr><td>SNOTEL</td><td>NRCS network of automated mountain snow stations</td></tr>
+        <tr><td>Median</td><td>Middle value across past years for the same date</td></tr>
+        <tr><td>POR</td><td>Period of record: years of data at the station</td></tr>
+        <tr><td>Water year</td><td>October 1 – September 30, named for the ending year</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <footer>
+    Data: USDA NRCS National Water and Climate Center. Charts are based on code by Zack Guido.
+  </footer>
+</body>
+</html>
