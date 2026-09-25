@@ -28,7 +28,7 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Phillips%20Bench.csv"
     },
     {
-      "site": "Targee",
+      "site": "Targhee",
       "station": "Grand Targhee",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Grand%20Targhee.csv"
     },
@@ -45,7 +45,7 @@
   ],
   "mount-bachelor": [
     {
-      "site": "Mckensize (NNE)",
+      "site": "McKenzie (NNE)",
       "station": "Mckenzie",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Mckenzie.csv"
     },
