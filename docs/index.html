@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SNOTEL Ski Summaries</title>
+  <style>
+    :root { --ink: #1f2328; --muted: #57606a; --line: #d8dee4; --accent: #662506; --bg: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
+    header, main, footer { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 32px; }
+    h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
+    .sub { margin: 0; color: var(--muted); }
+    nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+    nav a { color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
+    nav a:hover { border-color: var(--muted); }
+    section { padding-top: 24px; }
+    figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    figure img { display: block; width: 100%; height: auto; }
+    .how { color: var(--muted); font-size: .92rem; border-top: 1px solid var(--line); margin-top: 32px; padding-top: 16px; }
+    footer { color: var(--muted); font-size: .85rem; padding-bottom: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SNOTEL Ski Summaries</h1>
+    <p class="sub">Snow water equivalent at SNOTEL stations near western ski areas, compared with each station's median. Updated daily.</p>
+    <p class="sub">Figures last generated: <span id="stamp">—</span></p>
+    <nav>
+      <a href="#utah">Utah</a>
+      <a href="#wyoming-montana">Wyoming &amp; Montana</a>
+      <a href="#mount-bachelor">Mount Bachelor</a>
+      <a href="#california">California</a>
+      <a href="#bc-idaho">BC &amp; Idaho</a>
+      <a href="#colorado-north">Colorado (north)</a>
+      <a href="#colorado-south">Colorado (south)</a>
+      <a href="#washington">Washington</a>
+    </nav>
+  </header>
+
+  <main id="figs"></main>
+
+  <footer>
+    <div class="how">
+      <p><strong>How to read these:</strong> the shaded area is the median snow water equivalent (SWE) for each day over the station's period of record (POR), excluding the current year. The blue line is the current water year (Oct 1 – Sep 30). The percentage compares the latest reading with the median for that day.</p>
+      <p>Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.</p>
+    </div>
+  </footer>
+
+  <script>
+    const regions = [
+      ["utah", "Utah"], ["wyoming-montana", "Wyoming & Montana"], ["mount-bachelor", "Mount Bachelor"],
+      ["california", "California"], ["bc-idaho", "BC & Idaho"], ["colorado-north", "Colorado (north-central)"],
+      ["colorado-south", "Colorado (south-central)"], ["washington", "Washington"]
+    ];
+    const v = Date.now().toString().slice(0, -5);  // refresh cached images roughly every 100 s
+    const main = document.getElementById("figs");
+    for (const [id, name] of regions) {
+      const s = document.createElement("section");
+      s.id = id;
+      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas" loading="lazy"></figure>`;
+      main.appendChild(s);
+    }
+    fetch("figures/last_updated.txt?v=" + v)
+      .then(r => r.ok ? r.text() : "")
+      .then(t => { if (t.trim()) document.getElementById("stamp").textContent = t.trim(); })
+      .catch(() => {});
+  </script>
+</body>
+</html>
