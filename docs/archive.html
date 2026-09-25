@@ -40,7 +40,7 @@
     #station { min-width: 260px; }
     .controls label { max-width: 100%; }
     select { max-width: 100%; }
-    .stat { flex: 1 1 150px; }
+    .stat { flex: 1 1 calc(33.33% - 12px); min-width: 150px; }
     .stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
     .stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; min-width: 150px; }
     .stat .v { font-size: 1.35rem; font-weight: 600; line-height: 1.25; }
@@ -224,6 +224,13 @@
         [others.length, "other seasons on record"],
         [rank == null ? "--" : `${ordinal(rank)} of ${total}`, `peak SWE rank (1st = biggest)${isCurrent ? ", so far" : ""}`]
       ];
+      // Highest and lowest peak across all complete seasons on record
+      const byPeak = complete.map(y => [y, peakOf(y)]).filter(([, p]) => Number.isFinite(p)).sort((a, b) => b[1] - a[1]);
+      if (byPeak.length) {
+        const [hiY, hiP] = byPeak[0], [loY, loP] = byPeak[byPeak.length - 1];
+        tiles.push([hiY, `highest peak SWE on record, ${hiP.toFixed(1)} in`]);
+        tiles.push([loY, `lowest peak SWE on record, ${loP.toFixed(1)} in`]);
+      }
       $("stats").innerHTML = tiles.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
 
       // Title & legend
