@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archive · SNOTEL Ski Summaries</title>
+  <script>
+    // Apply a saved light/dark choice before the page draws (avoids a flash)
+    try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <style>
+    :root { --ink: #1f2328; --muted: #57606a; --line: #d8dee4; --accent: #662506; --bg: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    }
+    :root[data-theme="dark"] { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    header { position: relative; }
+    .theme-toggle { position: absolute; top: 28px; right: 16px; display: inline-flex; align-items: center; gap: 6px;
+                    font: inherit; font-size: .85rem; color: var(--ink); background: transparent; cursor: pointer;
+                    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+    .theme-toggle:hover { border-color: var(--muted); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .theme-toggle svg { width: 16px; height: 16px; }
+    @media (max-width: 600px) { .theme-toggle { position: static; margin-bottom: 12px; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
+    header, main, footer { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 32px; }
+    h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
+    .sub { margin: 0; color: var(--muted); }
+    .pages { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0 20px; font-size: .95rem; }
+    .pages a { color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+    .pages a:hover { border-color: var(--line); }
+    .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end; margin-bottom: 16px; }
+    .controls label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; color: var(--muted); font-weight: 600; }
+    select { font: inherit; font-size: .95rem; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+             border-radius: 6px; padding: 6px 8px; min-width: 150px; }
+    select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    #station { min-width: 260px; }
+    .controls label { max-width: 100%; }
+    select { max-width: 100%; }
+    .stat { flex: 1 1 140px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
+    .stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; min-width: 150px; }
+    .stat .v { font-size: 1.35rem; font-weight: 600; line-height: 1.25; }
+    .stat .k { font-size: .8rem; color: var(--muted); }
+    .card { position: relative; background: #fff; color: #1f2328; border: 1px solid var(--line); border-radius: 8px; padding: 12px 12px 4px; }
+    .card h2 { margin: 0; text-align: center; color: #ec7014; font-weight: 500; font-size: 1.5rem; }
+    .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; font-size: .85rem; margin: 4px 0 2px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .sw { display: inline-block; width: 22px; height: 0; border-top: 4px solid; border-radius: 2px; }
+    .sw.area { height: 12px; border: 1px solid #1f2328; background: #deebf7; }
+    svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+    .tip { position: absolute; pointer-events: none; background: #fff; color: #1f2328; border: 1px solid #d0d7de; border-radius: 6px;
+           box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 6px 10px; font-size: .82rem; line-height: 1.5; white-space: nowrap; display: none; }
+    .tip b { display: block; margin-bottom: 2px; }
+    .tip i { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; font-style: normal; }
+    .note { color: var(--muted); font-size: .88rem; margin: 10px 2px 0; }
+    .note a { color: var(--ink); }
+    footer { color: var(--muted); font-size: .85rem; padding: 32px 16px 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode"></button>
+    <h1>SNOTEL Ski Summaries</h1>
+    <p class="sub">Look back at any past season at any station, and compare it with another year.</p>
+    <nav class="pages" aria-label="Pages">
+      <a href="./">Snow charts</a>
+      <a href="map.html">Station map</a>
+      <a href="archive.html" aria-current="page">Archive</a>
+      <a href="about.html">About the data</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="controls">
+      <label>Station <select id="station"></select></label>
+      <label>Water year <select id="year"></select></label>
+      <label>Compare with <select id="compare"></select></label>
+    </div>
+
+    <div class="stats" id="stats" aria-live="polite"></div>
+
+    <div class="card">
+      <h2 id="title">&nbsp;</h2>
+      <div class="legend" id="legend"></div>
+      <svg id="chart" viewBox="0 0 800 380" role="img" aria-label="Snow water equivalent chart"></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+    <p class="note" id="note"></p>
+  </main>
+
+  <footer>
+    Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.
+    The median for each day uses every other complete season at the station, so it leaves out the year being shown.
+  </footer>
+
+  <script>
+    const W = 800, H = 380, M = { l: 56, r: 16, t: 14, b: 40 };
+    const TICKS = [[0, "Oct1"], [31, "Nov1"], [61, "Dec1"], [92, "Jan1"], [123, "Feb1"], [152, "Mar1"], [183, "Apr1"],
+                   [213, "May1"], [244, "Jun1"], [274, "Jul1"], [305, "Aug1"], [336, "Sep1"], [365, "Sep30"]];
+    const APR1 = 183, FEB29 = 151;
+    const BLUE = "#2171b5", ORANGE = "#d95f02";
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const $ = id => document.getElementById(id);
+    const cache = {};
+    let index, cur = null;
+
+    // Calendar date for day i (0 = Oct 1) of water year wy
+    function dayDate(i, wy) {
+      const d = new Date(Date.UTC(1999, 9, 1 + i));           // template water year 1999-2000 includes Feb 29
+      const y = d.getUTCMonth() >= 9 ? wy - 1 : wy;
+      return { m: d.getUTCMonth(), d: d.getUTCDate(), y };
+    }
+    const fmt = (i, wy, withYear = true) => { const t = dayDate(i, wy); return `${MONTHS[t.m]} ${t.d}` + (withYear ? `, ${t.y}` : ""); };
+    const isLeap = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    function median(arr) {
+      const v = arr.filter(x => x != null).sort((a, b) => a - b);
+      if (!v.length) return null;
+      const m = v.length >> 1;
+      return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+    }
+
+    async function load(key) {
+      if (!cache[key]) cache[key] = fetch(`data/${key}.json?v=${Date.now().toString().slice(0, -5)}`).then(r => r.json());
+      return cache[key];
+    }
+
+    function seriesFor(data, wy) {
+      const s = data.years[wy];
+      if (!s) return null;
+      // Non-leap years have no Feb 29; hide the filled-in value
+      return isLeap(Number(wy)) ? s : s.map((v, i) => i === FEB29 ? null : v);
+    }
+
+    function stats(series, med, wy, isCurrent) {
+      let lastIdx = -1, peak = -1, peakIdx = -1;
+      series.forEach((v, i) => { if (v != null) { lastIdx = i; if (v > peak) { peak = v; peakIdx = i; } } });
+      let pctIdx = isCurrent ? lastIdx : APR1;
+      const pct = (pctIdx >= 0 && series[pctIdx] != null && med[pctIdx] > 0) ? Math.round(series[pctIdx] / med[pctIdx] * 100) : null;
+      return { pct, pctIdx, peak, peakIdx, lastIdx };
+    }
+
+    function draw() {
+      const { data, wy, cmp } = cur;
+      const years = Object.keys(data.years);
+      const current = String(data.current_year);
+      const complete = years.filter(y => y !== current);
+      const others = complete.filter(y => y !== wy);
+      const med = Array.from({ length: 366 }, (_, i) => median(others.map(y => data.years[y][i])));
+      const sel = seriesFor(data, wy);
+      const cmpS = cmp ? seriesFor(data, cmp) : null;
+      const isCurrent = wy === current;
+
+      // Stats
+      const st = stats(sel, med, wy, isCurrent);
+      const tiles = [];
+      tiles.push([st.pct == null ? "--" : st.pct + "%",
+                  isCurrent ? (st.lastIdx >= 0 ? `of median on ${fmt(st.lastIdx, wy)}` : "of median") : "of median on April 1"]);
+      tiles.push([st.peakIdx >= 0 ? st.peak.toFixed(1) + " in" : "--", st.peakIdx >= 0 ? `peak SWE, ${fmt(st.peakIdx, wy)}` : "peak SWE"]);
+      if (cmpS) {
+        const c = stats(cmpS, med, cmp, cmp === current);
+        tiles.push([c.pct == null ? "--" : c.pct + "%", `${cmp}: of median on ${cmp === current ? fmt(c.lastIdx, cmp) : "April 1"}`]);
+      }
+      tiles.push([others.length, "other seasons in the median"]);
+      $("stats").innerHTML = tiles.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
+
+      // Title & legend
+      $("title").textContent = data.title;
+      const range = `Oct 1, ${wy - 1} – Sep 30, ${wy}`;
+      let leg = `<span><i class="sw" style="border-color:${BLUE}"></i>Water year ${wy} (${range})${isCurrent ? ", in progress" : ""}</span>`;
+      if (cmpS) leg += `<span><i class="sw" style="border-color:${ORANGE}"></i>Water year ${cmp}</span>`;
+      leg += `<span><i class="sw area"></i>Median of other seasons</span>`;
+      $("legend").innerHTML = leg;
+
+      // Scales
+      const all = [...med, ...sel, ...(cmpS || [])].filter(v => v != null);
+      const maxV = Math.max(1, ...all) * 1.05;
+      const step = [1, 2, 5, 10, 20, 25, 50].find(s => maxV / s <= 6) || 100;
+      const top = Math.ceil(maxV / step) * step;
+      const x = i => M.l + (i / 365) * (W - M.l - M.r);
+      const y = v => H - M.b - (v / top) * (H - M.t - M.b);
+
+      const path = s => { let d = "", pen = false;
+        s.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); pen = true; });
+        return d; };
+      let area = `M${x(0)},${y(0)}`;
+      med.forEach((v, i) => { area += `L${x(i).toFixed(1)},${y(v ?? 0).toFixed(1)}`; });
+      area += `L${x(365)},${y(0)}Z`;
+      const medLine = path(med);
+
+      let g = "";
+      for (const [i] of TICKS) g += `<line x1="${x(i)}" x2="${x(i)}" y1="${M.t}" y2="${H - M.b}" stroke="#e3e6ea"/>`;
+      for (let v = 0; v <= top; v += step) {
+        g += `<text x="${M.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#1f2328">${v}</text>`;
+      }
+      for (const [i, lab] of TICKS) g += `<text x="${x(i)}" y="${H - M.b + 18}" text-anchor="middle" font-size="12" fill="#1f2328">${lab}</text>`;
+      g += `<text transform="translate(16 ${(H - M.b + M.t) / 2}) rotate(-90)" text-anchor="middle" font-size="13" fill="#1f2328">SWE (inches)</text>`;
+      g += `<path d="${area}" fill="#deebf7"/><path d="${medLine}" fill="none" stroke="#1f2328" stroke-width="1"/>`;
+      if (cmpS) g += `<path d="${path(cmpS)}" fill="none" stroke="${ORANGE}" stroke-width="2.5" stroke-linejoin="round"/>`;
+      g += `<path d="${path(sel)}" fill="none" stroke="${BLUE}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`;
+      if (!isCurrent && sel[APR1] != null) {
+        g += `<circle cx="${x(APR1)}" cy="${y(sel[APR1])}" r="5" fill="#fff" stroke="#662506" stroke-width="2"/>`;
+      }
+      g += `<rect x="${M.l}" y="${M.t}" width="${W - M.l - M.r}" height="${H - M.t - M.b}" fill="none" stroke="#1f2328"/>`;
+      g += `<g id="hover" style="display:none"><line id="hl" y1="${M.t}" y2="${H - M.b}" stroke="#57606a" stroke-dasharray="3 3"/>` +
+           `<circle id="hs" r="5" fill="${BLUE}" stroke="#fff" stroke-width="2"/><circle id="hc" r="4" fill="${ORANGE}" stroke="#fff" stroke-width="2"/>` +
+           `<circle id="hm" r="4" fill="#fff" stroke="#1f2328" stroke-width="1.5"/></g>`;
+      g += `<rect id="hit" x="${M.l}" y="${M.t}" width="${W - M.l - M.r}" height="${H - M.t - M.b}" fill="transparent"/>`;
+      $("chart").innerHTML = g;
+      $("chart").setAttribute("aria-label",
+        `${data.title}, water year ${wy}: ${st.pct == null ? "" : st.pct + "% of median " + (isCurrent ? "latest" : "on April 1") + ", "}peak ${st.peak.toFixed(1)} inches.`);
+
+      // Hover
+      const svg = $("chart"), tip = $("tip"), card = svg.parentElement;
+      const hover = svg.querySelector("#hover");
+      const move = ev => {
+        const pt = ev.touches ? ev.touches[0] : ev;
+        const r = svg.getBoundingClientRect();
+        const sx = (pt.clientX - r.left) * W / r.width;
+        let i = Math.round((sx - M.l) / (W - M.l - M.r) * 365);
+        i = Math.max(0, Math.min(365, i));
+        if (i === FEB29 && !isLeap(Number(wy))) i = 150;
+        hover.style.display = "";
+        svg.querySelector("#hl").setAttribute("x1", x(i)); svg.querySelector("#hl").setAttribute("x2", x(i));
+        const place = (id, v) => { const c = svg.querySelector(id); if (v == null) { c.style.display = "none"; } else { c.style.display = ""; c.setAttribute("cx", x(i)); c.setAttribute("cy", y(v)); } };
+        place("#hs", sel[i]); place("#hm", med[i]); place("#hc", cmpS ? cmpS[i] : null);
+        const f = v => v == null ? "—" : v.toFixed(1) + " in";
+        let h = `<b>${fmt(i, wy, false)}</b><i style="background:${BLUE}"></i>${wy}: ${f(sel[i])}`;
+        if (sel[i] != null && med[i] > 0) h += ` (${Math.round(sel[i] / med[i] * 100)}%)`;
+        if (cmpS) h += `<br><i style="background:${ORANGE}"></i>${cmp}: ${f(cmpS[i])}`;
+        h += `<br><i style="background:#9ecae1"></i>Median: ${f(med[i])}`;
+        tip.innerHTML = h; tip.style.display = "block";
+        const cr = card.getBoundingClientRect();
+        const px = r.left - cr.left + x(i) * r.width / W;
+        const left = px + 14 + tip.offsetWidth > cr.width ? px - 14 - tip.offsetWidth : px + 14;
+        tip.style.left = left + "px"; tip.style.top = (r.top - cr.top + 40) + "px";
+      };
+      const leave = () => { hover.style.display = "none"; tip.style.display = "none"; };
+      const hit = svg.querySelector("#hit");
+      hit.addEventListener("mousemove", move); hit.addEventListener("mouseleave", leave);
+      hit.addEventListener("touchstart", move, { passive: true }); hit.addEventListener("touchmove", move, { passive: true });
+
+      const stInfo = index.stations.find(s => s.key === data.key);
+      $("note").innerHTML = `Station: ${esc(data.station)} · Elevation ${Number(data.elev).toLocaleString()} ft · ` +
+        `<a href="./#${stInfo.region}">Current season charts</a> · <a href="map.html">Station map</a>`;
+    }
+
+    function fillYears(st, keepYear, keepCmp) {
+      const current = index.current_year;
+      const ys = [...st.years].sort((a, b) => b - a);
+      const label = y => y === current ? `${y} (in progress)` : String(y);
+      $("year").innerHTML = ys.map(y => `<option value="${y}">${label(y)}</option>`).join("");
+      $("compare").innerHTML = `<option value="">None</option>` + ys.map(y => `<option value="${y}">${label(y)}</option>`).join("");
+      const def = ys.find(y => y !== current) ?? ys[0];
+      $("year").value = ys.includes(Number(keepYear)) ? keepYear : def;
+      $("compare").value = keepCmp && ys.includes(Number(keepCmp)) ? keepCmp : "";
+    }
+
+    async function update(push = true) {
+      const key = $("station").value, wy = $("year").value, cmp = $("compare").value;
+      const data = await load(key);
+      cur = { data, wy, cmp: cmp && cmp !== wy ? cmp : "" };
+      draw();
+      if (push) history.replaceState(null, "", `#${key}/${wy}` + (cur.cmp ? `/${cur.cmp}` : ""));
+    }
+
+    function fromHash() {
+      const [key, wy, cmp] = decodeURIComponent(location.hash.slice(1)).split("/");
+      const st = index.stations.find(s => s.key === key) || index.stations[0];
+      $("station").value = st.key;
+      fillYears(st, wy, cmp);
+    }
+
+    fetch("data/index.json?v=" + Date.now().toString().slice(0, -5))
+      .then(r => r.json())
+      .then(ix => {
+        index = ix;
+        const groups = {};
+        for (const s of ix.stations) (groups[s.region_name] ||= []).push(s);
+        $("station").innerHTML = Object.entries(groups).map(([g, list]) =>
+          `<optgroup label="${esc(g)}">` + list.map(s => `<option value="${s.key}">${esc(s.title)} – ${esc(s.station)}</option>`).join("") + `</optgroup>`).join("");
+        fromHash();
+        update(false);
+        $("station").addEventListener("change", () => { fillYears(index.stations.find(s => s.key === $("station").value), $("year").value, $("compare").value); update(); });
+        $("year").addEventListener("change", () => update());
+        $("compare").addEventListener("change", () => update());
+        window.addEventListener("hashchange", () => { fromHash(); update(false); });
+      })
+      .catch(err => { $("stats").innerHTML = "<p class='sub'>The archive could not be loaded.</p>"; console.error(err); });
+  </script>
+  <script>
+    // Light/dark mode toggle (remembers the choice on this device)
+    (function () {
+      const btn = document.getElementById("theme-toggle");
+      const root = document.documentElement;
+      const sys = window.matchMedia("(prefers-color-scheme: dark)");
+      const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+      const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+      const current = () => root.dataset.theme || (sys.matches ? "dark" : "light");
+      function render() {
+        const dark = current() === "dark";
+        btn.innerHTML = (dark ? sun : moon) + (dark ? "Light mode" : "Dark mode");
+        btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      }
+      btn.addEventListener("click", () => {
+        const next = current() === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        render();
+      });
+      sys.addEventListener("change", render);
+      render();
+    })();
+  </script>
+</body>
+</html>

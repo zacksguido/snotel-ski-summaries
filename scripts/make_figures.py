@@ -28,6 +28,7 @@ from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import MaxNLocator  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "docs" / "figures"
+DATA_DIR = Path(__file__).resolve().parent.parent / "docs" / "data"   # daily SWE by water year, for the archive page
 
 # Optional: folder of pre-downloaded CSVs named <station key>.csv (for testing offline)
 LOCAL_DATA_DIR = os.environ.get("SNOTEL_LOCAL_DATA_DIR")
@@ -261,6 +262,25 @@ def fill_feb29(wide: pd.DataFrame) -> pd.DataFrame:
     return wide
 
 
+ARCHIVE_INDEX = {}
+
+
+def save_archive(key: str, wide: pd.DataFrame, cur_year: int) -> None:
+    """Write the station's full record (one 366-day series per water year) for the archive page."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    years = {}
+    for wy in sorted(wide.columns):
+        vals = wide[wy].to_numpy(dtype=float)
+        if np.isnan(vals).all():
+            continue
+        years[str(wy)] = [None if np.isnan(v) else round(float(v), 1) for v in vals]
+    st = STATIONS[key]
+    (DATA_DIR / f"{key}.json").write_text(json.dumps(dict(
+        key=key, title=st["title"], station=st["station"], elev=st["elev"],
+        current_year=cur_year, years=years), separators=(",", ":")))
+    ARCHIVE_INDEX[key] = [int(y) for y in years]
+
+
 def summarize(key: str, today: date) -> dict:
     st = STATIONS[key]
     text = fetch_csv(key, st["url"])
@@ -273,6 +293,7 @@ def summarize(key: str, today: date) -> dict:
     wy = current_water_year(today)
     cur_year = wy if wy in wide.columns else max(wide.columns)
     hist = wide[[c for c in wide.columns if c < cur_year]]
+    save_archive(key, wide, wy)
     if por is None:
         por = hist.shape[1]
 
@@ -357,6 +378,13 @@ def main() -> int:
                 for fname, _, keys in REGIONS}
     (OUT_DIR / "stations.json").write_text(json.dumps(stations, indent=2) + "\n")
     write_locations()
+
+    # List of stations and years available on the archive page
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    index = [dict(key=k, title=STATIONS[k]["title"], station=STATIONS[k]["station"], region=fname,
+                  region_name=heading, years=ARCHIVE_INDEX.get(k, []))
+             for fname, heading, keys in REGIONS for k in keys]
+    (DATA_DIR / "index.json").write_text(json.dumps(dict(current_year=wy, stations=index), indent=1) + "\n")
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     (OUT_DIR / "last_updated.txt").write_text(stamp + "\n")
