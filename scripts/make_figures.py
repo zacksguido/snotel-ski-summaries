@@ -44,7 +44,7 @@ STATIONS = {
     # --- Utah ---
     "snowbird":   dict(title="Snowbird", station="Snowbird", elev=9710, kind="plot", url=SITE_PLOTS + "UT/Snowbird.csv"),
     "alta":       dict(title="Alta", station="Brighton", elev=8790, kind="plot", url=SITE_PLOTS + "UT/Brighton.csv"),
-    "powder":     dict(title="Powder Mtn (Little Bear)", station="Little Bear", elev=6540, kind="plot", url=SITE_PLOTS + "UT/Little%20Bear.csv"),
+    "powder":     dict(title="Powder Mtn", station="Little Bear", elev=6540, kind="plot", url=SITE_PLOTS + "UT/Little%20Bear.csv"),
     "solitude":   dict(title="Solitude", station="Mill-D North", elev=8940, kind="plot", url=SITE_PLOTS + "UT/Mill-D%20North.csv"),
     # --- Wyoming & Montana ---
     "jackson":    dict(title="Jackson", station="Phillips Bench", elev=8160, kind="plot", url=SITE_PLOTS + "WY/Phillips%20Bench.csv"),
