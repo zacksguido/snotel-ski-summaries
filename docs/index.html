@@ -21,6 +21,8 @@
     section { padding-top: 24px; }
     figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
     figure img { display: block; width: 100%; height: auto; }
+    .src { margin: 8px 2px 0; font-size: .9rem; color: var(--muted); }
+    .src a { color: var(--ink); }
     .how { color: var(--muted); font-size: .92rem; border-top: 1px solid var(--line); margin-top: 32px; padding-top: 16px; }
     footer { color: var(--muted); font-size: .85rem; padding-bottom: 40px; }
   </style>
@@ -62,9 +64,26 @@
     for (const [id, name] of regions) {
       const s = document.createElement("section");
       s.id = id;
-      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas" loading="lazy"></figure>`;
+      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas" loading="lazy"></figure><p class="src"></p>`;
       main.appendChild(s);
     }
+    fetch("figures/stations.json?v=" + v)
+      .then(r => r.ok ? r.json() : {})
+      .then(all => {
+        for (const [id, list] of Object.entries(all)) {
+          const p = document.querySelector(`#${id} .src`);
+          if (!p) continue;
+          p.append("Stations used: ");
+          list.forEach((st, i) => {
+            p.append(`${st.site} – `);
+            const a = document.createElement("a");
+            a.href = st.url; a.textContent = st.station;
+            p.append(a);
+            p.append(i < list.length - 1 ? "; " : ".");
+          });
+        }
+      })
+      .catch(() => {});
     fetch("figures/last_updated.txt?v=" + v)
       .then(r => r.ok ? r.text() : "")
       .then(t => { if (t.trim()) document.getElementById("stamp").textContent = t.trim(); })

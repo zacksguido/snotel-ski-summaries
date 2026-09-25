@@ -10,6 +10,7 @@ Data: USDA NRCS National Water and Climate Center (SNOTEL / BC snow pillows).
 """
 
 import io
+import json
 import os
 import sys
 import warnings
@@ -40,53 +41,53 @@ REPORT = "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/"
 # ---------------------------------------------------------------------------
 STATIONS = {
     # --- Utah ---
-    "snowbird":   dict(title="Snowbird", elev=9710, kind="plot", url=SITE_PLOTS + "UT/Snowbird.csv"),
-    "alta":       dict(title="Alta", elev=8790, kind="plot", url=SITE_PLOTS + "UT/Brighton.csv"),
-    "powder":     dict(title="Powder Mtn (Little Bear)", elev=6540, kind="plot", url=SITE_PLOTS + "UT/Little%20Bear.csv"),
-    "solitude":   dict(title="Solitude", elev=8940, kind="plot", url=SITE_PLOTS + "UT/Mill-D%20North.csv"),
+    "snowbird":   dict(title="Snowbird", station="Snowbird", elev=9710, kind="plot", url=SITE_PLOTS + "UT/Snowbird.csv"),
+    "alta":       dict(title="Alta", station="Brighton", elev=8790, kind="plot", url=SITE_PLOTS + "UT/Brighton.csv"),
+    "powder":     dict(title="Powder Mtn (Little Bear)", station="Little Bear", elev=6540, kind="plot", url=SITE_PLOTS + "UT/Little%20Bear.csv"),
+    "solitude":   dict(title="Solitude", station="Mill-D North", elev=8940, kind="plot", url=SITE_PLOTS + "UT/Mill-D%20North.csv"),
     # --- Wyoming & Montana ---
-    "jackson":    dict(title="Jackson", elev=8160, kind="plot", url=SITE_PLOTS + "WY/Phillips%20Bench.csv"),
-    "targhee":    dict(title="Targee", elev=9260, kind="plot", url=SITE_PLOTS + "WY/Grand%20Targhee.csv"),
-    "bigsky":     dict(title="Big Sky", elev=8810, kind="plot", url=SITE_PLOTS + "MT/Lone%20Mountain.csv"),
-    "bridger":    dict(title="Bridger", elev=6610, kind="plot", url=SITE_PLOTS + "MT/Sacajawea.csv"),
+    "jackson":    dict(title="Jackson", station="Phillips Bench", elev=8160, kind="plot", url=SITE_PLOTS + "WY/Phillips%20Bench.csv"),
+    "targhee":    dict(title="Targee", station="Grand Targhee", elev=9260, kind="plot", url=SITE_PLOTS + "WY/Grand%20Targhee.csv"),
+    "bigsky":     dict(title="Big Sky", station="Lone Mountain", elev=8810, kind="plot", url=SITE_PLOTS + "MT/Lone%20Mountain.csv"),
+    "bridger":    dict(title="Bridger", station="Sacajawea", elev=6610, kind="plot", url=SITE_PLOTS + "MT/Sacajawea.csv"),
     # --- Mount Bachelor, OR ---
-    "mckenzie":   dict(title="Mckensize (NNE)", elev=4470, kind="plot", url=SITE_PLOTS + "OR/Mckenzie.csv"),
-    "threecreek": dict(title="Three Creek (NE)", elev=5680, kind="plot", url=SITE_PLOTS + "OR/Three%20Creeks%20Meadow.csv"),
-    "roaring":    dict(title="Roaring River (NW)", elev=4690, kind="plot", url=SITE_PLOTS + "OR/Roaring%20River.csv"),
-    "irish":      dict(title="Irish Taylor (SSW)", elev=5540, kind="plot", url=SITE_PLOTS + "OR/Irish%20Taylor.csv"),
+    "mckenzie":   dict(title="Mckensize (NNE)", station="Mckenzie", elev=4470, kind="plot", url=SITE_PLOTS + "OR/Mckenzie.csv"),
+    "threecreek": dict(title="Three Creek (NE)", station="Three Creeks Meadow", elev=5680, kind="plot", url=SITE_PLOTS + "OR/Three%20Creeks%20Meadow.csv"),
+    "roaring":    dict(title="Roaring River (NW)", station="Roaring River", elev=4690, kind="plot", url=SITE_PLOTS + "OR/Roaring%20River.csv"),
+    "irish":      dict(title="Irish Taylor (SSW)", station="Irish Taylor", elev=5540, kind="plot", url=SITE_PLOTS + "OR/Irish%20Taylor.csv"),
     # --- California ---
-    "mammoth":    dict(title="Mammoth Pass", elev=9400, kind="report",
+    "mammoth":    dict(title="Mammoth Pass", station="Mammoth Pass (MHP)", elev=9400, kind="report",
                        url=REPORT + "customMultiTimeSeriesGroupByStationReport/daily/start_of_period/"
                            "MHP:CA:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
-    "kirkwood":   dict(title="Kirkwood", elev=8360, kind="plot", url=SITE_PLOTS + "CA/Carson%20Pass.csv"),
-    "heavenly":   dict(title="Heavenly", elev=8540, kind="plot", url=SITE_PLOTS + "CA/Heavenly%20Valley.csv"),
-    "palisades":  dict(title="Palisades", elev=8010, kind="plot", url=SITE_PLOTS + "CA/Palisades%20Tahoe.csv"),
+    "kirkwood":   dict(title="Kirkwood", station="Carson Pass", elev=8360, kind="plot", url=SITE_PLOTS + "CA/Carson%20Pass.csv"),
+    "heavenly":   dict(title="Heavenly", station="Heavenly Valley", elev=8540, kind="plot", url=SITE_PLOTS + "CA/Heavenly%20Valley.csv"),
+    "palisades":  dict(title="Palisades", station="Palisades Tahoe", elev=8010, kind="plot", url=SITE_PLOTS + "CA/Palisades%20Tahoe.csv"),
     # --- BC & Idaho ---
-    "whistler_n": dict(title="Whistler (North, Tenquille Lake)", elev=5476, kind="report",
+    "whistler_n": dict(title="Whistler (North, Tenquille Lake)", station="Tenquille Lake (1D06P)", elev=5476, kind="report",
                        url=REPORT + "customSingleStationReport/daily/start_of_period/"
                            "1D06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
-    "whistler_w": dict(title="Whistler (West, Squamish Upper)", elev=4551, kind="report",
+    "whistler_w": dict(title="Whistler (West, Squamish Upper)", station="Squamish Upper (3A25P)", elev=4551, kind="report",
                        url=REPORT + "customChartReport/daily/start_of_period/"
                            "3A25P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value"
                            "?fitToScreen=false&useLogScale=false"),
-    "revelstoke": dict(title="Revelstoke", elev=5807, kind="report",
+    "revelstoke": dict(title="Revelstoke", station="Mount Revelstoke (2A06P)", elev=5807, kind="report",
                        url=REPORT + "customMultiTimeSeriesGroupByStationReport/daily/start_of_period/"
                            "2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
-    "schweitzer": dict(title="Schweitzer", elev=6090, kind="plot", url=SITE_PLOTS + "ID/Schweitzer%20Basin.csv"),
+    "schweitzer": dict(title="Schweitzer", station="Schweitzer Basin", elev=6090, kind="plot", url=SITE_PLOTS + "ID/Schweitzer%20Basin.csv"),
     # --- Colorado (north-central) ---
-    "steamboat":  dict(title="Steamboat", elev=8240, kind="plot", url=SITE_PLOTS + "CO/Dry%20Lake.csv"),
-    "abasin":     dict(title="A-Basin", elev=11110, kind="plot", url=SITE_PLOTS + "CO/Grizzly%20Peak.csv"),
-    "vail":       dict(title="Vail", elev=10290, kind="plot", url=SITE_PLOTS + "CO/Vail%20Mountain.csv"),
-    "aspen":      dict(title="Aspen", elev=10570, kind="plot", url=SITE_PLOTS + "CO/Independence%20Pass.csv"),
+    "steamboat":  dict(title="Steamboat", station="Dry Lake", elev=8240, kind="plot", url=SITE_PLOTS + "CO/Dry%20Lake.csv"),
+    "abasin":     dict(title="A-Basin", station="Grizzly Peak", elev=11110, kind="plot", url=SITE_PLOTS + "CO/Grizzly%20Peak.csv"),
+    "vail":       dict(title="Vail", station="Vail Mountain", elev=10290, kind="plot", url=SITE_PLOTS + "CO/Vail%20Mountain.csv"),
+    "aspen":      dict(title="Aspen", station="Independence Pass", elev=10570, kind="plot", url=SITE_PLOTS + "CO/Independence%20Pass.csv"),
     # --- Colorado (south-central) ---
-    "crested":    dict(title="Crested Butte", elev=10190, kind="plot", url=SITE_PLOTS + "CO/Butte.csv"),
-    "telluride":  dict(title="Telluride", elev=11060, kind="plot", url=SITE_PLOTS + "CO/Red%20Mountain%20Pass.csv"),
-    "silverton":  dict(title="Silverton", elev=10610, kind="plot", url=SITE_PLOTS + "CO/Molas%20Lake.csv"),
-    "wolfcreek":  dict(title="Wolf Creek", elev=10930, kind="plot", url=SITE_PLOTS + "CO/Wolf%20Creek%20Summit.csv"),
+    "crested":    dict(title="Crested Butte", station="Butte", elev=10190, kind="plot", url=SITE_PLOTS + "CO/Butte.csv"),
+    "telluride":  dict(title="Telluride", station="Red Mountain Pass", elev=11060, kind="plot", url=SITE_PLOTS + "CO/Red%20Mountain%20Pass.csv"),
+    "silverton":  dict(title="Silverton", station="Molas Lake", elev=10610, kind="plot", url=SITE_PLOTS + "CO/Molas%20Lake.csv"),
+    "wolfcreek":  dict(title="Wolf Creek", station="Wolf Creek Summit", elev=10930, kind="plot", url=SITE_PLOTS + "CO/Wolf%20Creek%20Summit.csv"),
     # --- Washington ---
-    "crystal":    dict(title="Crystal Mountain", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
-    "stevens":    dict(title="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
-    "baker":      dict(title="Mount Baker", elev=4040, kind="plot", url=SITE_PLOTS + "WA/Wells%20Creek.csv"),
+    "crystal":    dict(title="Crystal Mountain", station="Morse Lake", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
+    "stevens":    dict(title="Stevens Pass", station="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
+    "baker":      dict(title="Mount Baker", station="Wells Creek", elev=4040, kind="plot", url=SITE_PLOTS + "WA/Wells%20Creek.csv"),
 }
 
 # One figure per region: (file name, heading, station keys top to bottom)
@@ -197,7 +198,7 @@ def summarize(key: str, today: date) -> dict:
         if median[i] > 0:
             pct = round(current[i] / median[i] * 100, 1)
 
-    return dict(title=st["title"], elev=st["elev"], por=por,
+    return dict(title=st["title"], station=st["station"], elev=st["elev"], por=por,
                 median=median, current=current, pct=pct, updated=updated)
 
 
@@ -255,6 +256,11 @@ def main() -> int:
                 draw_error_panel(ax, STATIONS[key]["title"], err)
         fig.savefig(OUT_DIR / f"{fname}.png", dpi=150)
         plt.close(fig)
+
+    stations = {fname: [dict(site=STATIONS[k]["title"], station=STATIONS[k]["station"],
+                             url=STATIONS[k]["url"]) for k in keys]
+                for fname, _, keys in REGIONS}
+    (OUT_DIR / "stations.json").write_text(json.dumps(stations, indent=2) + "\n")
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     (OUT_DIR / "last_updated.txt").write_text(stamp + "\n")
