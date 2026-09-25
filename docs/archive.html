@@ -58,6 +58,33 @@
     .tip i { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; font-style: normal; }
     .note { color: var(--muted); font-size: .88rem; margin: 10px 2px 0; }
     .note a { color: var(--ink); }
+    .cmpwrap { position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .cmpwrap .lbl { font-size: .82rem; color: var(--muted); font-weight: 600; }
+    #cmp-btn { font: inherit; font-size: .95rem; font-weight: 600; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+               border-radius: 6px; padding: 6px 30px 6px 10px; min-width: 150px; text-align: left; cursor: pointer; position: relative; }
+    #cmp-btn::after { content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; margin-top: -5px;
+                      border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+    #cmp-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .cmp-panel { position: absolute; z-index: 20; top: 100%; left: 0; margin-top: 4px; width: min(420px, calc(100vw - 32px));
+                 background: var(--bg); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.18); padding: 10px 12px; }
+    .cmp-head { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); margin-bottom: 8px; }
+    .linkbtn { font: inherit; font-size: .85rem; background: none; border: 0; color: var(--ink); text-decoration: underline; cursor: pointer; padding: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 4px 8px; max-height: 260px; overflow-y: auto; }
+    .controls .yr { flex-direction: row; align-items: center; gap: 6px; font-size: .9rem; font-weight: 400; color: var(--ink); cursor: pointer; white-space: nowrap; }
+    .controls .yr.wide { grid-column: span 2; }
+    .controls .yr.off { opacity: .45; cursor: default; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 14px; }
+    .chips:empty { display: none; }
+    .chip { font: inherit; font-size: .85rem; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px;
+            padding: 3px 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .chip:hover { border-color: var(--muted); }
+    .chip span { color: var(--muted); }
+    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { color: var(--muted); font-weight: 600; font-size: .82rem; }
+    tr.main td { font-weight: 600; }
+    td .sw { margin-right: 8px; vertical-align: middle; }
     footer { color: var(--muted); font-size: .85rem; padding: 32px 16px 40px; }
   </style>
 </head>
@@ -65,7 +92,7 @@
   <header>
     <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode"></button>
     <h1>SNOTEL Ski Summaries</h1>
-    <p class="sub">Look back at any past season at any station, and compare it with another year.</p>
+    <p class="sub">Look back at any past season at a station, and compare it with other years at the same station.</p>
     <nav class="pages" aria-label="Pages">
       <a href="./">Snow charts</a>
       <a href="map.html">Station map</a>
@@ -76,10 +103,18 @@
 
   <main>
     <div class="controls">
-      <label>Station <select id="station"></select></label>
+      <label>Ski area <select id="station"></select></label>
       <label>Water year <select id="year"></select></label>
-      <label>Compare with <select id="compare"></select></label>
+      <div class="cmpwrap">
+        <span class="lbl" id="cmp-lbl">Compare with (up to 5 years)</span>
+        <button type="button" id="cmp-btn" aria-expanded="false" aria-controls="cmp-panel" aria-describedby="cmp-lbl">None</button>
+        <div id="cmp-panel" class="cmp-panel" hidden>
+          <div class="cmp-head"><span id="cmp-count">0 of 5 selected</span><button type="button" id="cmp-clear" class="linkbtn">Clear</button></div>
+          <div id="cmp-grid" class="cmp-grid" role="group" aria-label="Years to compare"></div>
+        </div>
+      </div>
     </div>
+    <div id="chips" class="chips"></div>
 
     <div class="stats" id="stats" aria-live="polite"></div>
 
@@ -89,26 +124,37 @@
       <svg id="chart" viewBox="0 0 800 380" role="img" aria-label="Snow water equivalent chart"></svg>
       <div class="tip" id="tip"></div>
     </div>
+    <div class="table-wrap" id="table-wrap" hidden>
+      <table>
+        <thead><tr><th>Water year</th><th>April 1 SWE</th><th>% of median, April 1</th><th>Peak SWE</th><th>Peak date</th></tr></thead>
+        <tbody id="yrows"></tbody>
+      </table>
+    </div>
     <p class="note" id="note"></p>
   </main>
 
   <footer>
     Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.
-    The median for each day uses every other complete season at the station, so it leaves out the year being shown.
+    The median for each day uses every other complete season at the station, so it leaves out the water year chosen in “Water year.”
   </footer>
 
   <script>
     const W = 800, H = 380, M = { l: 56, r: 16, t: 14, b: 40 };
     const TICKS = [[0, "Oct1"], [31, "Nov1"], [61, "Dec1"], [92, "Jan1"], [123, "Feb1"], [152, "Mar1"], [183, "Apr1"],
                    [213, "May1"], [244, "Jun1"], [274, "Jul1"], [305, "Aug1"], [336, "Sep1"], [365, "Sep30"]];
-    const APR1 = 183, FEB29 = 151;
-    const BLUE = "#2171b5", ORANGE = "#d95f02";
+    const APR1 = 183, FEB29 = 151, MAX_CMP = 5;
+    const BLUE = "#2171b5";
+    const CMP_COLORS = ["#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#4a3aa7"];   // fixed order
     const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const $ = id => document.getElementById(id);
     const cache = {};
-    let index, cur = null;
+    let index, cur = null, cmpYears = [];
+    const colorOf = {};   // each compared year keeps its color while selected
+    function assignColors() {
+      for (const y of Object.keys(colorOf)) if (!cmpYears.includes(y)) delete colorOf[y];
+      for (const y of cmpYears) if (!colorOf[y]) colorOf[y] = CMP_COLORS.find(c => !Object.values(colorOf).includes(c));
+    }
 
-    // Calendar date for day i (0 = Oct 1) of water year wy
     function dayDate(i, wy) {
       const d = new Date(Date.UTC(1999, 9, 1 + i));           // template water year 1999-2000 includes Feb 29
       const y = d.getUTCMonth() >= 9 ? wy - 1 : wy;
@@ -117,6 +163,14 @@
     const fmt = (i, wy, withYear = true) => { const t = dayDate(i, wy); return `${MONTHS[t.m]} ${t.d}` + (withYear ? `, ${t.y}` : ""); };
     const isLeap = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const f1 = v => v == null ? "—" : v.toFixed(1) + " in";
+
+    // "Alta (Brighton)", but just "Snowbird" when the station has the same name
+    function areaLabel(s) {
+      const st = s.station.replace(/\s*\([^)]*\)$/, "");
+      const a = s.title.toLowerCase(), b = st.toLowerCase();
+      return a.includes(b) || b.includes(a) ? s.title : `${s.title} (${st})`;
+    }
 
     function median(arr) {
       const v = arr.filter(x => x != null).sort((a, b) => a - b);
@@ -125,7 +179,7 @@
       return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
     }
 
-    async function load(key) {
+    function load(key) {
       if (!cache[key]) cache[key] = fetch(`data/${key}.json?v=${Date.now().toString().slice(0, -5)}`).then(r => r.json());
       return cache[key];
     }
@@ -133,112 +187,110 @@
     function seriesFor(data, wy) {
       const s = data.years[wy];
       if (!s) return null;
-      // Non-leap years have no Feb 29; hide the filled-in value
-      return isLeap(Number(wy)) ? s : s.map((v, i) => i === FEB29 ? null : v);
+      return isLeap(Number(wy)) ? s : s.map((v, i) => i === FEB29 ? null : v);   // no Feb 29 in non-leap years
     }
 
-    function stats(series, med, wy, isCurrent) {
+    function stats(series, med, isCurrent) {
       let lastIdx = -1, peak = -1, peakIdx = -1;
       series.forEach((v, i) => { if (v != null) { lastIdx = i; if (v > peak) { peak = v; peakIdx = i; } } });
-      let pctIdx = isCurrent ? lastIdx : APR1;
+      const pctIdx = isCurrent ? lastIdx : APR1;
       const pct = (pctIdx >= 0 && series[pctIdx] != null && med[pctIdx] > 0) ? Math.round(series[pctIdx] / med[pctIdx] * 100) : null;
-      return { pct, pctIdx, peak, peakIdx, lastIdx };
+      return { pct, pctIdx, peak, peakIdx, lastIdx, apr1: series[APR1] };
     }
 
     function draw() {
-      const { data, wy, cmp } = cur;
-      const years = Object.keys(data.years);
+      const { data, wy } = cur;
       const current = String(data.current_year);
-      const complete = years.filter(y => y !== current);
+      const complete = Object.keys(data.years).filter(y => y !== current);
       const others = complete.filter(y => y !== wy);
       const med = Array.from({ length: 366 }, (_, i) => median(others.map(y => data.years[y][i])));
       const sel = seriesFor(data, wy);
-      const cmpS = cmp ? seriesFor(data, cmp) : null;
       const isCurrent = wy === current;
+      const cmps = cmpYears.filter(y => y !== wy && data.years[y]).map(y => ({ y, s: seriesFor(data, y), color: colorOf[y] }));
 
-      // Stats
-      const st = stats(sel, med, wy, isCurrent);
-      const tiles = [];
-      tiles.push([st.pct == null ? "--" : st.pct + "%",
-                  isCurrent ? (st.lastIdx >= 0 ? `of median on ${fmt(st.lastIdx, wy)}` : "of median") : "of median on April 1"]);
-      tiles.push([st.peakIdx >= 0 ? st.peak.toFixed(1) + " in" : "--", st.peakIdx >= 0 ? `peak SWE, ${fmt(st.peakIdx, wy)}` : "peak SWE"]);
-      if (cmpS) {
-        const c = stats(cmpS, med, cmp, cmp === current);
-        tiles.push([c.pct == null ? "--" : c.pct + "%", `${cmp}: of median on ${cmp === current ? fmt(c.lastIdx, cmp) : "April 1"}`]);
-      }
-      tiles.push([others.length, "other seasons in the median"]);
+      // Summary tiles for the main year
+      const st = stats(sel, med, isCurrent);
+      const tiles = [
+        [st.pct == null ? "--" : st.pct + "%", isCurrent ? (st.lastIdx >= 0 ? `of median on ${fmt(st.lastIdx, wy)}` : "of median") : `of median on April 1, ${wy}`],
+        [st.peakIdx >= 0 ? st.peak.toFixed(1) + " in" : "--", st.peakIdx >= 0 ? `peak SWE, ${fmt(st.peakIdx, wy)}` : "peak SWE"],
+        [others.length, "other seasons in the median"]
+      ];
       $("stats").innerHTML = tiles.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
 
       // Title & legend
       $("title").textContent = data.title;
-      const range = `Oct 1, ${wy - 1} – Sep 30, ${wy}`;
-      let leg = `<span><i class="sw" style="border-color:${BLUE}"></i>Water year ${wy} (${range})${isCurrent ? ", in progress" : ""}</span>`;
-      if (cmpS) leg += `<span><i class="sw" style="border-color:${ORANGE}"></i>Water year ${cmp}</span>`;
+      let leg = `<span><i class="sw" style="border-color:${BLUE};border-top-width:5px"></i>Water year ${wy} (Oct 1, ${wy - 1} – Sep 30, ${wy})${isCurrent ? ", in progress" : ""}</span>`;
+      for (const c of cmps) leg += `<span><i class="sw" style="border-color:${c.color}"></i>${c.y}${c.y === current ? " (in progress)" : ""}</span>`;
       leg += `<span><i class="sw area"></i>Median of other seasons</span>`;
       $("legend").innerHTML = leg;
 
+      // Comparison table
+      $("table-wrap").hidden = cmps.length === 0;
+      if (cmps.length) {
+        const row = (y, s, color, main) => {
+          const t = stats(s, med, y === current);
+          const aprPct = (s[APR1] != null && med[APR1] > 0) ? Math.round(s[APR1] / med[APR1] * 100) + "%" : "—";
+          return `<tr${main ? ' class="main"' : ""}><td><i class="sw" style="border-color:${color}${main ? ";border-top-width:5px" : ""}"></i>${y}${y === current ? " (in progress)" : ""}</td>` +
+                 `<td>${f1(s[APR1])}</td><td>${aprPct}</td><td>${t.peakIdx >= 0 ? t.peak.toFixed(1) + " in" : "—"}</td>` +
+                 `<td>${t.peakIdx >= 0 ? fmt(t.peakIdx, Number(y)) : "—"}</td></tr>`;
+        };
+        $("yrows").innerHTML = row(wy, sel, BLUE, true) + cmps.map(c => row(c.y, c.s, c.color, false)).join("");
+      }
+
       // Scales
-      const all = [...med, ...sel, ...(cmpS || [])].filter(v => v != null);
+      const all = [...med, ...sel, ...cmps.flatMap(c => c.s)].filter(v => v != null);
       const maxV = Math.max(1, ...all) * 1.05;
       const step = [1, 2, 5, 10, 20, 25, 50].find(s => maxV / s <= 6) || 100;
       const top = Math.ceil(maxV / step) * step;
       const x = i => M.l + (i / 365) * (W - M.l - M.r);
       const y = v => H - M.b - (v / top) * (H - M.t - M.b);
-
       const path = s => { let d = "", pen = false;
         s.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); pen = true; });
         return d; };
       let area = `M${x(0)},${y(0)}`;
       med.forEach((v, i) => { area += `L${x(i).toFixed(1)},${y(v ?? 0).toFixed(1)}`; });
       area += `L${x(365)},${y(0)}Z`;
-      const medLine = path(med);
 
       let g = "";
       for (const [i] of TICKS) g += `<line x1="${x(i)}" x2="${x(i)}" y1="${M.t}" y2="${H - M.b}" stroke="#e3e6ea"/>`;
-      for (let v = 0; v <= top; v += step) {
-        g += `<text x="${M.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#1f2328">${v}</text>`;
-      }
+      for (let v = 0; v <= top; v += step) g += `<text x="${M.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#1f2328">${v}</text>`;
       for (const [i, lab] of TICKS) g += `<text x="${x(i)}" y="${H - M.b + 18}" text-anchor="middle" font-size="12" fill="#1f2328">${lab}</text>`;
       g += `<text transform="translate(16 ${(H - M.b + M.t) / 2}) rotate(-90)" text-anchor="middle" font-size="13" fill="#1f2328">SWE (inches)</text>`;
-      g += `<path d="${area}" fill="#deebf7"/><path d="${medLine}" fill="none" stroke="#1f2328" stroke-width="1"/>`;
-      if (cmpS) g += `<path d="${path(cmpS)}" fill="none" stroke="${ORANGE}" stroke-width="2.5" stroke-linejoin="round"/>`;
+      g += `<path d="${area}" fill="#deebf7"/><path d="${path(med)}" fill="none" stroke="#1f2328" stroke-width="1"/>`;
+      for (const c of cmps) g += `<path d="${path(c.s)}" fill="none" stroke="${c.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
       g += `<path d="${path(sel)}" fill="none" stroke="${BLUE}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`;
-      if (!isCurrent && sel[APR1] != null) {
-        g += `<circle cx="${x(APR1)}" cy="${y(sel[APR1])}" r="5" fill="#fff" stroke="#662506" stroke-width="2"/>`;
-      }
+      if (!isCurrent && sel[APR1] != null) g += `<circle cx="${x(APR1)}" cy="${y(sel[APR1])}" r="5" fill="#fff" stroke="#662506" stroke-width="2"/>`;
       g += `<rect x="${M.l}" y="${M.t}" width="${W - M.l - M.r}" height="${H - M.t - M.b}" fill="none" stroke="#1f2328"/>`;
       g += `<g id="hover" style="display:none"><line id="hl" y1="${M.t}" y2="${H - M.b}" stroke="#57606a" stroke-dasharray="3 3"/>` +
-           `<circle id="hs" r="5" fill="${BLUE}" stroke="#fff" stroke-width="2"/><circle id="hc" r="4" fill="${ORANGE}" stroke="#fff" stroke-width="2"/>` +
-           `<circle id="hm" r="4" fill="#fff" stroke="#1f2328" stroke-width="1.5"/></g>`;
+           cmps.map((c, k) => `<circle id="hc${k}" r="4" fill="${c.color}" stroke="#fff" stroke-width="2"/>`).join("") +
+           `<circle id="hm" r="4" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle id="hs" r="5" fill="${BLUE}" stroke="#fff" stroke-width="2"/></g>`;
       g += `<rect id="hit" x="${M.l}" y="${M.t}" width="${W - M.l - M.r}" height="${H - M.t - M.b}" fill="transparent"/>`;
-      $("chart").innerHTML = g;
-      $("chart").setAttribute("aria-label",
-        `${data.title}, water year ${wy}: ${st.pct == null ? "" : st.pct + "% of median " + (isCurrent ? "latest" : "on April 1") + ", "}peak ${st.peak.toFixed(1)} inches.`);
+      const svg = $("chart");
+      svg.innerHTML = g;
+      svg.setAttribute("aria-label", `${data.title}, water year ${wy}` + (cmps.length ? ` compared with ${cmps.map(c => c.y).join(", ")}` : "") +
+        `. Values are listed in the table below the chart when comparing years.`);
 
       // Hover
-      const svg = $("chart"), tip = $("tip"), card = svg.parentElement;
-      const hover = svg.querySelector("#hover");
+      const tip = $("tip"), card = svg.parentElement, hover = svg.querySelector("#hover");
       const move = ev => {
         const pt = ev.touches ? ev.touches[0] : ev;
         const r = svg.getBoundingClientRect();
-        const sx = (pt.clientX - r.left) * W / r.width;
-        let i = Math.round((sx - M.l) / (W - M.l - M.r) * 365);
+        let i = Math.round(((pt.clientX - r.left) * W / r.width - M.l) / (W - M.l - M.r) * 365);
         i = Math.max(0, Math.min(365, i));
         if (i === FEB29 && !isLeap(Number(wy))) i = 150;
         hover.style.display = "";
-        svg.querySelector("#hl").setAttribute("x1", x(i)); svg.querySelector("#hl").setAttribute("x2", x(i));
-        const place = (id, v) => { const c = svg.querySelector(id); if (v == null) { c.style.display = "none"; } else { c.style.display = ""; c.setAttribute("cx", x(i)); c.setAttribute("cy", y(v)); } };
-        place("#hs", sel[i]); place("#hm", med[i]); place("#hc", cmpS ? cmpS[i] : null);
-        const f = v => v == null ? "—" : v.toFixed(1) + " in";
-        let h = `<b>${fmt(i, wy, false)}</b><i style="background:${BLUE}"></i>${wy}: ${f(sel[i])}`;
-        if (sel[i] != null && med[i] > 0) h += ` (${Math.round(sel[i] / med[i] * 100)}%)`;
-        if (cmpS) h += `<br><i style="background:${ORANGE}"></i>${cmp}: ${f(cmpS[i])}`;
-        h += `<br><i style="background:#9ecae1"></i>Median: ${f(med[i])}`;
+        const hl = svg.querySelector("#hl"); hl.setAttribute("x1", x(i)); hl.setAttribute("x2", x(i));
+        const place = (id, v) => { const c = svg.querySelector(id); if (v == null) c.style.display = "none"; else { c.style.display = ""; c.setAttribute("cx", x(i)); c.setAttribute("cy", y(v)); } };
+        place("#hs", sel[i]); place("#hm", med[i]); cmps.forEach((c, k) => place("#hc" + k, c.s[i]));
+        const pct = v => (v != null && med[i] > 0) ? ` (${Math.round(v / med[i] * 100)}%)` : "";
+        let h = `<b>${fmt(i, wy, false)}</b><i style="background:${BLUE}"></i>${wy}: ${f1(sel[i])}${pct(sel[i])}`;
+        for (const c of cmps) h += `<br><i style="background:${c.color}"></i>${c.y}: ${f1(c.s[i])}${pct(c.s[i])}`;
+        h += `<br><i style="background:#9ecae1"></i>Median: ${f1(med[i])}`;
         tip.innerHTML = h; tip.style.display = "block";
         const cr = card.getBoundingClientRect();
         const px = r.left - cr.left + x(i) * r.width / W;
-        const left = px + 14 + tip.offsetWidth > cr.width ? px - 14 - tip.offsetWidth : px + 14;
-        tip.style.left = left + "px"; tip.style.top = (r.top - cr.top + 40) + "px";
+        tip.style.left = (px + 14 + tip.offsetWidth > cr.width ? px - 14 - tip.offsetWidth : px + 14) + "px";
+        tip.style.top = (r.top - cr.top + 40) + "px";
       };
       const leave = () => { hover.style.display = "none"; tip.style.display = "none"; };
       const hit = svg.querySelector("#hit");
@@ -250,30 +302,59 @@
         `<a href="./#${stInfo.region}">Current season charts</a> · <a href="map.html">Station map</a>`;
     }
 
-    function fillYears(st, keepYear, keepCmp) {
-      const current = index.current_year;
+    // ----- Controls -----
+    const yearLabel = y => y === index.current_year ? `${y} (in progress)` : String(y);
+
+    function fillYears(st, keepYear) {
       const ys = [...st.years].sort((a, b) => b - a);
-      const label = y => y === current ? `${y} (in progress)` : String(y);
-      $("year").innerHTML = ys.map(y => `<option value="${y}">${label(y)}</option>`).join("");
-      $("compare").innerHTML = `<option value="">None</option>` + ys.map(y => `<option value="${y}">${label(y)}</option>`).join("");
-      const def = ys.find(y => y !== current) ?? ys[0];
+      $("year").innerHTML = ys.map(y => `<option value="${y}">${yearLabel(y)}</option>`).join("");
+      const def = ys.find(y => y !== index.current_year) ?? ys[0];
       $("year").value = ys.includes(Number(keepYear)) ? keepYear : def;
-      $("compare").value = keepCmp && ys.includes(Number(keepCmp)) ? keepCmp : "";
+      cmpYears = cmpYears.filter(y => ys.includes(Number(y)) && y !== $("year").value);
+      buildGrid(ys);
+    }
+
+    function buildGrid(ys) {
+      $("cmp-grid").innerHTML = ys.map(y => `<label class="yr${y === index.current_year ? " wide" : ""}"><input type="checkbox" value="${y}">${yearLabel(y)}</label>`).join("");
+      syncCmp();
+    }
+
+    function syncCmp() {
+      const main = $("year").value;
+      for (const cb of $("cmp-grid").querySelectorAll("input")) {
+        cb.checked = cmpYears.includes(cb.value);
+        cb.disabled = cb.value === main || (!cb.checked && cmpYears.length >= MAX_CMP);
+        cb.parentElement.classList.toggle("off", cb.disabled);
+      }
+      assignColors();
+      $("cmp-count").textContent = `${cmpYears.length} of ${MAX_CMP} selected`;
+      $("cmp-btn").textContent = cmpYears.length ? `${cmpYears.length} year${cmpYears.length > 1 ? "s" : ""}` : "None";
+      $("chips").innerHTML = cmpYears.map((y, k) =>
+        `<button type="button" class="chip" data-y="${y}" aria-label="Remove ${y}"><i class="sw" style="border-color:${colorOf[y]}"></i>${y} <span aria-hidden="true">×</span></button>`).join("");
     }
 
     async function update(push = true) {
-      const key = $("station").value, wy = $("year").value, cmp = $("compare").value;
+      const key = $("station").value, wy = $("year").value;
+      cmpYears = cmpYears.filter(y => y !== wy);
+      syncCmp();
       const data = await load(key);
-      cur = { data, wy, cmp: cmp && cmp !== wy ? cmp : "" };
+      cur = { data, wy };
       draw();
-      if (push) history.replaceState(null, "", `#${key}/${wy}` + (cur.cmp ? `/${cur.cmp}` : ""));
+      if (push) history.replaceState(null, "", `#${key}/${wy}` + (cmpYears.length ? `/${cmpYears.join(",")}` : ""));
     }
 
     function fromHash() {
       const [key, wy, cmp] = decodeURIComponent(location.hash.slice(1)).split("/");
       const st = index.stations.find(s => s.key === key) || index.stations[0];
       $("station").value = st.key;
-      fillYears(st, wy, cmp);
+      cmpYears = (cmp || "").split(",").filter(Boolean).slice(0, MAX_CMP);
+      fillYears(st, wy);
+    }
+
+    function togglePanel(open) {
+      const p = $("cmp-panel");
+      p.hidden = open === undefined ? !p.hidden : !open;
+      $("cmp-btn").setAttribute("aria-expanded", String(!p.hidden));
     }
 
     fetch("data/index.json?v=" + Date.now().toString().slice(0, -5))
@@ -283,12 +364,25 @@
         const groups = {};
         for (const s of ix.stations) (groups[s.region_name] ||= []).push(s);
         $("station").innerHTML = Object.entries(groups).map(([g, list]) =>
-          `<optgroup label="${esc(g)}">` + list.map(s => `<option value="${s.key}">${esc(s.title)} – ${esc(s.station)}</option>`).join("") + `</optgroup>`).join("");
+          `<optgroup label="${esc(g)}">` + list.map(s => `<option value="${s.key}">${esc(areaLabel(s))}</option>`).join("") + `</optgroup>`).join("");
         fromHash();
         update(false);
-        $("station").addEventListener("change", () => { fillYears(index.stations.find(s => s.key === $("station").value), $("year").value, $("compare").value); update(); });
+        $("station").addEventListener("change", () => { fillYears(index.stations.find(s => s.key === $("station").value), $("year").value); update(); });
         $("year").addEventListener("change", () => update());
-        $("compare").addEventListener("change", () => update());
+        $("cmp-btn").addEventListener("click", () => togglePanel());
+        $("cmp-grid").addEventListener("change", e => {
+          const y = e.target.value;
+          if (e.target.checked) { if (cmpYears.length < MAX_CMP) cmpYears.push(y); }
+          else cmpYears = cmpYears.filter(v => v !== y);
+          update();
+        });
+        $("cmp-clear").addEventListener("click", () => { cmpYears = []; update(); });
+        $("chips").addEventListener("click", e => {
+          const b = e.target.closest(".chip"); if (!b) return;
+          cmpYears = cmpYears.filter(v => v !== b.dataset.y); update();
+        });
+        document.addEventListener("click", e => { if (!e.target.closest(".cmpwrap")) togglePanel(false); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape") togglePanel(false); });
         window.addEventListener("hashchange", () => { fromHash(); update(false); });
       })
       .catch(err => { $("stats").innerHTML = "<p class='sub'>The archive could not be loaded.</p>"; console.error(err); });
