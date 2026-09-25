@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Station Map · SNOTEL Ski Summaries</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <style>
+    :root { --ink: #1f2328; --muted: #57606a; --line: #d8dee4; --accent: #662506; --bg: #ffffff;
+            --resort: #ec7014; --station: #2171b5; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e6edf3; --muted: #9da7b1; --line: #30363d; --accent: #f0a36b; --bg: #0d1117; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
+    header, main, footer { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 32px; }
+    h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
+    h2 { font-size: 1.1rem; margin: 28px 0 8px; }
+    .sub { margin: 0; color: var(--muted); }
+    .pages { display: flex; gap: 16px; margin: 16px 0 20px; font-size: .95rem; }
+    .pages a { color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+    .pages a:hover { border-color: var(--line); }
+    .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    #map { height: 560px; border: 1px solid var(--line); border-radius: 8px; }
+    @media (max-width: 600px) { #map { height: 440px; } }
+    .key { background: #fff; color: #1f2328; padding: 6px 10px; border-radius: 6px; font-size: .82rem; line-height: 1.7;
+           box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+    .sym { display: inline-block; vertical-align: middle; margin-right: 6px; }
+    .tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
+           border-bottom: 12px solid var(--resort); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--station); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--station); }
+    .dash { width: 16px; border-top: 2px dashed #6e7781; }
+    .resort-icon div { width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent;
+                       border-bottom: 15px solid var(--resort); filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }
+    .leaflet-popup-content { margin: 10px 12px; font-size: .88rem; line-height: 1.45; }
+    .leaflet-popup-content b { font-size: .95rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: .82rem; }
+    td a { color: var(--ink); }
+    td.num { white-space: nowrap; }
+    tr.region td { font-weight: 600; color: var(--accent); padding-top: 14px; border-bottom-color: transparent; }
+    footer { color: var(--muted); font-size: .85rem; padding: 24px 16px 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SNOTEL Ski Summaries</h1>
+    <p class="sub">Where the snow stations are, and which ski area each one stands in for.</p>
+    <nav class="pages" aria-label="Pages">
+      <a href="./">Snow charts</a>
+      <a href="map.html" aria-current="page">Station map</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="map" role="region" aria-label="Map of ski areas and snow stations"></div>
+
+    <h2>Stations by ski area</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ski area</th><th>Station</th><th>Elevation</th><th>Distance</th><th>Station ID</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Ski area locations are approximate (base area). Station locations and IDs: USDA NRCS National Water and Climate Center.
+    Map data © OpenStreetMap contributors.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const REGION_NAMES = {
+      "utah": "Utah", "wyoming-montana": "Wyoming & Montana", "mount-bachelor": "Mount Bachelor",
+      "california": "California", "bc-idaho": "BC & Idaho", "colorado-north": "Colorado (north-central)",
+      "colorado-south": "Colorado (south-central)", "washington": "Washington"
+    };
+
+    const map = L.map("map", { scrollWheelZoom: false }).setView([43.5, -114], 5);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 15, attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+    }).addTo(map);
+
+    const key = L.control({ position: "bottomleft" });
+    key.onAdd = () => {
+      const d = L.DomUtil.create("div", "key");
+      d.innerHTML = '<div><span class="sym tri"></span>Ski area</div>' +
+                    '<div><span class="sym dot"></span>Snow station</div>' +
+                    '<div><span class="sym dash"></span>Station used for that ski area</div>';
+      return d;
+    };
+    key.addTo(map);
+
+    const resortIcon = L.divIcon({ className: "resort-icon", html: "<div></div>", iconSize: [18, 15], iconAnchor: [9, 12] });
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const miles = (a, b) => {                       // great-circle distance
+      const R = 3958.8, r = x => x * Math.PI / 180;
+      const dLat = r(b.lat - a.lat), dLon = r(b.lon - a.lon);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    };
+
+    fetch("figures/locations.json?v=" + Date.now().toString().slice(0, -5))
+      .then(r => r.json())
+      .then(({ resorts, stations }) => {
+        const byKey = Object.fromEntries(stations.map(s => [s.key, s]));
+        const bounds = [];
+
+        for (const res of resorts) {
+          const used = res.stations.map(k => byKey[k]);
+          const list = used.map(s => `<a href="${esc(s.page)}" target="_blank" rel="noopener">${esc(s.station)}</a>`).join(", ");
+          const region = used[0].region;
+          L.marker([res.lat, res.lon], { icon: resortIcon, title: res.name, zIndexOffset: 500 })
+            .bindPopup(`<b>${esc(res.name)}</b><br>Station${used.length > 1 ? "s" : ""}: ${list}<br>` +
+                       `<a href="./#${region}">See ${esc(REGION_NAMES[region])} charts</a>`)
+            .addTo(map);
+          bounds.push([res.lat, res.lon]);
+
+          for (const s of used) {
+            if (s.lat == null) continue;
+            L.polyline([[res.lat, res.lon], [s.lat, s.lon]], { color: "#6e7781", weight: 2, dashArray: "5 5", interactive: false }).addTo(map);
+            const d = miles(res, s);
+            L.circleMarker([s.lat, s.lon], { radius: 6, color: "#fff", weight: 2, fillColor: "#2171b5", fillOpacity: 1 })
+              .bindTooltip(s.station)
+              .bindPopup(`<b>${esc(s.station)}</b> <span style="color:#57606a">${esc(s.triplet)}</span><br>` +
+                         `Used for: ${esc(res.name)}<br>Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
+                         `${d.toFixed(1)} mi from the ski area<br>` +
+                         `<a href="${esc(s.page)}" target="_blank" rel="noopener">Station page</a> · ` +
+                         `<a href="${esc(s.data)}" target="_blank" rel="noopener">Data (CSV)</a>`)
+              .addTo(map);
+            bounds.push([s.lat, s.lon]);
+          }
+        }
+        if (bounds.length) map.fitBounds(bounds, { padding: [24, 24] });
+
+        // Table, grouped by region in chart order
+        const rows = document.getElementById("rows");
+        for (const [region, name] of Object.entries(REGION_NAMES)) {
+          rows.insertAdjacentHTML("beforeend", `<tr class="region"><td colspan="5"><a href="./#${region}">${esc(name)}</a></td></tr>`);
+          for (const res of resorts.filter(r => byKey[r.stations[0]].region === region)) {
+            res.stations.forEach((k, i) => {
+              const s = byKey[k];
+              const dist = s.lat == null ? "—" : miles(res, s).toFixed(1) + " mi";
+              rows.insertAdjacentHTML("beforeend",
+                `<tr><td>${i === 0 ? esc(res.name) : ""}</td>` +
+                `<td><a href="${esc(s.page)}" target="_blank" rel="noopener">${esc(s.station)}</a></td>` +
+                `<td class="num">${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft</td>` +
+                `<td class="num">${dist}</td><td class="num">${esc(s.triplet)}</td></tr>`);
+            });
+          }
+        }
+      })
+      .catch(err => {
+        document.getElementById("map").insertAdjacentHTML("afterend", "<p class='sub'>Station locations could not be loaded.</p>");
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

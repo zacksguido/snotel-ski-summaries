@@ -91,6 +91,98 @@ STATIONS = {
     "baker":      dict(title="Mount Baker", station="Wells Creek", elev=4040, kind="plot", url=SITE_PLOTS + "WA/Wells%20Creek.csv"),
 }
 
+# NRCS station IDs ("triplets"), used to look up each station's location
+TRIPLETS = {
+    "snowbird": "766:UT:SNTL", "alta": "366:UT:SNTL", "powder": "582:UT:SNTL", "solitude": "628:UT:SNTL",
+    "jackson": "689:WY:SNTL", "targhee": "1082:WY:SNTL", "bigsky": "590:MT:SNTL", "bridger": "929:MT:SNTL",
+    "mckenzie": "619:OR:SNTL", "threecreek": "815:OR:SNTL", "roaring": "719:OR:SNTL", "irish": "545:OR:SNTL",
+    "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
+    "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
+    "schweitzer": "738:ID:SNTL",
+    "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL",
+    "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
+    "crystal": "642:WA:SNTL", "stevens": "791:WA:SNTL", "baker": "909:WA:SNTL",
+}
+
+# Ski areas (approximate base-area coordinates) and the stations used for each
+RESORTS = {
+    "Snowbird": (40.581, -111.657, ["snowbird"]),
+    "Alta": (40.588, -111.638, ["alta"]),
+    "Powder Mountain": (41.380, -111.781, ["powder"]),
+    "Solitude": (40.620, -111.592, ["solitude"]),
+    "Jackson Hole": (43.587, -110.828, ["jackson"]),
+    "Grand Targhee": (43.788, -110.958, ["targhee"]),
+    "Big Sky": (45.284, -111.401, ["bigsky"]),
+    "Bridger Bowl": (45.817, -110.897, ["bridger"]),
+    "Mt. Bachelor": (43.979, -121.688, ["mckenzie", "threecreek", "roaring", "irish"]),
+    "Mammoth Mountain": (37.651, -119.037, ["mammoth"]),
+    "Kirkwood": (38.685, -120.065, ["kirkwood"]),
+    "Heavenly": (38.935, -119.940, ["heavenly"]),
+    "Palisades Tahoe": (39.197, -120.235, ["palisades"]),
+    "Whistler Blackcomb": (50.115, -122.949, ["whistler_n", "whistler_w"]),
+    "Revelstoke": (50.958, -118.163, ["revelstoke"]),
+    "Schweitzer": (48.368, -116.623, ["schweitzer"]),
+    "Steamboat": (40.457, -106.804, ["steamboat"]),
+    "Arapahoe Basin": (39.642, -105.872, ["abasin"]),
+    "Vail": (39.606, -106.355, ["vail"]),
+    "Aspen": (39.186, -106.818, ["aspen"]),
+    "Crested Butte": (38.899, -106.965, ["crested"]),
+    "Telluride": (37.937, -107.846, ["telluride"]),
+    "Silverton Mountain": (37.885, -107.666, ["silverton"]),
+    "Wolf Creek": (37.472, -106.793, ["wolfcreek"]),
+    "Crystal Mountain": (46.935, -121.475, ["crystal"]),
+    "Stevens Pass": (47.745, -121.089, ["stevens"]),
+    "Mt. Baker": (48.857, -121.665, ["baker"]),
+}
+
+AWDB_STATIONS = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
+
+
+def station_metadata() -> dict:
+    """Latitude/longitude/elevation for each station from the NRCS AWDB web service.
+    Falls back to the last saved values if the service can't be reached."""
+    try:
+        r = requests.get(AWDB_STATIONS, params={"stationTriplets": ",".join(TRIPLETS.values())},
+                         timeout=60, headers={"User-Agent": "snotel-ski-summaries"})
+        r.raise_for_status()
+        by_triplet = {d["stationTriplet"]: d for d in r.json()}
+        return {k: dict(lat=by_triplet[t]["latitude"], lon=by_triplet[t]["longitude"],
+                        nrcs_elev=by_triplet[t].get("elevation"), nrcs_name=by_triplet[t].get("name"))
+                for k, t in TRIPLETS.items() if t in by_triplet}
+    except Exception as err:
+        print(f"  ! station locations: {err}", file=sys.stderr)
+        try:
+            old = json.loads((OUT_DIR / "locations.json").read_text())
+            return {st["key"]: {f: st.get(f) for f in ("lat", "lon", "nrcs_elev", "nrcs_name")}
+                    for st in old["stations"] if st.get("lat") is not None}
+        except Exception:
+            return {}
+
+
+def station_page(triplet: str, fallback: str) -> str:
+    """NRCS station page for US SNOTEL sites; data file for others."""
+    num, _, net = triplet.split(":")
+    return f"https://wcc.sc.egov.usda.gov/nwcc/site?sitenum={num}" if net == "SNTL" else fallback
+
+
+def write_locations() -> None:
+    meta = station_metadata()
+    resort_of = {k: name for name, (_, _, keys) in RESORTS.items() for k in keys}
+    region_of = {k: fname for fname, _, keys in REGIONS for k in keys}
+    stations = []
+    for k, st in STATIONS.items():
+        m = meta.get(k, {})
+        stations.append(dict(key=k, station=st["station"], triplet=TRIPLETS[k], resort=resort_of[k],
+                             chart_title=st["title"], region=region_of[k], elev=st["elev"],
+                             lat=m.get("lat"), lon=m.get("lon"), nrcs_elev=m.get("nrcs_elev"),
+                             nrcs_name=m.get("nrcs_name"),
+                             page=station_page(TRIPLETS[k], st["url"]), data=st["url"]))
+    resorts = [dict(name=n, lat=lat, lon=lon, stations=keys) for n, (lat, lon, keys) in RESORTS.items()]
+    (OUT_DIR / "locations.json").write_text(
+        json.dumps(dict(resorts=resorts, stations=stations), indent=2) + "\n")
+    print(f"Locations: {sum(s['lat'] is not None for s in stations)}/{len(stations)} stations placed")
+
+
 # One figure per region: (file name, heading, station keys top to bottom)
 REGIONS = [
     ("utah", "UTAH", ["snowbird", "alta", "powder", "solitude"]),
@@ -264,6 +356,7 @@ def main() -> int:
                              url=STATIONS[k]["url"]) for k in keys]
                 for fname, _, keys in REGIONS}
     (OUT_DIR / "stations.json").write_text(json.dumps(stations, indent=2) + "\n")
+    write_locations()
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     (OUT_DIR / "last_updated.txt").write_text(stamp + "\n")
