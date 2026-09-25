@@ -28,17 +28,59 @@
     header { padding-top: 32px; }
     h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
     .sub { margin: 0; color: var(--muted); }
-    [role=tablist] { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 16px; }
+    [role=tablist] { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 14px; }
     [role=tab] { font: inherit; font-size: .9rem; color: var(--ink); background: transparent; cursor: pointer;
                  border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
     [role=tab]:hover { border-color: var(--muted); }
     [role=tab][aria-selected=true] { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
     [role=tab]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     section[hidden] { display: none; }
-    .pages { display: flex; gap: 16px; margin: 16px 0 4px; font-size: .95rem; }
-    .pages a { color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+    .pages { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 4px; font-size: .95rem; }
+    .pages a { white-space: nowrap; color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
     .pages a:hover { border-color: var(--line); }
     .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; margin: 0 0 8px; }
+    .cmpwrap { position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .cmpwrap .lbl { font-size: .82rem; color: var(--muted); font-weight: 600; }
+    #cmp-btn { font: inherit; font-size: .95rem; font-weight: 600; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+               border-radius: 6px; padding: 6px 30px 6px 10px; min-width: 150px; text-align: left; cursor: pointer; position: relative; }
+    #cmp-btn::after { content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; margin-top: -5px;
+                      border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+    #cmp-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .cmp-panel { position: absolute; z-index: 20; top: 100%; left: 0; margin-top: 4px; width: min(420px, calc(100vw - 32px));
+                 background: var(--bg); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.18); padding: 10px 12px; }
+    .cmp-head { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); margin-bottom: 8px; }
+    .linkbtn { font: inherit; font-size: .85rem; background: none; border: 0; color: var(--ink); text-decoration: underline; cursor: pointer; padding: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 4px 8px; max-height: 260px; overflow-y: auto; }
+    .yr { display: flex; align-items: center; gap: 6px; font-size: .9rem; color: var(--ink); cursor: pointer; white-space: nowrap; }
+    .yr.off { opacity: .45; cursor: default; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { font: inherit; font-size: .85rem; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px;
+            padding: 3px 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .chip:hover { border-color: var(--muted); }
+    .chip span { color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .85rem; margin: 4px 0 12px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .sw { display: inline-block; width: 22px; height: 0; border-top: 4px solid; border-radius: 2px; vertical-align: middle; }
+    .sw.area { height: 12px; border: 1px solid #1f2328; background: #deebf7; }
+    .panels { display: flex; flex-direction: column; gap: 22px; }
+    .phead { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 6px; }
+    .phead h3 { margin: 0; color: #ec7014; font-weight: 500; font-size: 1.45rem; line-height: 1.2; }
+    .meta { margin: 2px 0 0; font-size: .85rem; color: var(--muted); }
+    .meta a { color: var(--ink); }
+    .pct { text-align: right; white-space: nowrap; }
+    .pct .big { display: block; font-size: 1.6rem; font-weight: 600; line-height: 1.1; }
+    .pct .k { font-size: .8rem; color: var(--muted); }
+    .card { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 8px 2px; }
+    svg.swe { display: block; width: 100%; height: auto; touch-action: pan-y; }
+    .swe-tip { position: absolute; pointer-events: none; background: #fff; color: #1f2328; border: 1px solid #d0d7de; border-radius: 6px;
+               box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 6px 10px; font-size: .82rem; line-height: 1.5; white-space: nowrap; display: none; z-index: 5; }
+    .swe-tip b { display: block; margin-bottom: 2px; }
+    .swe-tip i { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; }
+    .cmpline { margin: 6px 2px 0; font-size: .88rem; }
+    .cmpline:empty { display: none; }
+    .cmpline .sw { width: 14px; margin-right: 4px; }
+    @media (max-width: 600px) { .phead { flex-direction: column; align-items: flex-start; } .pct { text-align: left; } }
     figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
     figure img { display: block; width: 100%; height: auto; }
     .src { margin: 8px 2px 0; font-size: .9rem; color: var(--muted); }
@@ -52,7 +94,7 @@
     <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode"></button>
     <h1>SNOTEL Ski Summaries</h1>
     <p class="sub">Snow water equivalent at SNOTEL stations near western ski areas, compared with each station's median. Updated daily.</p>
-    <p class="sub">Figures last generated: <span id="stamp">—</span></p>
+    <p class="sub">Data last updated: <span id="stamp">—</span></p>
     <nav class="pages" aria-label="Pages">
       <a href="./" aria-current="page">Snow charts</a>
       <a href="map.html">Station map</a>
@@ -60,26 +102,54 @@
       <a href="about.html">About the data</a>
     </nav>
     <div role="tablist" aria-label="Regions" id="tabs"></div>
+    <div class="controls">
+      <div class="cmpwrap">
+        <span class="lbl" id="cmp-lbl">Compare with past years</span>
+        <button type="button" id="cmp-btn" aria-expanded="false" aria-controls="cmp-panel" aria-describedby="cmp-lbl">None</button>
+        <div id="cmp-panel" class="cmp-panel" hidden>
+          <div class="cmp-head"><span id="cmp-count">0 of 5 selected</span><button type="button" id="cmp-clear" class="linkbtn">Clear</button></div>
+          <div id="cmp-grid" class="cmp-grid" role="group" aria-label="Years to compare"></div>
+        </div>
+      </div>
+      <div id="chips" class="chips"></div>
+    </div>
   </header>
 
   <main id="figs"></main>
 
   <footer>
     <div class="how">
-      <p><strong>How to read these:</strong> the shaded area is the median snow water equivalent (SWE) for each day over the station's period of record (POR), excluding the current year. The blue line is the current water year (Oct 1 – Sep 30). The percentage compares the latest reading with the median for that day. <a href="about.html">More about the data and how to read the charts</a>.</p>
+      <p><strong>How to read these:</strong> the shaded area is the median snow water equivalent (SWE) for each day over the station's period of record (POR), excluding the current year. The blue line is the current water year (Oct 1 – Sep 30). The percentage compares the latest reading with the median for that day. Hover over a chart to read values for any date, and use “Compare with past years” to see how earlier seasons stood on today’s date. <a href="about.html">More about the data and how to read the charts</a>.</p>
       <p>Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.</p>
     </div>
   </footer>
 
+  <script src="assets/swe-chart.js"></script>
   <script>
     const regions = [
       ["utah", "Utah"], ["wyoming-montana", "Wyoming & Montana"], ["mount-bachelor", "Mount Bachelor"],
       ["california", "California"], ["bc-idaho", "BC & Idaho"], ["colorado-north", "Colorado (north-central)"],
       ["colorado-south", "Colorado (south-central)"], ["washington", "Washington"]
     ];
-    const v = Date.now().toString().slice(0, -5);  // refresh cached images roughly every 100 s
-    const main = document.getElementById("figs");
-    const tabs = document.getElementById("tabs");
+    const MAX_CMP = 5;
+    const v = Date.now().toString().slice(0, -5);   // refresh cached data roughly every 100 s
+    const $ = id => document.getElementById(id);
+    const main = $("figs"), tabs = $("tabs");
+    const cache = {};
+    let index = null, links = {}, active = null, cmpYears = [];
+    const colorOf = {};                              // each compared year keeps its color while selected
+
+    const load = key => cache[key] ||= fetch(`data/${key}.json?v=${v}`).then(r => r.json());
+
+    // Today's position in the water year (0 = Oct 1)
+    const today = new Date();
+    let nowIdx = 0;
+    for (let i = 0; i < 366; i++) {
+      const d = new Date(Date.UTC(1999, 9, 1 + i));
+      if (d.getUTCMonth() === today.getMonth() && d.getUTCDate() === today.getDate()) { nowIdx = i; break; }
+    }
+
+    // ----- Layout: tabs and one panel per region -----
     for (const [id, name] of regions) {
       const t = document.createElement("button");
       t.type = "button"; t.role = "tab"; t.id = "tab-" + id; t.textContent = name;
@@ -90,22 +160,26 @@
       const s = document.createElement("section");
       s.id = id; s.role = "tabpanel"; s.hidden = true;
       s.setAttribute("aria-labelledby", "tab-" + id);
-      s.innerHTML = `<figure><img src="figures/${id}.png?v=${v}" alt="SWE charts for ${name} ski areas"></figure><p class="src"></p>`;
+      s.innerHTML = `<div class="legend"></div><div class="panels"></div><p class="src"></p>` +
+                    `<p class="src"><a href="figures/${id}.png?v=${v}" download>Download this region as a static figure (PNG)</a></p>`;
       main.appendChild(s);
     }
 
     function show(id, updateUrl) {
-      if (!regions.some(r => r[0] === id)) id = regions[0][0];
-      for (const [rid] of regions) {
-        const on = rid === id;
-        document.getElementById(rid).hidden = !on;
-        const t = document.getElementById("tab-" + rid);
-        t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+      const [rid, cmp] = (id || "").split("/");
+      id = regions.some(r => r[0] === rid) ? rid : regions[0][0];
+      if (cmp !== undefined) cmpYears = cmp.split(",").filter(Boolean).slice(0, MAX_CMP);
+      for (const [r] of regions) {
+        const on = r === id;
+        $(r).hidden = !on;
+        const t = $("tab-" + r); t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
       }
-      if (updateUrl) history.replaceState(null, "", "#" + id);
+      active = id;
+      if (index) drawRegion();
+      if (updateUrl) setUrl();
     }
+    const setUrl = () => history.replaceState(null, "", "#" + active + (cmpYears.length ? "/" + cmpYears.join(",") : ""));
 
-    // Arrow keys move between tabs
     tabs.addEventListener("keydown", e => {
       const ids = regions.map(r => r[0]);
       const cur = ids.indexOf(document.activeElement.id.replace("tab-", ""));
@@ -114,32 +188,142 @@
       if (e.key === "ArrowRight") next = (cur + 1) % ids.length;
       if (e.key === "ArrowLeft") next = (cur - 1 + ids.length) % ids.length;
       if (next === null) return;
-      e.preventDefault(); show(ids[next], true); document.getElementById("tab-" + ids[next]).focus();
+      e.preventDefault(); show(ids[next], true); $("tab-" + ids[next]).focus();
     });
 
+    // ----- Compare-with picker (applies to every station in the region) -----
+    function regionYears() {
+      const ys = new Set();
+      for (const st of index.stations.filter(s => s.region === active)) st.years.forEach(y => ys.add(y));
+      ys.delete(index.current_year);
+      return [...ys].sort((a, b) => b - a).map(String);
+    }
+    function assignColors() {
+      for (const y of Object.keys(colorOf)) if (!cmpYears.includes(y)) delete colorOf[y];
+      for (const y of cmpYears) if (!colorOf[y]) colorOf[y] = SWE.COMPARE_COLORS.find(c => !Object.values(colorOf).includes(c));
+    }
+    function syncPicker() {
+      const ys = regionYears();
+      cmpYears = cmpYears.filter(y => ys.includes(y));
+      assignColors();
+      const grid = $("cmp-grid");
+      if (grid.dataset.region !== active) {
+        grid.innerHTML = ys.map(y => `<label class="yr"><input type="checkbox" value="${y}">${y}</label>`).join("");
+        grid.dataset.region = active;
+      }
+      for (const cb of grid.querySelectorAll("input")) {
+        cb.checked = cmpYears.includes(cb.value);
+        cb.disabled = !cb.checked && cmpYears.length >= MAX_CMP;
+        cb.parentElement.classList.toggle("off", cb.disabled);
+      }
+      $("cmp-count").textContent = `${cmpYears.length} of ${MAX_CMP} selected`;
+      $("cmp-btn").textContent = cmpYears.length ? `${cmpYears.length} year${cmpYears.length > 1 ? "s" : ""}` : "None";
+      $("chips").innerHTML = cmpYears.map(y =>
+        `<button type="button" class="chip" data-y="${y}" aria-label="Remove ${y}"><i class="sw" style="border-color:${colorOf[y]}"></i>${y} <span aria-hidden="true">×</span></button>`).join("");
+    }
+    function togglePanel(open) {
+      const p = $("cmp-panel");
+      p.hidden = open === undefined ? !p.hidden : !open;
+      $("cmp-btn").setAttribute("aria-expanded", String(!p.hidden));
+    }
+    const changed = () => { syncPicker(); drawRegion(); setUrl(); };
+    $("cmp-btn").addEventListener("click", () => togglePanel());
+    $("cmp-grid").addEventListener("change", e => {
+      const y = e.target.value;
+      if (e.target.checked) { if (cmpYears.length < MAX_CMP) cmpYears.push(y); } else cmpYears = cmpYears.filter(x => x !== y);
+      changed();
+    });
+    $("cmp-clear").addEventListener("click", () => { cmpYears = []; changed(); });
+    $("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { cmpYears = cmpYears.filter(x => x !== b.dataset.y); changed(); } });
+    document.addEventListener("click", e => { if (!e.target.closest(".cmpwrap")) togglePanel(false); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") togglePanel(false); });
+
+    // ----- Draw every station in the active region -----
+    async function drawRegion() {
+      const region = active;
+      syncPicker();
+      const wy = index.current_year;
+      const sec = $(region);
+      const stations = index.stations.filter(s => s.region === region);
+      const nowLabel = SWE.fmt(nowIdx, wy, false);
+      $("cmp-lbl").textContent = `Compare with past years (through ${nowLabel}, up to ${MAX_CMP})`;
+
+      let leg = `<span><i class="sw" style="border-color:${SWE.BLUE};border-top-width:5px"></i>Water year ${wy} (Oct 1, ${wy - 1} – Sep 30, ${wy})</span>`;
+      for (const y of cmpYears) leg += `<span><i class="sw" style="border-color:${colorOf[y]}"></i>${y}, through ${nowLabel}</span>`;
+      leg += `<span><i class="sw area"></i>Median, period of record</span>`;
+      sec.querySelector(".legend").innerHTML = leg;
+
+      const panels = sec.querySelector(".panels");
+      if (panels.children.length !== stations.length) {
+        panels.innerHTML = stations.map(s => `<article class="panel" data-key="${s.key}"><div class="phead"></div><div class="card"></div><p class="cmpline"></p></article>`).join("");
+      }
+      for (const st of stations) {
+        const data = await load(st.key);
+        if (active !== region) return;
+        const el = panels.querySelector(`[data-key="${st.key}"]`);
+        const years = Object.keys(data.years);
+        const hist = years.filter(y => Number(y) < wy);
+        const med = SWE.medianOf(data, hist);
+        const cur = SWE.series(data, String(wy)) || new Array(366).fill(null);
+        let last = -1; cur.forEach((x, i) => { if (x != null) last = i; });
+        const pct = last >= 0 && med[last] > 0 ? Math.round(cur[last] / med[last] * 1000) / 10 : null;
+        const updated = last >= 0 ? SWE.fmt(last, wy, false) : "--";
+        const por = data.por ?? years.length;
+        const link = links[st.key];
+        const stName = link ? `<a href="${SWE.esc(link.url)}">${SWE.esc(data.station)}</a>` : SWE.esc(data.station);
+        el.querySelector(".phead").innerHTML =
+          `<div><h3>${SWE.esc(data.title)}</h3><p class="meta">Station: ${stName} · Elev. ${Number(data.elev).toLocaleString()} ft · POR ${por} yrs · Updated ${updated}</p></div>` +
+          `<div class="pct"><span class="big">${pct == null ? "--" : pct + "%"}</span><span class="k">of median SWE</span></div>`;
+
+        const cutoff = Math.max(nowIdx, last);
+        const compares = cmpYears.filter(y => data.years[y]).map(y => {
+          const s = SWE.series(data, y).map((x, i) => i <= cutoff ? x : null);
+          return { label: y, s, color: colorOf[y] };
+        });
+        SWE.render(el.querySelector(".card"), {
+          med, wy, height: 300, main: { label: String(wy), s: cur }, compares,
+          nowIdx: compares.length ? cutoff : null,
+          ariaLabel: `${data.title}: ${pct == null ? "no current percent of median" : pct + "% of median SWE"}, updated ${updated}.`
+        });
+        const missing = cmpYears.filter(y => !data.years[y]);
+        const f = (x, i) => x == null ? "—" : x.toFixed(1) + " in" + (med[i] > 0 ? ` (${Math.round(x / med[i] * 100)}%)` : "");
+        el.querySelector(".cmpline").innerHTML = compares.length || missing.length
+          ? `On ${SWE.fmt(cutoff, wy, false)}: <b>${wy}</b> ${f(cur[cutoff], cutoff)}` +
+            compares.map(c => ` · <i class="sw" style="border-color:${c.color}"></i>${c.label} ${f(c.s[cutoff], cutoff)}`).join("") +
+            (missing.length ? ` · no data for ${missing.join(", ")}` : "")
+          : "";
+      }
+    }
+
+    // ----- Start -----
     show(location.hash.slice(1), false);
     window.addEventListener("hashchange", () => show(location.hash.slice(1), false));
 
-    fetch("figures/stations.json?v=" + v)
-      .then(r => r.ok ? r.json() : {})
-      .then(all => {
-        for (const [id, list] of Object.entries(all)) {
-          const p = document.querySelector(`#${id} .src`);
-          if (!p) continue;
-          p.append("Stations used: ");
-          list.forEach((st, i) => {
-            p.append(`${st.site} – `);
-            const a = document.createElement("a");
-            a.href = st.url; a.textContent = st.station;
-            p.append(a);
-            p.append(i < list.length - 1 ? "; " : ".");
-          });
-        }
-      })
-      .catch(() => {});
+    Promise.all([
+      fetch("data/index.json?v=" + v).then(r => r.json()),
+      fetch("figures/stations.json?v=" + v).then(r => r.ok ? r.json() : {}).catch(() => ({}))
+    ]).then(([ix, all]) => {
+      index = ix;
+      for (const [id, list] of Object.entries(all)) {
+        const keys = ix.stations.filter(s => s.region === id).map(s => s.key);
+        list.forEach((st, i) => { links[keys[i]] = st; });
+        const p = document.querySelector(`#${id} .src`);
+        if (!p) continue;
+        p.append("Stations used: ");
+        list.forEach((st, i) => {
+          p.append(`${st.site} – `);
+          const a = document.createElement("a");
+          a.href = st.url; a.textContent = st.station;
+          p.append(a);
+          p.append(i < list.length - 1 ? "; " : ".");
+        });
+      }
+      drawRegion();
+    }).catch(err => { main.insertAdjacentHTML("afterbegin", "<p class='sub'>The charts could not be loaded.</p>"); console.error(err); });
+
     fetch("figures/last_updated.txt?v=" + v)
       .then(r => r.ok ? r.text() : "")
-      .then(t => { if (t.trim()) document.getElementById("stamp").textContent = t.trim(); })
+      .then(t => { if (t.trim()) $("stamp").textContent = t.trim(); })
       .catch(() => {});
   </script>
   <script>

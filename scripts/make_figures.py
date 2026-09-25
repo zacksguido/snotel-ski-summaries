@@ -265,7 +265,7 @@ def fill_feb29(wide: pd.DataFrame) -> pd.DataFrame:
 ARCHIVE_INDEX = {}
 
 
-def save_archive(key: str, wide: pd.DataFrame, cur_year: int) -> None:
+def save_archive(key: str, wide: pd.DataFrame, cur_year: int, por: int) -> None:
     """Write the station's full record (one 366-day series per water year) for the archive page."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     years = {}
@@ -276,7 +276,7 @@ def save_archive(key: str, wide: pd.DataFrame, cur_year: int) -> None:
         years[str(wy)] = [None if np.isnan(v) else round(float(v), 1) for v in vals]
     st = STATIONS[key]
     (DATA_DIR / f"{key}.json").write_text(json.dumps(dict(
-        key=key, title=st["title"], station=st["station"], elev=st["elev"],
+        key=key, title=st["title"], station=st["station"], elev=st["elev"], por=int(por),
         current_year=cur_year, years=years), separators=(",", ":")))
     ARCHIVE_INDEX[key] = [int(y) for y in years]
 
@@ -293,9 +293,9 @@ def summarize(key: str, today: date) -> dict:
     wy = current_water_year(today)
     cur_year = wy if wy in wide.columns else max(wide.columns)
     hist = wide[[c for c in wide.columns if c < cur_year]]
-    save_archive(key, wide, wy)
     if por is None:
         por = hist.shape[1]
+    save_archive(key, wide, wy, por)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)  # all-NaN days (e.g. Feb 29)
