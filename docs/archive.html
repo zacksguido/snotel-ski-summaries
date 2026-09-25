@@ -103,7 +103,7 @@
 
   <main>
     <div class="controls">
-      <label>Ski area <select id="station"></select></label>
+      <label>Station (ski area) <select id="station"></select></label>
       <label>Water year <select id="year"></select></label>
       <div class="cmpwrap">
         <span class="lbl" id="cmp-lbl">Compare with (up to 5 years)</span>
@@ -165,11 +165,12 @@
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const f1 = v => v == null ? "—" : v.toFixed(1) + " in";
 
-    // "Alta (Brighton)", but just "Snowbird" when the station has the same name
+    // Menu label: station first, ski area in parentheses, e.g. "Brighton (Alta)"; just "Snowbird" when the names match
+    let resortOf = {};
     function areaLabel(s) {
       const st = s.station.replace(/\s*\([^)]*\)$/, "");
-      const a = s.title.toLowerCase(), b = st.toLowerCase();
-      return a.includes(b) || b.includes(a) ? s.title : `${s.title} (${st})`;
+      const area = resortOf[s.key] || s.title;
+      return st.toLowerCase() === area.toLowerCase() ? st : `${st} (${area})`;
     }
 
     function median(arr) {
@@ -357,10 +358,14 @@
       $("cmp-btn").setAttribute("aria-expanded", String(!p.hidden));
     }
 
-    fetch("data/index.json?v=" + Date.now().toString().slice(0, -5))
-      .then(r => r.json())
-      .then(ix => {
+    const v = Date.now().toString().slice(0, -5);
+    Promise.all([
+      fetch("data/index.json?v=" + v).then(r => r.json()),
+      fetch("figures/locations.json?v=" + v).then(r => r.json()).catch(() => ({ stations: [] }))
+    ])
+      .then(([ix, loc]) => {
         index = ix;
+        resortOf = Object.fromEntries(loc.stations.map(s => [s.key, s.resort]));
         const groups = {};
         for (const s of ix.stations) (groups[s.region_name] ||= []).push(s);
         $("station").innerHTML = Object.entries(groups).map(([g, list]) =>
