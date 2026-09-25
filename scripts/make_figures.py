@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import requests  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import MaxNLocator  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "docs" / "figures"
@@ -237,13 +238,17 @@ def draw_error_panel(ax, title: str, err: Exception) -> None:
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     today = date.today()
+    wy = current_water_year(today)
+    legend_label = f"Water year {wy} (Oct 1, {wy - 1} – Sep 30, {wy})"
     failures = 0
 
     for fname, heading, keys in REGIONS:
         print(f"{heading}")
         fig, axes = plt.subplots(len(keys), 1, figsize=(8, 10))
         # Region name is shown in the webpage tab, so no heading on the figure itself
-        fig.subplots_adjust(top=0.95, bottom=0.04, left=0.11, right=0.97, hspace=0.6)
+        fig.subplots_adjust(top=0.9, bottom=0.04, left=0.11, right=0.97, hspace=0.6)
+        fig.legend(handles=[Line2D([], [], color=CURRENT_LINE, linewidth=6, label=legend_label)],
+                   loc="upper center", bbox_to_anchor=(0.54, 0.995), frameon=False, fontsize=13)
         for ax, key in zip(np.atleast_1d(axes), keys):
             try:
                 s = summarize(key, today)
