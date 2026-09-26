@@ -173,6 +173,22 @@
       ]
     },
     {
+      "name": "Winter Park",
+      "lat": 39.887,
+      "lon": -105.763,
+      "stations": [
+        "berthoud"
+      ]
+    },
+    {
+      "name": "Berthoud Pass",
+      "lat": 39.798,
+      "lon": -105.777,
+      "stations": [
+        "berthoud"
+      ]
+    },
+    {
       "name": "Crested Butte",
       "lat": 38.899,
       "lon": -106.965,
@@ -589,6 +605,21 @@
       "nrcs_name": "Copper Mountain",
       "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=415",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Copper%20Mountain.csv"
+    },
+    {
+      "key": "berthoud",
+      "station": "Berthoud Summit",
+      "triplet": "335:CO:SNTL",
+      "resort": "Winter Park, Berthoud Pass",
+      "chart_title": "Winter Park / Berthoud Pass",
+      "region": "colorado-north",
+      "elev": 11300,
+      "lat": 39.80364,
+      "lon": -105.77786,
+      "nrcs_elev": 11300.0,
+      "nrcs_name": "Berthoud Summit",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=335",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Berthoud%20Summit.csv"
     },
     {
       "key": "aspen",
