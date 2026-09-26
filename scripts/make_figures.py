@@ -83,6 +83,8 @@ STATIONS = {
     "vail":       dict(title="Vail", station="Vail Mountain", elev=10290, kind="plot", url=SITE_PLOTS + "CO/Vail%20Mountain.csv"),
     "copper":     dict(title="Copper Mountain", station="Copper Mountain", elev=10500, kind="plot",
                        url=SITE_PLOTS + "CO/Copper%20Mountain.csv"),
+    "berthoud":   dict(title="Winter Park / Berthoud Pass", station="Berthoud Summit", elev=11300, kind="plot",
+                       url=SITE_PLOTS + "CO/Berthoud%20Summit.csv"),
     "aspen":      dict(title="Aspen", station="Independence Pass", elev=10570, kind="plot", url=SITE_PLOTS + "CO/Independence%20Pass.csv"),
     # --- Colorado (south-central) ---
     "crested":    dict(title="Crested Butte", station="Butte", elev=10190, kind="plot", url=SITE_PLOTS + "CO/Butte.csv"),
@@ -103,7 +105,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL",
+    "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "crystal": "642:WA:SNTL", "stevens": "791:WA:SNTL", "baker": "909:WA:SNTL",
 }
@@ -131,6 +133,8 @@ RESORTS = {
     "Vail": (39.606, -106.355, ["vail"]),
     "Aspen": (39.186, -106.818, ["aspen"]),
     "Copper Mountain": (39.502, -106.151, ["copper"]),
+    "Winter Park": (39.887, -105.763, ["berthoud"]),
+    "Berthoud Pass": (39.798, -105.777, ["berthoud"]),
     "Crested Butte": (38.899, -106.965, ["crested"]),
     "Telluride": (37.937, -107.846, ["telluride"]),
     "Silverton Mountain": (37.885, -107.666, ["silverton"]),
@@ -164,6 +168,15 @@ def station_metadata() -> dict:
             return {}
 
 
+def resorts_by_station() -> dict:
+    """Ski area name(s) each station is used for, e.g. "Winter Park, Berthoud Pass"."""
+    out = {}
+    for name, (_, _, keys) in RESORTS.items():
+        for k in keys:
+            out[k] = f"{out[k]}, {name}" if k in out else name
+    return out
+
+
 def station_page(triplet: str, fallback: str) -> str:
     """NRCS station page for US SNOTEL sites; data file for others."""
     num, _, net = triplet.split(":")
@@ -172,7 +185,7 @@ def station_page(triplet: str, fallback: str) -> str:
 
 def write_locations() -> None:
     meta = station_metadata()
-    resort_of = {k: name for name, (_, _, keys) in RESORTS.items() for k in keys}
+    resort_of = resorts_by_station()
     region_of = {k: fname for fname, _, keys in REGIONS for k in keys}
     stations = []
     for k, st in STATIONS.items():
@@ -195,10 +208,13 @@ REGIONS = [
     ("mount-bachelor", "MOUNT BACHELOR", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
     ("bc-idaho", "BC & IDAHO", ["whistler_n", "whistler_w", "revelstoke", "schweitzer"]),
-    ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper"]),
+    ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
 ]
+
+# Stations within each region are listed alphabetically by chart title
+REGIONS = [(f, h, sorted(keys, key=lambda k: STATIONS[k]["title"].lower())) for f, h, keys in REGIONS]
 
 # Styling (same RGB values as the MATLAB version)
 MEDIAN_FILL = (222 / 255, 235 / 255, 247 / 255)
@@ -427,7 +443,7 @@ def main() -> int:
     index = [dict(key=k, title=STATIONS[k]["title"], station=STATIONS[k]["station"], region=fname,
                   region_name=heading, years=ARCHIVE_INDEX.get(k, []))
              for fname, heading, keys in REGIONS for k in keys]
-    resort_of = {k: name for name, (_, _, keys) in RESORTS.items() for k in keys}
+    resort_of = resorts_by_station()
     changes = [dict(key=k, station=STATIONS[k]["station"], ski_area=resort_of[k], region=fname, region_name=heading,
                     **CHANGES.get(k, dict(latest=None, date=None, **{f"d{n}": None for n in CHANGE_DAYS})))
                for fname, heading, keys in REGIONS for k in keys]

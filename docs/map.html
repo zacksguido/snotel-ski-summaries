@@ -129,7 +129,7 @@
       .then(r => r.json())
       .then(({ resorts, stations }) => {
         const byKey = Object.fromEntries(stations.map(s => [s.key, s]));
-        const bounds = [];
+        const bounds = [], drawn = new Set();
 
         for (const res of resorts) {
           const used = res.stations.map(k => byKey[k]);
@@ -144,12 +144,15 @@
           for (const s of used) {
             if (s.lat == null) continue;
             L.polyline([[res.lat, res.lon], [s.lat, s.lon]], { color: "#6e7781", weight: 2, dashArray: "5 5", interactive: false }).addTo(map);
-            const d = miles(res, s);
+            if (drawn.has(s.key)) continue;              // a station used by two ski areas is drawn once
+            drawn.add(s.key);
+            const areas = resorts.filter(r => r.stations.includes(s.key));
+            const dist = areas.map(r => `${miles(r, s).toFixed(1)} mi from ${esc(r.name)}`).join("<br>");
             L.circleMarker([s.lat, s.lon], { pane: "stations", radius: 6, color: "#fff", weight: 2, fillColor: "#2171b5", fillOpacity: 1 })
               .bindTooltip(s.station)
               .bindPopup(`<b>${esc(s.station)}</b> <span style="color:#57606a">${esc(s.triplet)}</span><br>` +
-                         `Used for: ${esc(res.name)}<br>Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
-                         `${d.toFixed(1)} mi from the ski area<br>` +
+                         `Used for: ${areas.map(r => esc(r.name)).join(", ")}<br>Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
+                         `${dist}<br>` +
                          `<a href="${esc(s.page)}" target="_blank" rel="noopener">Station page</a> · ` +
                          `<a href="${esc(s.data)}" target="_blank" rel="noopener">Data (CSV)</a>`)
               .addTo(map);
