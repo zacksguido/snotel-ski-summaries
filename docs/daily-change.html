@@ -22,9 +22,9 @@
     .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .theme-toggle svg { width: 16px; height: 16px; }
     @media (max-width: 600px) { .theme-toggle { position: static; margin-bottom: 12px; } }
-    :root { --r1: #2a78d6; --r2: #eb6834; --r3: #1baf7a; --r4: #eda100; --r5: #e87ba4; --r6: #008300; --r7: #4a3aa7; --r8: #e34948; }
-    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; } }
-    :root[data-theme="dark"] { --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; }
+    :root { --r1: #2a78d6; --r2: #eb6834; --r3: #1baf7a; --r4: #eda100; --r5: #e87ba4; --r6: #008300; --r7: #4a3aa7; --r8: #e34948; --r9: #6e7781; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; --r9: #8b949e; } }
+    :root[data-theme="dark"] { --r9: #8b949e; --r1: #3987e5; --r2: #d95926; --r3: #199e70; --r4: #c98500; --r5: #d55181; --r6: #008300; --r7: #9085e9; --r8: #e66767; }
     :root { --gain: #1f6fb2; --gain-bg: 33,113,181; --loss: #b4461b; --loss-bg: 217,95,2; }
     @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gain: #79b8ff; --loss: #f5a06b; } }
     :root[data-theme="dark"] { --gain: #79b8ff; --loss: #f5a06b; }
@@ -122,7 +122,7 @@
   <script>
     const REGION_NAMES = {
       "utah": "Utah", "wyoming-montana": "Wyoming & Montana", "mount-bachelor": "Mount Bachelor",
-      "california": "California", "bc-idaho": "BC & Idaho", "colorado-north": "Colorado (north-central)",
+      "california": "California", "bc": "British Columbia", "idaho": "Idaho", "colorado-north": "Colorado (north-central)",
       "colorado-south": "Colorado (south-central)", "washington": "Washington"
     };
     const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -130,7 +130,10 @@
     const fmtDate = d => { if (!d) return "—"; const [y, m, dd] = d.split("-").map(Number); return `${MONTHS[m - 1]} ${dd}`; };
     let rows = [], sortKey = null, sortDir = -1, newest = null;
     const RIDS = Object.keys(REGION_NAMES);
-    const rc = id => `var(--r${RIDS.indexOf(id) + 1})`;
+    // Region colors keep their earlier slots; Idaho (split from BC) takes the neutral 9th
+    const SLOT = { "utah": 1, "wyoming-montana": 2, "mount-bachelor": 3, "california": 4, "bc": 5,
+                   "colorado-north": 6, "colorado-south": 7, "washington": 8, "idaho": 9 };
+    const rc = id => `var(--r${SLOT[id] || 9})`;
 
     function label(r) {
       const st = r.station.replace(/\s*\([^)]*\)$/, "");

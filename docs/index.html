@@ -129,7 +129,7 @@
   <script>
     const regions = [
       ["utah", "Utah"], ["wyoming-montana", "Wyoming & Montana"], ["mount-bachelor", "Mount Bachelor"],
-      ["california", "California"], ["bc-idaho", "BC & Idaho"], ["colorado-north", "Colorado (north-central)"],
+      ["california", "California"], ["bc", "British Columbia"], ["idaho", "Idaho"], ["colorado-north", "Colorado (north-central)"],
       ["colorado-south", "Colorado (south-central)"], ["washington", "Washington"]
     ];
     const MAX_CMP = 5;
@@ -167,7 +167,8 @@
     }
 
     function show(id, updateUrl) {
-      const [rid, cmp] = (id || "").split("/");
+      let [rid, cmp] = (id || "").split("/");
+      if (rid === "bc-idaho") rid = "bc";                   // older links to the combined region
       id = regions.some(r => r[0] === rid) ? rid : regions[0][0];
       if (cmp !== undefined) cmpYears = cmp.split(",").filter(Boolean).slice(0, MAX_CMP);
       for (const [r] of regions) {

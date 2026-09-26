@@ -65,7 +65,7 @@ STATIONS = {
     "kirkwood":   dict(title="Kirkwood", station="Carson Pass", elev=8360, kind="plot", url=SITE_PLOTS + "CA/Carson%20Pass.csv"),
     "heavenly":   dict(title="Heavenly", station="Heavenly Valley", elev=8540, kind="plot", url=SITE_PLOTS + "CA/Heavenly%20Valley.csv"),
     "palisades":  dict(title="Palisades", station="Palisades Tahoe", elev=8010, kind="plot", url=SITE_PLOTS + "CA/Palisades%20Tahoe.csv"),
-    # --- BC & Idaho ---
+    # --- British Columbia & Idaho ---
     "whistler_n": dict(title="Whistler (North, Tenquille Lake)", station="Tenquille Lake (1D06P)", elev=5476, kind="report",
                        url=REPORT + "customSingleStationReport/daily/start_of_period/"
                            "1D06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
@@ -207,7 +207,8 @@ REGIONS = [
     ("wyoming-montana", "WYOMING & MONTANA", ["jackson", "targhee", "bigsky", "bridger"]),
     ("mount-bachelor", "MOUNT BACHELOR", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
-    ("bc-idaho", "BC & IDAHO", ["whistler_n", "whistler_w", "revelstoke", "schweitzer"]),
+    ("bc", "BRITISH COLUMBIA", ["whistler_n", "whistler_w", "revelstoke"]),
+    ("idaho", "IDAHO", ["schweitzer"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
@@ -414,8 +415,9 @@ def main() -> int:
 
     for fname, heading, keys in REGIONS:
         print(f"{heading}")
-        # Figures are 10 in tall for up to 4 stations; each extra station adds 2.5 in
-        height = 10 + 2.5 * max(0, len(keys) - 4)
+        # Figures are 10 in tall for 3-4 stations; each extra station adds 2.5 in, and 1-2 stations use less
+        n = len(keys)
+        height = 10 + 2.5 * (n - 4) if n > 4 else (10 if n >= 3 else 2.5 * n + 2.5)
         fig, axes = plt.subplots(len(keys), 1, figsize=(8, height))
         # Region name is shown in the webpage tab, so no heading on the figure itself
         fig.subplots_adjust(top=1 - 1.0 / height, bottom=0.4 / height, left=0.11, right=0.97, hspace=0.6)
