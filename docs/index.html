@@ -128,7 +128,7 @@
   <script src="assets/swe-chart.js"></script>
   <script>
     const regions = [
-      ["utah", "Utah"], ["wyoming", "Wyoming"], ["montana", "Montana"], ["mount-bachelor", "Mount Bachelor"],
+      ["utah", "Utah"], ["wyoming", "Wyoming"], ["montana", "Montana"], ["oregon", "Oregon"],
       ["california", "California"], ["bc", "British Columbia"], ["idaho", "Idaho"], ["colorado-north", "Colorado (north-central)"],
       ["colorado-south", "Colorado (south-central)"], ["washington", "Washington"]
     ];
@@ -170,6 +170,7 @@
       let [rid, cmp] = (id || "").split("/");
       if (rid === "bc-idaho") rid = "bc";                   // older links to the combined region
       if (rid === "wyoming-montana") rid = "wyoming";
+      if (rid === "mount-bachelor") rid = "oregon";
       id = regions.some(r => r[0] === rid) ? rid : regions[0][0];
       if (cmp !== undefined) cmpYears = cmp.split(",").filter(Boolean).slice(0, MAX_CMP);
       for (const [r] of regions) {

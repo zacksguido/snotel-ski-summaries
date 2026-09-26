@@ -53,7 +53,7 @@ STATIONS = {
     "targhee":    dict(title="Targhee", station="Grand Targhee", elev=9260, kind="plot", url=SITE_PLOTS + "WY/Grand%20Targhee.csv"),
     "bigsky":     dict(title="Big Sky", station="Lone Mountain", elev=8810, kind="plot", url=SITE_PLOTS + "MT/Lone%20Mountain.csv"),
     "bridger":    dict(title="Bridger", station="Sacajawea", elev=6610, kind="plot", url=SITE_PLOTS + "MT/Sacajawea.csv"),
-    # --- Mount Bachelor, OR ---
+    # --- Oregon (Mt. Bachelor) ---
     "mckenzie":   dict(title="McKenzie (NNE)", station="Mckenzie", elev=4470, kind="plot", url=SITE_PLOTS + "OR/Mckenzie.csv"),
     "threecreek": dict(title="Three Creek (NE)", station="Three Creeks Meadow", elev=5680, kind="plot", url=SITE_PLOTS + "OR/Three%20Creeks%20Meadow.csv"),
     "roaring":    dict(title="Roaring River (NW)", station="Roaring River", elev=4690, kind="plot", url=SITE_PLOTS + "OR/Roaring%20River.csv"),
@@ -206,7 +206,7 @@ REGIONS = [
     ("utah", "UTAH", ["snowbird", "alta", "powder", "solitude"]),
     ("wyoming", "WYOMING", ["jackson", "targhee"]),
     ("montana", "MONTANA", ["bigsky", "bridger"]),
-    ("mount-bachelor", "MOUNT BACHELOR", ["mckenzie", "threecreek", "roaring", "irish"]),
+    ("oregon", "OREGON", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
     ("bc", "BRITISH COLUMBIA", ["whistler_n", "whistler_w", "revelstoke"]),
     ("idaho", "IDAHO", ["schweitzer"]),

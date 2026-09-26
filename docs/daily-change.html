@@ -121,7 +121,7 @@
 
   <script>
     const REGION_NAMES = {
-      "utah": "Utah", "wyoming": "Wyoming", "montana": "Montana", "mount-bachelor": "Mount Bachelor",
+      "utah": "Utah", "wyoming": "Wyoming", "montana": "Montana", "oregon": "Oregon",
       "california": "California", "bc": "British Columbia", "idaho": "Idaho", "colorado-north": "Colorado (north-central)",
       "colorado-south": "Colorado (south-central)", "washington": "Washington"
     };
@@ -131,7 +131,7 @@
     let rows = [], sortKey = null, sortDir = -1, newest = null;
     const RIDS = Object.keys(REGION_NAMES);
     // Region colors keep their earlier slots; regions split off later (Idaho, Montana) take neutral grays
-    const SLOT = { "utah": 1, "wyoming": 2, "montana": 10, "mount-bachelor": 3, "california": 4, "bc": 5,
+    const SLOT = { "utah": 1, "wyoming": 2, "montana": 10, "oregon": 3, "california": 4, "bc": 5,
                    "colorado-north": 6, "colorado-south": 7, "washington": 8, "idaho": 9 };
     const rc = id => `var(--r${SLOT[id] || 9})`;
 
