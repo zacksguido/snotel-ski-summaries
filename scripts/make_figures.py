@@ -204,7 +204,8 @@ def write_locations() -> None:
 # One figure per region: (file name, heading, station keys top to bottom)
 REGIONS = [
     ("utah", "UTAH", ["snowbird", "alta", "powder", "solitude"]),
-    ("wyoming-montana", "WYOMING & MONTANA", ["jackson", "targhee", "bigsky", "bridger"]),
+    ("wyoming", "WYOMING", ["jackson", "targhee"]),
+    ("montana", "MONTANA", ["bigsky", "bridger"]),
     ("mount-bachelor", "MOUNT BACHELOR", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
     ("bc", "BRITISH COLUMBIA", ["whistler_n", "whistler_w", "revelstoke"]),
