@@ -129,6 +129,11 @@
       "site": "Aspen",
       "station": "Independence Pass",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Independence%20Pass.csv"
+    },
+    {
+      "site": "Copper Mountain",
+      "station": "Copper Mountain",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Copper%20Mountain.csv"
     }
   ],
   "colorado-south": [

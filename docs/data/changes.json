@@ -319,6 +319,19 @@
    "d7": 0.2
   },
   {
+   "key": "copper",
+   "station": "Copper Mountain",
+   "ski_area": "Copper Mountain",
+   "region": "colorado-north",
+   "region_name": "Colorado (north-central)",
+   "latest": 0.0,
+   "date": "2026-09-25",
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
+  },
+  {
    "key": "crested",
    "station": "Butte",
    "ski_area": "Crested Butte",

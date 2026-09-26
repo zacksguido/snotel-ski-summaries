@@ -165,6 +165,14 @@
       ]
     },
     {
+      "name": "Copper Mountain",
+      "lat": 39.502,
+      "lon": -106.151,
+      "stations": [
+        "copper"
+      ]
+    },
+    {
       "name": "Crested Butte",
       "lat": 38.899,
       "lon": -106.965,
@@ -566,6 +574,21 @@
       "nrcs_name": "Vail Mountain",
       "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=842",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Vail%20Mountain.csv"
+    },
+    {
+      "key": "copper",
+      "station": "Copper Mountain",
+      "triplet": "415:CO:SNTL",
+      "resort": "Copper Mountain",
+      "chart_title": "Copper Mountain",
+      "region": "colorado-north",
+      "elev": 10500,
+      "lat": 39.48917,
+      "lon": -106.17154,
+      "nrcs_elev": 10500.0,
+      "nrcs_name": "Copper Mountain",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=415",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Copper%20Mountain.csv"
     },
     {
       "key": "aspen",
