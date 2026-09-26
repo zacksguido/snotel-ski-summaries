@@ -91,7 +91,7 @@
       <table>
         <thead>
           <tr>
-            <th data-k="station"><button type="button">Station (ski area)</button></th>
+            <th data-k="station"><button type="button">Ski area (station)</button></th>
             <th data-k="region"><button type="button">Region</button></th>
             <th class="num" data-k="latest"><button type="button">SWE now</button></th>
             <th data-k="date"><button type="button">As of</button></th>
@@ -134,7 +134,7 @@
 
     function label(r) {
       const st = r.station.replace(/\s*\([^)]*\)$/, "");
-      return st.toLowerCase() === r.ski_area.toLowerCase() ? esc(st) : `${esc(st)} <span class="ski">(${esc(r.ski_area)})</span>`;
+      return st.toLowerCase() === r.ski_area.toLowerCase() ? esc(r.ski_area) : `${esc(r.ski_area)} <span class="ski">(${esc(st)})</span>`;
     }
     function chg(v) {
       if (v == null) return `<td class="num na">—</td>`;
@@ -151,7 +151,7 @@
              `<td class="${stale ? "stale" : ""}">${fmtDate(r.date)}</td>${chg(r.d1)}${chg(r.d3)}${chg(r.d5)}${chg(r.d7)}</tr>`;
     }
     function draw() {
-      const val = r => sortKey === "station" ? r.station.toLowerCase() : sortKey === "region" ? RIDS.indexOf(r.region) : r[sortKey];
+      const val = r => sortKey === "station" ? r.ski_area.toLowerCase() : sortKey === "region" ? RIDS.indexOf(r.region) : r[sortKey];
       const list = !sortKey ? rows : [...rows].sort((a, b) => {
         const va = val(a), vb = val(b);
         if (va == null && vb == null) return 0;
