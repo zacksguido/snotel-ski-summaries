@@ -21,17 +21,7 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Mill-D%20North.csv"
     }
   ],
-  "wyoming-montana": [
-    {
-      "site": "Big Sky",
-      "station": "Lone Mountain",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Lone%20Mountain.csv"
-    },
-    {
-      "site": "Bridger",
-      "station": "Sacajawea",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Sacajawea.csv"
-    },
+  "wyoming": [
     {
       "site": "Jackson",
       "station": "Phillips Bench",
@@ -43,7 +33,19 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Grand%20Targhee.csv"
     }
   ],
-  "mount-bachelor": [
+  "montana": [
+    {
+      "site": "Big Sky",
+      "station": "Lone Mountain",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Lone%20Mountain.csv"
+    },
+    {
+      "site": "Bridger",
+      "station": "Sacajawea",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Sacajawea.csv"
+    }
+  ],
+  "oregon": [
     {
       "site": "Irish Taylor (SSW)",
       "station": "Irish Taylor",
