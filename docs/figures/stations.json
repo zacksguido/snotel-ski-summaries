@@ -87,16 +87,11 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CA/Palisades%20Tahoe.csv"
     }
   ],
-  "bc-idaho": [
+  "bc": [
     {
       "site": "Revelstoke",
       "station": "Mount Revelstoke (2A06P)",
       "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
-    },
-    {
-      "site": "Schweitzer",
-      "station": "Schweitzer Basin",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
     },
     {
       "site": "Whistler (North, Tenquille Lake)",
@@ -107,6 +102,13 @@
       "site": "Whistler (West, Squamish Upper)",
       "station": "Squamish Upper (3A25P)",
       "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customChartReport/daily/start_of_period/3A25P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false&useLogScale=false"
+    }
+  ],
+  "idaho": [
+    {
+      "site": "Schweitzer",
+      "station": "Schweitzer Basin",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
     }
   ],
   "colorado-north": [
