@@ -81,6 +81,8 @@ STATIONS = {
     "steamboat":  dict(title="Steamboat", station="Dry Lake", elev=8240, kind="plot", url=SITE_PLOTS + "CO/Dry%20Lake.csv"),
     "abasin":     dict(title="A-Basin", station="Grizzly Peak", elev=11110, kind="plot", url=SITE_PLOTS + "CO/Grizzly%20Peak.csv"),
     "vail":       dict(title="Vail", station="Vail Mountain", elev=10290, kind="plot", url=SITE_PLOTS + "CO/Vail%20Mountain.csv"),
+    "copper":     dict(title="Copper Mountain", station="Copper Mountain", elev=10500, kind="plot",
+                       url=SITE_PLOTS + "CO/Copper%20Mountain.csv"),
     "aspen":      dict(title="Aspen", station="Independence Pass", elev=10570, kind="plot", url=SITE_PLOTS + "CO/Independence%20Pass.csv"),
     # --- Colorado (south-central) ---
     "crested":    dict(title="Crested Butte", station="Butte", elev=10190, kind="plot", url=SITE_PLOTS + "CO/Butte.csv"),
@@ -101,7 +103,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL",
+    "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "crystal": "642:WA:SNTL", "stevens": "791:WA:SNTL", "baker": "909:WA:SNTL",
 }
@@ -128,6 +130,7 @@ RESORTS = {
     "Arapahoe Basin": (39.642, -105.872, ["abasin"]),
     "Vail": (39.606, -106.355, ["vail"]),
     "Aspen": (39.186, -106.818, ["aspen"]),
+    "Copper Mountain": (39.502, -106.151, ["copper"]),
     "Crested Butte": (38.899, -106.965, ["crested"]),
     "Telluride": (37.937, -107.846, ["telluride"]),
     "Silverton Mountain": (37.885, -107.666, ["silverton"]),
@@ -192,7 +195,7 @@ REGIONS = [
     ("mount-bachelor", "MOUNT BACHELOR", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
     ("bc-idaho", "BC & IDAHO", ["whistler_n", "whistler_w", "revelstoke", "schweitzer"]),
-    ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen"]),
+    ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
 ]
@@ -395,11 +398,13 @@ def main() -> int:
 
     for fname, heading, keys in REGIONS:
         print(f"{heading}")
-        fig, axes = plt.subplots(len(keys), 1, figsize=(8, 10))
+        # Figures are 10 in tall for up to 4 stations; each extra station adds 2.5 in
+        height = 10 + 2.5 * max(0, len(keys) - 4)
+        fig, axes = plt.subplots(len(keys), 1, figsize=(8, height))
         # Region name is shown in the webpage tab, so no heading on the figure itself
-        fig.subplots_adjust(top=0.9, bottom=0.04, left=0.11, right=0.97, hspace=0.6)
+        fig.subplots_adjust(top=1 - 1.0 / height, bottom=0.4 / height, left=0.11, right=0.97, hspace=0.6)
         fig.legend(handles=[Line2D([], [], color=CURRENT_LINE, linewidth=6, label=legend_label)],
-                   loc="upper center", bbox_to_anchor=(0.54, 0.995), frameon=False, fontsize=13)
+                   loc="upper center", bbox_to_anchor=(0.54, 1 - 0.05 / height), frameon=False, fontsize=13)
         for ax, key in zip(np.atleast_1d(axes), keys):
             try:
                 s = summarize(key, today)
