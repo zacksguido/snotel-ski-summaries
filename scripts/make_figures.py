@@ -52,7 +52,7 @@ STATIONS = {
     "jackson":    dict(title="Jackson", station="Phillips Bench", elev=8160, kind="plot", url=SITE_PLOTS + "WY/Phillips%20Bench.csv"),
     "targhee":    dict(title="Targhee", station="Grand Targhee", elev=9260, kind="plot", url=SITE_PLOTS + "WY/Grand%20Targhee.csv"),
     "bigsky":     dict(title="Big Sky", station="Lone Mountain", elev=8810, kind="plot", url=SITE_PLOTS + "MT/Lone%20Mountain.csv"),
-    "bridger":    dict(title="Bridger", station="Sacajawea", elev=6610, kind="plot", url=SITE_PLOTS + "MT/Sacajawea.csv"),
+    "bridger":    dict(title="Bridger Bowl", station="Sacajawea", elev=6610, kind="plot", url=SITE_PLOTS + "MT/Sacajawea.csv"),
     # --- Oregon (Mt. Bachelor) ---
     "mckenzie":   dict(title="McKenzie (NNE)", station="Mckenzie", elev=4470, kind="plot", url=SITE_PLOTS + "OR/Mckenzie.csv"),
     "threecreek": dict(title="Three Creek (NE)", station="Three Creeks Meadow", elev=5680, kind="plot", url=SITE_PLOTS + "OR/Three%20Creeks%20Meadow.csv"),
