@@ -35,10 +35,20 @@
     h1 { margin: 0 0 4px; color: var(--accent); font-size: 1.9rem; }
     h2 { margin: 8px 0 4px; font-size: 1.35rem; }
     .sub { margin: 0; color: var(--muted); }
-    .pages { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 20px; font-size: .95rem; }
-    .pages a { white-space: nowrap; color: var(--ink); text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; }
-    .pages a:hover { border-color: var(--line); }
-    .pages a[aria-current=page] { border-color: var(--accent); font-weight: 600; }
+    /* Main page navigation: a solid bar so it stands apart from the region buttons */
+    :root { --nav-bg: #662506; --nav-ink: #fff8f2; --nav-hover: rgba(255,255,255,.14); --nav-cur-bg: #ffffff; --nav-cur-ink: #662506; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --nav-bg: #2b1d15; --nav-ink: #f3e3d6; --nav-hover: rgba(255,255,255,.08); --nav-cur-bg: #f0a36b; --nav-cur-ink: #1b1109; }
+    }
+    :root[data-theme="dark"] { --nav-bg: #2b1d15; --nav-ink: #f3e3d6; --nav-hover: rgba(255,255,255,.08); --nav-cur-bg: #f0a36b; --nav-cur-ink: #1b1109; }
+    .pages { display: flex; flex-wrap: wrap; gap: 4px; margin: 18px 0 20px; padding: 5px; background: var(--nav-bg);
+             border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
+    .pages a { flex: 1 1 auto; text-align: center; white-space: nowrap; color: var(--nav-ink); text-decoration: none;
+               font-size: 1rem; font-weight: 600; padding: 9px 16px; border-radius: 7px; transition: background .15s; }
+    .pages a:hover { background: var(--nav-hover); }
+    .pages a:focus-visible { outline: 2px solid var(--nav-cur-bg); outline-offset: 2px; }
+    .pages a[aria-current=page] { background: var(--nav-cur-bg); color: var(--nav-cur-ink); box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+    @media (max-width: 600px) { .pages a { flex: 1 1 40%; padding: 8px 10px; font-size: .92rem; } }
     .note { color: var(--muted); font-size: .9rem; margin: 4px 0 14px; max-width: 75ch; }
     .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
     table { width: 100%; border-collapse: collapse; font-size: .92rem; }
