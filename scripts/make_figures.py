@@ -91,6 +91,10 @@ STATIONS = {
     "telluride":  dict(title="Telluride", station="Red Mountain Pass", elev=11060, kind="plot", url=SITE_PLOTS + "CO/Red%20Mountain%20Pass.csv"),
     "silverton":  dict(title="Silverton", station="Molas Lake", elev=10610, kind="plot", url=SITE_PLOTS + "CO/Molas%20Lake.csv"),
     "wolfcreek":  dict(title="Wolf Creek", station="Wolf Creek Summit", elev=10930, kind="plot", url=SITE_PLOTS + "CO/Wolf%20Creek%20Summit.csv"),
+    # --- Alaska ---
+    # por="count": the record has one isolated early year (1967), so count only seasons with data
+    "eaglecrest": dict(title="Eaglecrest", station="Long Lake", elev=None, kind="plot", por="count",
+                       url=SITE_PLOTS + "AK/Long%20Lake.csv"),
     # --- Washington ---
     "crystal":    dict(title="Crystal Mountain", station="Morse Lake", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
     "stevens":    dict(title="Stevens Pass", station="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
@@ -107,6 +111,7 @@ TRIPLETS = {
     "schweitzer": "738:ID:SNTL",
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
+    "eaglecrest": None,   # looked up by name from NRCS at run time
     "crystal": "642:WA:SNTL", "stevens": "791:WA:SNTL", "baker": "909:WA:SNTL",
 }
 
@@ -142,22 +147,52 @@ RESORTS = {
     "Crystal Mountain": (46.935, -121.475, ["crystal"]),
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
+    "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
 }
 
 AWDB_STATIONS = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
 
 
+def resolve_triplets() -> None:
+    """Find NRCS IDs for stations added by name only (TRIPLETS value None)."""
+    for k, t in TRIPLETS.items():
+        if t:
+            continue
+        state = STATIONS[k]["url"].split("/WTEQ/")[1].split("/")[0]
+        try:
+            r = requests.get(AWDB_STATIONS, params={"stationTriplets": f"*:{state}:SNTL",
+                                                    "stationNames": STATIONS[k]["station"]},
+                             timeout=(10, 45), headers={"User-Agent": "snotel-ski-summaries"})
+            r.raise_for_status()
+            hits = [d for d in r.json() if d.get("name", "").lower() == STATIONS[k]["station"].lower()]
+            if hits:
+                TRIPLETS[k] = hits[0]["stationTriplet"]
+        except Exception as err:
+            print(f"  ! station ID for {k}: {err}", file=sys.stderr)
+
+
+_META = None
+
+
 def station_metadata() -> dict:
     """Latitude/longitude/elevation for each station from the NRCS AWDB web service.
     Falls back to the last saved values if the service can't be reached."""
+    global _META
+    if _META is not None:
+        return _META
+    _META = _fetch_metadata()
+    return _META
+
+
+def _fetch_metadata() -> dict:
     try:
-        r = requests.get(AWDB_STATIONS, params={"stationTriplets": ",".join(TRIPLETS.values())},
+        r = requests.get(AWDB_STATIONS, params={"stationTriplets": ",".join(t for t in TRIPLETS.values() if t)},
                          timeout=(10, 45), headers={"User-Agent": "snotel-ski-summaries"})
         r.raise_for_status()
         by_triplet = {d["stationTriplet"]: d for d in r.json()}
         return {k: dict(lat=by_triplet[t]["latitude"], lon=by_triplet[t]["longitude"],
                         nrcs_elev=by_triplet[t].get("elevation"), nrcs_name=by_triplet[t].get("name"))
-                for k, t in TRIPLETS.items() if t in by_triplet}
+                for k, t in TRIPLETS.items() if t and t in by_triplet}
     except Exception as err:
         print(f"  ! station locations: {err}", file=sys.stderr)
         try:
@@ -177,8 +212,10 @@ def resorts_by_station() -> dict:
     return out
 
 
-def station_page(triplet: str, fallback: str) -> str:
+def station_page(triplet, fallback: str) -> str:
     """NRCS station page for US SNOTEL sites; data file for others."""
+    if not triplet:
+        return fallback
     num, _, net = triplet.split(":")
     return f"https://wcc.sc.egov.usda.gov/nwcc/site?sitenum={num}" if net == "SNTL" else fallback
 
@@ -213,6 +250,7 @@ REGIONS = [
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
+    ("alaska", "ALASKA", ["eaglecrest"]),
 ]
 
 # Stations within each region are listed alphabetically by chart title
@@ -354,6 +392,8 @@ def summarize(key: str, today: date) -> dict:
     hist = wide[[c for c in wide.columns if c < cur_year]]
     if por is None:
         por = hist.shape[1]
+    if st.get("por") == "count":
+        por = int(sum(not wide[c].isna().all() for c in wide.columns))
     save_archive(key, wide, wy, por)
 
     with warnings.catch_warnings():
@@ -394,7 +434,7 @@ def draw_panel(ax, s: dict) -> None:
     ax.text(0.03, 0.86, pct_text, fontsize=18, transform=ax.transAxes, va="top")
     ax.text(0.03, 0.64, "of median SWE", fontsize=12, transform=ax.transAxes, va="top")
     ax.text(0.98, 0.86,
-            f"POR = {s['por']} yrs\nElev. = {s['elev']} ft\nUpdated: {s['updated'] or '--'}",
+            f"POR = {s['por']} yrs\nElev. = {s['elev'] if s['elev'] is not None else '--'} ft\nUpdated: {s['updated'] or '--'}",
             fontsize=11, transform=ax.transAxes, va="top", ha="right", linespacing=1.3)
 
 
@@ -413,6 +453,14 @@ def main() -> int:
     wy = current_water_year(today)
     legend_label = f"Water year {wy} (Oct 1, {wy - 1} – Sep 30, {wy})"
     failures = 0
+
+    # Stations listed without an ID or elevation get them from NRCS
+    resolve_triplets()
+    if any(st["elev"] is None for st in STATIONS.values()):
+        meta = station_metadata()
+        for k, st in STATIONS.items():
+            if st["elev"] is None and meta.get(k, {}).get("nrcs_elev") is not None:
+                st["elev"] = int(round(meta[k]["nrcs_elev"]))
 
     for fname, heading, keys in REGIONS:
         print(f"{heading}")

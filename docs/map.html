@@ -94,7 +94,7 @@
     const REGION_NAMES = {
       "utah": "Utah", "wyoming": "Wyoming", "montana": "Montana", "oregon": "Oregon",
       "california": "California", "bc": "British Columbia", "idaho": "Idaho", "colorado-north": "Colorado (north-central)",
-      "colorado-south": "Colorado (south-central)", "washington": "Washington"
+      "colorado-south": "Colorado (south-central)", "washington": "Washington", "alaska": "Alaska"
     };
 
     const map = L.map("map", { scrollWheelZoom: false }).setView([43.5, -114], 5);
@@ -150,7 +150,7 @@
             const dist = areas.map(r => `${miles(r, s).toFixed(1)} mi from ${esc(r.name)}`).join("<br>");
             L.circleMarker([s.lat, s.lon], { pane: "stations", radius: 6, color: "#fff", weight: 2, fillColor: "#2171b5", fillOpacity: 1 })
               .bindTooltip(s.station)
-              .bindPopup(`<b>${esc(s.station)}</b> <span style="color:#57606a">${esc(s.triplet)}</span><br>` +
+              .bindPopup(`<b>${esc(s.station)}</b> <span style="color:#57606a">${esc(s.triplet || "—")}</span><br>` +
                          `Used for: ${areas.map(r => esc(r.name)).join(", ")}<br>Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
                          `${dist}<br>` +
                          `<a href="${esc(s.page)}" target="_blank" rel="noopener">Station page</a> · ` +
@@ -173,7 +173,7 @@
                 `<tr><td>${i === 0 ? esc(res.name) : ""}</td>` +
                 `<td><a href="${esc(s.page)}" target="_blank" rel="noopener">${esc(s.station)}</a></td>` +
                 `<td class="num">${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft</td>` +
-                `<td class="num">${dist}</td><td class="num">${esc(s.triplet)}</td></tr>`);
+                `<td class="num">${dist}</td><td class="num">${esc(s.triplet || "—")}</td></tr>`);
             });
           }
         }
