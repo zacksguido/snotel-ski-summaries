@@ -1,70 +1,31 @@
 {
-  "utah": [
+  "alaska": [
     {
-      "site": "Alta",
-      "station": "Brighton",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Brighton.csv"
+      "site": "Alyeska",
+      "station": "Mt. Alyeska",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
     },
     {
-      "site": "Powder Mtn",
-      "station": "Little Bear",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Little%20Bear.csv"
-    },
-    {
-      "site": "Snowbird",
-      "station": "Snowbird",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Snowbird.csv"
-    },
-    {
-      "site": "Solitude",
-      "station": "Mill-D North",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Mill-D%20North.csv"
+      "site": "Eaglecrest",
+      "station": "Long Lake",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"
     }
   ],
-  "wyoming": [
+  "bc": [
     {
-      "site": "Jackson",
-      "station": "Phillips Bench",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Phillips%20Bench.csv"
+      "site": "Revelstoke",
+      "station": "Mount Revelstoke (2A06P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
     },
     {
-      "site": "Targhee",
-      "station": "Grand Targhee",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Grand%20Targhee.csv"
-    }
-  ],
-  "montana": [
-    {
-      "site": "Big Sky",
-      "station": "Lone Mountain",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Lone%20Mountain.csv"
+      "site": "Whistler (North, Tenquille Lake)",
+      "station": "Tenquille Lake (1D06P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1D06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
     },
     {
-      "site": "Bridger Bowl",
-      "station": "Sacajawea",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Sacajawea.csv"
-    }
-  ],
-  "oregon": [
-    {
-      "site": "Irish Taylor (SSW)",
-      "station": "Irish Taylor",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Irish%20Taylor.csv"
-    },
-    {
-      "site": "McKenzie (NNE)",
-      "station": "Mckenzie",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Mckenzie.csv"
-    },
-    {
-      "site": "Roaring River (NW)",
-      "station": "Roaring River",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Roaring%20River.csv"
-    },
-    {
-      "site": "Three Creek (NE)",
-      "station": "Three Creeks Meadow",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Three%20Creeks%20Meadow.csv"
+      "site": "Whistler (West, Squamish Upper)",
+      "station": "Squamish Upper (3A25P)",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customChartReport/daily/start_of_period/3A25P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false&useLogScale=false"
     }
   ],
   "california": [
@@ -87,40 +48,6 @@
       "site": "Palisades",
       "station": "Palisades Tahoe",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CA/Palisades%20Tahoe.csv"
-    }
-  ],
-  "bc": [
-    {
-      "site": "Revelstoke",
-      "station": "Mount Revelstoke (2A06P)",
-      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
-    },
-    {
-      "site": "Whistler (North, Tenquille Lake)",
-      "station": "Tenquille Lake (1D06P)",
-      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1D06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
-    },
-    {
-      "site": "Whistler (West, Squamish Upper)",
-      "station": "Squamish Upper (3A25P)",
-      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customChartReport/daily/start_of_period/3A25P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false&useLogScale=false"
-    }
-  ],
-  "idaho": [
-    {
-      "site": "Schweitzer",
-      "station": "Schweitzer Basin",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
-    },
-    {
-      "site": "Sun Valley (Hyndman)",
-      "station": "Hyndman",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv"
-    },
-    {
-      "site": "Sun Valley (Lost-Wood Divide)",
-      "station": "Lost-Wood Divide",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv"
     }
   ],
   "colorado-north": [
@@ -177,6 +104,79 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Wolf%20Creek%20Summit.csv"
     }
   ],
+  "idaho": [
+    {
+      "site": "Schweitzer",
+      "station": "Schweitzer Basin",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
+    },
+    {
+      "site": "Sun Valley (Hyndman)",
+      "station": "Hyndman",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv"
+    },
+    {
+      "site": "Sun Valley (Lost-Wood Divide)",
+      "station": "Lost-Wood Divide",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv"
+    }
+  ],
+  "montana": [
+    {
+      "site": "Big Sky",
+      "station": "Lone Mountain",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Lone%20Mountain.csv"
+    },
+    {
+      "site": "Bridger Bowl",
+      "station": "Sacajawea",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/MT/Sacajawea.csv"
+    }
+  ],
+  "oregon": [
+    {
+      "site": "Irish Taylor (SSW)",
+      "station": "Irish Taylor",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Irish%20Taylor.csv"
+    },
+    {
+      "site": "McKenzie (NNE)",
+      "station": "Mckenzie",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Mckenzie.csv"
+    },
+    {
+      "site": "Roaring River (NW)",
+      "station": "Roaring River",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Roaring%20River.csv"
+    },
+    {
+      "site": "Three Creek (NE)",
+      "station": "Three Creeks Meadow",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/OR/Three%20Creeks%20Meadow.csv"
+    }
+  ],
+  "utah": [
+    {
+      "site": "Alta",
+      "station": "Brighton",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Brighton.csv"
+    },
+    {
+      "site": "Powder Mtn",
+      "station": "Little Bear",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Little%20Bear.csv"
+    },
+    {
+      "site": "Snowbird",
+      "station": "Snowbird",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Snowbird.csv"
+    },
+    {
+      "site": "Solitude",
+      "station": "Mill-D North",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/UT/Mill-D%20North.csv"
+    }
+  ],
   "washington": [
     {
       "site": "Crystal Mountain",
@@ -194,16 +194,16 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WA/Stevens%20Pass.csv"
     }
   ],
-  "alaska": [
+  "wyoming": [
     {
-      "site": "Alyeska",
-      "station": "Mt. Alyeska",
-      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+      "site": "Jackson",
+      "station": "Phillips Bench",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Phillips%20Bench.csv"
     },
     {
-      "site": "Eaglecrest",
-      "station": "Long Lake",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"
+      "site": "Targhee",
+      "station": "Grand Targhee",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WY/Grand%20Targhee.csv"
     }
   ]
 }
