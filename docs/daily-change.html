@@ -72,6 +72,8 @@
     td.chg.down { color: var(--loss); }
     td.chg.zero, td.na { color: var(--muted); font-weight: 400; }
     td.stale { color: var(--muted); font-style: italic; }
+    .model-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
+                   font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: #2c4a70; background: #eef3fa; border: 1px solid #9db5d6; }
     .depth-badge { display: inline-block; vertical-align: middle; margin-left: 6px; padding: 2px 8px; border-radius: 999px;
                    font-size: .72rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
                    color: #8a3412; background: #fff1e8; border: 1px solid #e9a27c; }
@@ -122,6 +124,7 @@
       <span><b class="down">▼ −0.8</b> loss (usually melt)</span>
       <span>— no reading that day</span>
       <span><i>Dates in italics</i> are older than the newest reading</span>
+      <span id="model-note" hidden><span class="model-badge" style="margin:0 4px 0 0">Modeled</span> modeled SWE from NOAA SNODAS at a ~1 km grid cell, not a station</span>
       <span id="depth-note" hidden><span class="depth-badge" style="margin:0 4px 0 0">Snow depth</span> this station reports snow depth, not SWE; its numbers are inches of snow, not water</span>
     </div>
   </main>
@@ -149,7 +152,9 @@
 
     function label(r) {
       const st = r.station.replace(/\s*\([^)]*\)$/, "");
-      const badge = r.variable === "SNWD" ? '<span class="depth-badge">Snow depth</span>' : "";
+      const badge = r.variable === "SNWD" ? '<span class="depth-badge">Snow depth</span>'
+                  : r.variable === "SNODAS" ? '<span class="model-badge">Modeled</span>' : "";
+      if (r.variable === "SNODAS") return esc(r.ski_area) + badge;         // modeled grid cell, no station name
       return (st.toLowerCase() === r.ski_area.toLowerCase() ? esc(r.ski_area) : `${esc(r.ski_area)} <span class="ski">(${esc(st)})</span>`) + badge;
     }
     function chg(v) {
@@ -204,6 +209,7 @@
         document.getElementById("regions").innerHTML = RIDS.map(id =>
           `<span style="--rc:${rc(id)}"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[id])}</span>`).join("");
         if (rows.some(r => r.variable === "SNWD")) document.getElementById("depth-note").hidden = false;
+        if (rows.some(r => r.variable === "SNODAS")) document.getElementById("model-note").hidden = false;
         draw();
       })
       .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="8">The table could not be loaded.</td></tr>`; console.error(err); });

@@ -56,6 +56,8 @@
     .stat .v { font-size: 1.35rem; font-weight: 600; line-height: 1.25; }
     .stat .k { font-size: .8rem; color: var(--muted); }
     .card { position: relative; background: #fff; color: #1f2328; border: 1px solid var(--line); border-radius: 8px; padding: 12px 12px 4px; }
+    .model-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
+                   font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: #2c4a70; background: #eef3fa; border: 1px solid #9db5d6; }
     .depth-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
                    font-size: .72rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
                    color: #8a3412; background: #fff1e8; border: 1px solid #e9a27c; }
@@ -203,6 +205,7 @@
     function areaLabel(s) {
       const st = s.station.replace(/\s*\([^)]*\)$/, "");
       const area = resortOf[s.key] || s.title;
+      if (s.station === "SNODAS grid cell") return `${area} (SNODAS modeled)`;
       return st.toLowerCase() === area.toLowerCase() ? st : `${st} (${area})`;
     }
 
@@ -271,7 +274,7 @@
       $("stats").innerHTML = tiles.map(([v, k]) => `<div class="stat"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
 
       // Title & legend
-      $("title").innerHTML = SWE.esc(data.title) + (SWE.isDepth(data) ? SWE.DEPTH_BADGE : "");
+      $("title").innerHTML = SWE.esc(data.title) + SWE.badgeFor(data);
       let leg = `<span><i class="sw" style="border-color:${BLUE};border-top-width:5px"></i>Water year ${wy} (Oct 1, ${wy - 1} – Sep 30, ${wy})${isCurrent ? ", in progress" : ""}</span>`;
       for (const c of cmps) leg += `<span><i class="sw" style="border-color:${c.color}"></i>${c.y}${c.y === current ? " (in progress)" : ""}</span>`;
       leg += `<span><i class="sw area"></i>Median of other seasons</span>`;
@@ -317,7 +320,7 @@
       });
 
       const stInfo = index.stations.find(s => s.key === data.key);
-      $("note").innerHTML = `Station: ${esc(data.station)} · Elevation ${Number(data.elev).toLocaleString()} ft · ` +
+      $("note").innerHTML = `Station: ${esc(data.station)} · ${data.elev == null ? "" : `Elevation ${Number(data.elev).toLocaleString()} ft · `}` +
         `<a href="./#${stInfo.region}">Current season charts</a> · <a href="map.html">Station map</a>`;
     }
 

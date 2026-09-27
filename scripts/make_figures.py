@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import requests  # noqa: E402
+from update_snodas import POINTS as SNODAS_POINTS  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import MaxNLocator  # noqa: E402
 
@@ -103,9 +104,15 @@ STATIONS = {
     "eaglecrest": dict(title="Eaglecrest", station="Long Lake", elev=None, kind="plot", por="count",
                        url=SITE_PLOTS + "AK/Long%20Lake.csv"),
     # --- Vermont ---
-    # var="SNWD": this station reports SNOW DEPTH, not snow water equivalent
-    "stowe":      dict(title="Stowe", station="Mount Mansfield", elev=None, kind="plot", var="SNWD",
-                       url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv"),
+    # kind="snodas": modeled SWE from NOAA SNODAS at a fixed grid cell (not a station measurement),
+    # extracted daily by update_snodas.py into docs/data/snodas/<key>.csv
+    "killington": dict(title="Killington", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
+                       url="data/snodas/killington.csv"),
+    "stowe":      dict(title="Stowe", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
+                       url="data/snodas/stowe.csv"),
+    # Snow-depth version of Stowe (Mount Mansfield SCAN station), kept for reference; not shown:
+    # dict(title="Stowe", station="Mount Mansfield", elev=None, kind="plot", var="SNWD",
+    #      url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv")
     # --- Washington ---
     "crystal":    dict(title="Crystal Mountain", station="Morse Lake", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
     "stevens":    dict(title="Stevens Pass", station="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
@@ -120,7 +127,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "sunvalley_h": None, "sunvalley_l": None, "stowe": None,   # looked up by name from NRCS at run time
+    "sunvalley_h": None, "sunvalley_l": None, "stowe": None, "killington": None,   # looked up by name from NRCS at run time
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "alyeska": "1103:AK:SNTL",
@@ -162,6 +169,7 @@ RESORTS = {
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
     "Stowe": (44.530, -72.781, ["stowe"]),
+    "Killington": (43.626, -72.796, ["killington"]),
     "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
     "Alyeska": (60.970, -149.098, ["alyeska"]),
 }
@@ -172,7 +180,7 @@ AWDB_STATIONS = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
 def resolve_triplets() -> None:
     """Find NRCS IDs for stations added by name only (TRIPLETS value None)."""
     for k, t in TRIPLETS.items():
-        if t:
+        if t or STATIONS[k]["kind"] == "snodas":
             continue
         state = STATIONS[k]["url"].split("/POR/")[1].split("/")[1]
         try:
@@ -197,6 +205,9 @@ def station_metadata() -> dict:
     if _META is not None:
         return _META
     _META = _fetch_metadata()
+    for k, (lat, lon) in SNODAS_POINTS.items():          # SNODAS grid cells: location is fixed
+        if k in STATIONS:
+            _META[k] = dict(lat=lat, lon=lon, nrcs_elev=None, nrcs_name="SNODAS grid cell")
     return _META
 
 
@@ -247,7 +258,8 @@ def write_locations() -> None:
                              chart_title=st["title"], region=region_of[k], elev=st["elev"],
                              lat=m.get("lat"), lon=m.get("lon"), nrcs_elev=m.get("nrcs_elev"),
                              nrcs_name=m.get("nrcs_name"),
-                             page=station_page(TRIPLETS[k], st["url"]), data=st["url"]))
+                             page=("https://nsidc.org/data/g02158" if st["kind"] == "snodas"
+                                   else station_page(TRIPLETS[k], st["url"])), data=st["url"]))
     resorts = [dict(name=n, lat=lat, lon=lon, stations=keys) for n, (lat, lon, keys) in RESORTS.items()]
     (OUT_DIR / "locations.json").write_text(
         json.dumps(dict(resorts=resorts, stations=stations), indent=2) + "\n")
@@ -265,7 +277,7 @@ REGIONS = [
     ("idaho", "IDAHO", ["schweitzer", "sunvalley_h", "sunvalley_l"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
-    ("vermont", "VERMONT", ["stowe"]),
+    ("vermont", "VERMONT", ["killington", "stowe"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
     ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
@@ -292,6 +304,8 @@ def current_water_year(today: date) -> int:
 
 
 def fetch_csv(key: str, url: str) -> str:
+    if STATIONS[key]["kind"] == "snodas":
+        return (DATA_DIR / "snodas" / f"{key}.csv").read_text()
     if LOCAL_DATA_DIR:
         return (Path(LOCAL_DATA_DIR) / f"{key}.csv").read_text()
     # Short timeout with a few retries, so one slow NRCS response can't stall the whole run
@@ -401,6 +415,8 @@ def summarize(key: str, today: date) -> dict:
     text = fetch_csv(key, st["url"])
     if st["kind"] == "plot":
         wide, por = wide_from_site_plot(text)
+    elif st["kind"] == "snodas":
+        wide, por = wide_from_report(text)
     else:
         wide, por = wide_from_report(text)
 
@@ -453,6 +469,10 @@ def draw_panel(ax, s: dict) -> None:
     pct_text = f"{s['pct']:g}%" if s["pct"] is not None else "--"
     ax.text(0.03, 0.86, pct_text, fontsize=18, transform=ax.transAxes, va="top")
     ax.text(0.03, 0.64, "of median snow depth" if depth else "of median SWE", fontsize=12, transform=ax.transAxes, va="top")
+    if s.get("var") == "SNODAS":   # modeled, not measured
+        ax.text(0.5, 0.93, "Modeled SWE (NOAA SNODAS), not a station measurement", transform=ax.transAxes,
+                ha="center", va="top", fontsize=10, color="#3d5a80",
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="#eef3fa", edgecolor="#7a9cc6"))
     if depth:   # make it obvious this panel is not SWE
         ax.text(0.5, 0.93, "SNOW DEPTH — not snow water equivalent", transform=ax.transAxes, ha="center", va="top",
                 fontsize=11, fontweight="bold", color="#b4461b",

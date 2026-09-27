@@ -125,5 +125,10 @@
   const isDepth = data => data && data.variable === "SNWD";
   const DEPTH_BADGE = '<span class="depth-badge" title="This station reports snow depth, not snow water equivalent">Snow depth, not SWE</span>';
 
-  window.SWE = { isDepth, DEPTH_BADGE, render, series, medianOf, median, fmt, isLeap, f1, esc, BLUE, COMPARE_COLORS, FEB29, APR1, MONTHS };
+  // A few points are modeled SWE from NOAA SNODAS rather than a station measurement
+  const isModeled = data => data && data.variable === "SNODAS";
+  const MODEL_BADGE = '<span class="model-badge" title="Modeled snow water equivalent from NOAA SNODAS at a ~1 km grid cell, not a station measurement">Modeled SWE · SNODAS</span>';
+  const badgeFor = data => isDepth(data) ? DEPTH_BADGE : isModeled(data) ? MODEL_BADGE : "";
+
+  window.SWE = { isDepth, DEPTH_BADGE, isModeled, MODEL_BADGE, badgeFor, render, series, medianOf, median, fmt, isLeap, f1, esc, BLUE, COMPARE_COLORS, FEB29, APR1, MONTHS };
 })();
