@@ -186,6 +186,11 @@
   ],
   "alaska": [
     {
+      "site": "Alyeska",
+      "station": "Mt. Alyeska",
+      "url": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+    },
+    {
       "site": "Eaglecrest",
       "station": "Long Lake",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"

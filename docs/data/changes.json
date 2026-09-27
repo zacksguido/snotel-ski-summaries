@@ -436,6 +436,19 @@
    "d7": 0.0
   },
   {
+   "key": "alyeska",
+   "station": "Mt. Alyeska",
+   "ski_area": "Alyeska",
+   "region": "alaska",
+   "region_name": "ALASKA",
+   "latest": 0.1,
+   "date": "2026-09-27",
+   "d1": 0.1,
+   "d3": 0.1,
+   "d5": 0.1,
+   "d7": 0.1
+  },
+  {
    "key": "eaglecrest",
    "station": "Long Lake",
    "ski_area": "Eaglecrest",

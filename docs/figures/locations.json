@@ -251,6 +251,14 @@
       "stations": [
         "eaglecrest"
       ]
+    },
+    {
+      "name": "Alyeska",
+      "lat": 60.97,
+      "lon": -149.098,
+      "stations": [
+        "alyeska"
+      ]
     }
   ],
   "stations": [
@@ -703,6 +711,21 @@
       "nrcs_name": "Wolf Creek Summit",
       "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=874",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Wolf%20Creek%20Summit.csv"
+    },
+    {
+      "key": "alyeska",
+      "station": "Mt. Alyeska",
+      "triplet": "1103:AK:SNTL",
+      "resort": "Alyeska",
+      "chart_title": "Alyeska",
+      "region": "alaska",
+      "elev": 1500,
+      "lat": 60.95842,
+      "lon": -149.08858,
+      "nrcs_elev": 1500.0,
+      "nrcs_name": "Mt. Alyeska",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=1103",
+      "data": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
     },
     {
       "key": "eaglecrest",
