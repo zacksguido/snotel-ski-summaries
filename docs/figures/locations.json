@@ -133,6 +133,15 @@
       ]
     },
     {
+      "name": "Sun Valley",
+      "lat": 43.666,
+      "lon": -114.402,
+      "stations": [
+        "sunvalley_h",
+        "sunvalley_l"
+      ]
+    },
+    {
       "name": "Steamboat",
       "lat": 40.457,
       "lon": -106.804,
@@ -546,6 +555,36 @@
       "nrcs_name": "Mount Revelstoke",
       "page": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false",
       "data": "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultiTimeSeriesGroupByStationReport/daily/start_of_period/2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"
+    },
+    {
+      "key": "sunvalley_h",
+      "station": "Hyndman",
+      "triplet": "537:ID:SNTL",
+      "resort": "Sun Valley",
+      "chart_title": "Sun Valley (Hyndman)",
+      "region": "idaho",
+      "elev": 7590,
+      "lat": 43.71077,
+      "lon": -114.15894,
+      "nrcs_elev": 7590.0,
+      "nrcs_name": "Hyndman",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=537",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv"
+    },
+    {
+      "key": "sunvalley_l",
+      "station": "Lost-Wood Divide",
+      "triplet": "601:ID:SNTL",
+      "resort": "Sun Valley",
+      "chart_title": "Sun Valley (Lost-Wood Divide)",
+      "region": "idaho",
+      "elev": 7870,
+      "lat": 43.82441,
+      "lon": -114.26404,
+      "nrcs_elev": 7870.0,
+      "nrcs_name": "Lost-Wood Divide",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=601",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv"
     },
     {
       "key": "schweitzer",

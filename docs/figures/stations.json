@@ -111,6 +111,16 @@
       "site": "Schweitzer",
       "station": "Schweitzer Basin",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Schweitzer%20Basin.csv"
+    },
+    {
+      "site": "Sun Valley (Hyndman)",
+      "station": "Hyndman",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv"
+    },
+    {
+      "site": "Sun Valley (Lost-Wood Divide)",
+      "station": "Lost-Wood Divide",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv"
     }
   ],
   "colorado-north": [
