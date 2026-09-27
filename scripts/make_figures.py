@@ -102,6 +102,10 @@ STATIONS = {
                            "1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
     "eaglecrest": dict(title="Eaglecrest", station="Long Lake", elev=None, kind="plot", por="count",
                        url=SITE_PLOTS + "AK/Long%20Lake.csv"),
+    # --- Vermont ---
+    # var="SNWD": this station reports SNOW DEPTH, not snow water equivalent
+    "stowe":      dict(title="Stowe", station="Mount Mansfield", elev=None, kind="plot", var="SNWD",
+                       url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv"),
     # --- Washington ---
     "crystal":    dict(title="Crystal Mountain", station="Morse Lake", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
     "stevens":    dict(title="Stevens Pass", station="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
@@ -116,7 +120,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "sunvalley_h": None, "sunvalley_l": None,   # looked up by name from NRCS at run time
+    "sunvalley_h": None, "sunvalley_l": None, "stowe": None,   # looked up by name from NRCS at run time
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "alyeska": "1103:AK:SNTL",
@@ -157,6 +161,7 @@ RESORTS = {
     "Crystal Mountain": (46.935, -121.475, ["crystal"]),
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
+    "Stowe": (44.530, -72.781, ["stowe"]),
     "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
     "Alyeska": (60.970, -149.098, ["alyeska"]),
 }
@@ -169,9 +174,9 @@ def resolve_triplets() -> None:
     for k, t in TRIPLETS.items():
         if t:
             continue
-        state = STATIONS[k]["url"].split("/WTEQ/")[1].split("/")[0]
+        state = STATIONS[k]["url"].split("/POR/")[1].split("/")[1]
         try:
-            r = requests.get(AWDB_STATIONS, params={"stationTriplets": f"*:{state}:SNTL",
+            r = requests.get(AWDB_STATIONS, params={"stationTriplets": f"*:{state}:*",
                                                     "stationNames": STATIONS[k]["station"]},
                              timeout=(10, 45), headers={"User-Agent": "snotel-ski-summaries"})
             r.raise_for_status()
@@ -238,7 +243,7 @@ def write_locations() -> None:
     stations = []
     for k, st in STATIONS.items():
         m = meta.get(k, {})
-        stations.append(dict(key=k, station=st["station"], triplet=TRIPLETS[k], resort=resort_of[k],
+        stations.append(dict(key=k, station=st["station"], triplet=TRIPLETS[k], resort=resort_of[k], variable=st.get("var", "WTEQ"),
                              chart_title=st["title"], region=region_of[k], elev=st["elev"],
                              lat=m.get("lat"), lon=m.get("lon"), nrcs_elev=m.get("nrcs_elev"),
                              nrcs_name=m.get("nrcs_name"),
@@ -260,6 +265,7 @@ REGIONS = [
     ("idaho", "IDAHO", ["schweitzer", "sunvalley_h", "sunvalley_l"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
+    ("vermont", "VERMONT", ["stowe"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
     ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
@@ -357,6 +363,7 @@ def save_archive(key: str, wide: pd.DataFrame, cur_year: int, por: int) -> None:
     st = STATIONS[key]
     (DATA_DIR / f"{key}.json").write_text(json.dumps(dict(
         key=key, title=st["title"], station=st["station"], elev=st["elev"], por=int(por),
+        variable=st.get("var", "WTEQ"),
         current_year=cur_year, years=years), separators=(",", ":")))
     ARCHIVE_INDEX[key] = [int(y) for y in years]
 
@@ -422,7 +429,7 @@ def summarize(key: str, today: date) -> dict:
         if median[i] > 0:
             pct = round(current[i] / median[i] * 100, 1)
 
-    return dict(title=st["title"], station=st["station"], elev=st["elev"], por=por,
+    return dict(title=st["title"], station=st["station"], elev=st["elev"], por=por, var=st.get("var", "WTEQ"),
                 median=median, current=current, pct=pct, updated=updated)
 
 
@@ -439,12 +446,17 @@ def draw_panel(ax, s: dict) -> None:
     ax.set_xticks(XTICKS, XLABELS)
     ax.grid(axis="x", color="0.85")
     ax.set_axisbelow(True)
-    ax.set_ylabel("SWE (inches)", fontsize=14)
+    depth = s.get("var") == "SNWD"
+    ax.set_ylabel("Snow depth (inches)" if depth else "SWE (inches)", fontsize=14)
     ax.set_title(s["title"], fontsize=24, color=TITLE_COLOR)
 
     pct_text = f"{s['pct']:g}%" if s["pct"] is not None else "--"
     ax.text(0.03, 0.86, pct_text, fontsize=18, transform=ax.transAxes, va="top")
-    ax.text(0.03, 0.64, "of median SWE", fontsize=12, transform=ax.transAxes, va="top")
+    ax.text(0.03, 0.64, "of median snow depth" if depth else "of median SWE", fontsize=12, transform=ax.transAxes, va="top")
+    if depth:   # make it obvious this panel is not SWE
+        ax.text(0.5, 0.93, "SNOW DEPTH — not snow water equivalent", transform=ax.transAxes, ha="center", va="top",
+                fontsize=11, fontweight="bold", color="#b4461b",
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="#fff4ec", edgecolor="#b4461b"))
     ax.text(0.98, 0.86,
             f"POR = {s['por']} yrs\nElev. = {s['elev'] if s['elev'] is not None else '--'} ft\nUpdated: {s['updated'] or '--'}",
             fontsize=11, transform=ax.transAxes, va="top", ha="right", linespacing=1.3)
@@ -495,7 +507,7 @@ def main() -> int:
         fig.savefig(OUT_DIR / f"{fname}.png", dpi=150)
         plt.close(fig)
 
-    stations = {fname: [dict(site=STATIONS[k]["title"], station=STATIONS[k]["station"],
+    stations = {fname: [dict(site=STATIONS[k]["title"], station=STATIONS[k]["station"], variable=STATIONS[k].get("var", "WTEQ"),
                              url=STATIONS[k]["url"]) for k in keys]
                 for fname, _, keys in REGIONS}
     (OUT_DIR / "stations.json").write_text(json.dumps(stations, indent=2) + "\n")
@@ -508,6 +520,7 @@ def main() -> int:
              for fname, heading, keys in REGIONS for k in keys]
     resort_of = resorts_by_station()
     changes = [dict(key=k, station=STATIONS[k]["station"], ski_area=resort_of[k], region=fname, region_name=heading,
+                    variable=STATIONS[k].get("var", "WTEQ"),
                     **CHANGES.get(k, dict(latest=None, date=None, **{f"d{n}": None for n in CHANGE_DAYS})))
                for fname, heading, keys in REGIONS for k in keys]
     (DATA_DIR / "changes.json").write_text(json.dumps(dict(days=list(CHANGE_DAYS), stations=changes), indent=1) + "\n")

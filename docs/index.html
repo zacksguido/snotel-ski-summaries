@@ -87,6 +87,9 @@
                box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 6px 10px; font-size: .82rem; line-height: 1.5; white-space: nowrap; display: none; z-index: 5; }
     .swe-tip b { display: block; margin-bottom: 2px; }
     .swe-tip i { display: inline-block; width: 10px; height: 3px; margin-right: 6px; vertical-align: middle; }
+    .depth-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
+                   font-size: .72rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
+                   color: #8a3412; background: #fff1e8; border: 1px solid #e9a27c; }
     .cmpline { margin: 6px 2px 0; font-size: .88rem; }
     .cmpline:empty { display: none; }
     .cmpline .sw { width: 14px; margin-right: 4px; }
@@ -139,7 +142,7 @@
   <script>
     // Region tabs, in alphabetical order
     const regions = [
-      ["alaska", "Alaska"], ["bc", "British Columbia"], ["california", "California"], ["colorado-north", "Colorado (north-central)"], ["colorado-south", "Colorado (south-central)"], ["idaho", "Idaho"], ["montana", "Montana"], ["oregon", "Oregon"], ["utah", "Utah"], ["washington", "Washington"], ["wyoming", "Wyoming"]
+      ["alaska", "Alaska"], ["bc", "British Columbia"], ["california", "California"], ["colorado-north", "Colorado (north-central)"], ["colorado-south", "Colorado (south-central)"], ["idaho", "Idaho"], ["montana", "Montana"], ["oregon", "Oregon"], ["utah", "Utah"], ["vermont", "Vermont"], ["washington", "Washington"], ["wyoming", "Wyoming"]
     ];
     const MAX_CMP = 5;
     const v = Date.now().toString().slice(0, -5);   // refresh cached data roughly every 100 s
@@ -285,8 +288,8 @@
         const link = links[st.key];
         const stName = link ? `<a href="${SWE.esc(link.url)}">${SWE.esc(data.station)}</a>` : SWE.esc(data.station);
         el.querySelector(".phead").innerHTML =
-          `<div><h3>${SWE.esc(data.title)}</h3><p class="meta">Station: ${stName} · Elev. ${Number(data.elev).toLocaleString()} ft · POR ${por} yrs · Updated ${updated}</p></div>` +
-          `<div class="pct"><span class="big">${pct == null ? "--" : pct + "%"}</span><span class="k">of median SWE</span></div>`;
+          `<div><h3>${SWE.esc(data.title)}${SWE.isDepth(data) ? SWE.DEPTH_BADGE : ""}</h3><p class="meta">Station: ${stName} · Elev. ${Number(data.elev).toLocaleString()} ft · POR ${por} yrs · Updated ${updated}</p></div>` +
+          `<div class="pct"><span class="big">${pct == null ? "--" : pct + "%"}</span><span class="k">of median ${SWE.isDepth(data) ? "snow depth" : "SWE"}</span></div>`;
 
         const cutoff = Math.max(nowIdx, last);
         const compares = cmpYears.filter(y => data.years[y]).map(y => {
@@ -295,6 +298,7 @@
         });
         SWE.render(el.querySelector(".card"), {
           med, wy, height: 300, main: { label: String(wy), s: cur }, compares,
+          yLabel: SWE.isDepth(data) ? "Snow depth (inches)" : "SWE (inches)",
           nowIdx: compares.length ? cutoff : null,
           ariaLabel: `${data.title}: ${pct == null ? "no current percent of median" : pct + "% of median SWE"}, updated ${updated}.`
         });

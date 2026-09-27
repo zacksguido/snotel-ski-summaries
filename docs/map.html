@@ -102,7 +102,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
     const REGION_NAMES = {
-      "alaska": "Alaska", "bc": "British Columbia", "california": "California", "colorado-north": "Colorado (north-central)", "colorado-south": "Colorado (south-central)", "idaho": "Idaho", "montana": "Montana", "oregon": "Oregon", "utah": "Utah", "washington": "Washington", "wyoming": "Wyoming"
+      "alaska": "Alaska", "bc": "British Columbia", "california": "California", "colorado-north": "Colorado (north-central)", "colorado-south": "Colorado (south-central)", "idaho": "Idaho", "montana": "Montana", "oregon": "Oregon", "utah": "Utah", "vermont": "Vermont", "washington": "Washington", "wyoming": "Wyoming"
     };
 
     const map = L.map("map", { scrollWheelZoom: false }).setView([43.5, -114], 5);
@@ -159,7 +159,9 @@
             L.circleMarker([s.lat, s.lon], { pane: "stations", radius: 6, color: "#fff", weight: 2, fillColor: "#2171b5", fillOpacity: 1 })
               .bindTooltip(s.station)
               .bindPopup(`<b>${esc(s.station)}</b> <span style="color:#57606a">${esc(s.triplet || "—")}</span><br>` +
-                         `Used for: ${areas.map(r => esc(r.name)).join(", ")}<br>Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
+                         `Used for: ${areas.map(r => esc(r.name)).join(", ")}<br>` +
+                         (s.variable === "SNWD" ? `<b style="color:#8a3412">Measures snow depth, not SWE</b><br>` : "") +
+                         `Elevation: ${Number(s.nrcs_elev ?? s.elev).toLocaleString()} ft<br>` +
                          `${dist}<br>` +
                          `<a href="${esc(s.page)}" target="_blank" rel="noopener">Station page</a> · ` +
                          `<a href="${esc(s.data)}" target="_blank" rel="noopener">Data (CSV)</a>`)

@@ -43,7 +43,7 @@
   const f1 = v => v == null ? "—" : v.toFixed(1) + " in";
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  // opts: { med, main: {label, s}, compares: [{label, s, color}], wy, height, markIdx, nowIdx, ariaLabel }
+  // opts: { med, main: {label, s}, compares: [{label, s, color}], wy, height, markIdx, nowIdx, ariaLabel, yLabel }
   function render(card, opts) {
     const W = 800, H = opts.height || 380, M = { l: 56, r: 16, t: 14, b: 40 };
     const { med, main, compares = [], wy } = opts;
@@ -66,7 +66,7 @@
     for (const [i] of TICKS) g += `<line x1="${x(i)}" x2="${x(i)}" y1="${M.t}" y2="${H - M.b}" stroke="#e3e6ea"/>`;
     for (let v = 0; v <= top; v += step) g += `<text x="${M.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#1f2328">${v}</text>`;
     for (const [i, lab] of TICKS) g += `<text x="${x(i)}" y="${H - M.b + 18}" text-anchor="middle" font-size="12" fill="#1f2328">${lab}</text>`;
-    g += `<text transform="translate(16 ${(H - M.b + M.t) / 2}) rotate(-90)" text-anchor="middle" font-size="13" fill="#1f2328">SWE (inches)</text>`;
+    g += `<text transform="translate(16 ${(H - M.b + M.t) / 2}) rotate(-90)" text-anchor="middle" font-size="13" fill="#1f2328">${opts.yLabel || "SWE (inches)"}</text>`;
     g += `<path d="${area}" fill="#deebf7"/><path d="${path(med)}" fill="none" stroke="#1f2328" stroke-width="1"/>`;
     if (opts.nowIdx != null && opts.nowIdx >= 0) {
       g += `<line x1="${x(opts.nowIdx)}" x2="${x(opts.nowIdx)}" y1="${M.t}" y2="${H - M.b}" stroke="#662506" stroke-width="1.2" stroke-dasharray="4 3"/>`;
@@ -121,5 +121,9 @@
     hit.addEventListener("touchstart", move, { passive: true }); hit.addEventListener("touchmove", move, { passive: true });
   }
 
-  window.SWE = { render, series, medianOf, median, fmt, isLeap, f1, esc, BLUE, COMPARE_COLORS, FEB29, APR1, MONTHS };
+  // Most stations report snow water equivalent (WTEQ); a few report snow depth (SNWD) only
+  const isDepth = data => data && data.variable === "SNWD";
+  const DEPTH_BADGE = '<span class="depth-badge" title="This station reports snow depth, not snow water equivalent">Snow depth, not SWE</span>';
+
+  window.SWE = { isDepth, DEPTH_BADGE, render, series, medianOf, median, fmt, isLeap, f1, esc, BLUE, COMPARE_COLORS, FEB29, APR1, MONTHS };
 })();
