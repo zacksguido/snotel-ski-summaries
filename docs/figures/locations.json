@@ -243,6 +243,14 @@
       "stations": [
         "baker"
       ]
+    },
+    {
+      "name": "Eaglecrest",
+      "lat": 58.275,
+      "lon": -134.513,
+      "stations": [
+        "eaglecrest"
+      ]
     }
   ],
   "stations": [
@@ -695,6 +703,21 @@
       "nrcs_name": "Wolf Creek Summit",
       "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=874",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/CO/Wolf%20Creek%20Summit.csv"
+    },
+    {
+      "key": "eaglecrest",
+      "station": "Long Lake",
+      "triplet": "1001:AK:SNTL",
+      "resort": "Eaglecrest",
+      "chart_title": "Eaglecrest",
+      "region": "alaska",
+      "elev": 840,
+      "lat": 58.186,
+      "lon": -133.83217,
+      "nrcs_elev": 840.0,
+      "nrcs_name": "Long Lake",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=1001",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"
     },
     {
       "key": "crystal",

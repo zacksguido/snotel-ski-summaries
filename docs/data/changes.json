@@ -434,6 +434,19 @@
    "d3": 0.0,
    "d5": 0.0,
    "d7": 0.0
+  },
+  {
+   "key": "eaglecrest",
+   "station": "Long Lake",
+   "ski_area": "Eaglecrest",
+   "region": "alaska",
+   "region_name": "ALASKA",
+   "latest": 0.2,
+   "date": "2026-09-27",
+   "d1": 0.1,
+   "d3": 0.2,
+   "d5": 0.2,
+   "d7": 0.2
   }
  ]
 }

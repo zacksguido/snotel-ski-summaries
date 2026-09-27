@@ -183,5 +183,12 @@
       "station": "Stevens Pass",
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/WA/Stevens%20Pass.csv"
     }
+  ],
+  "alaska": [
+    {
+      "site": "Eaglecrest",
+      "station": "Long Lake",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"
+    }
   ]
 }
