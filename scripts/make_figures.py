@@ -76,6 +76,10 @@ STATIONS = {
     "revelstoke": dict(title="Revelstoke", station="Mount Revelstoke (2A06P)", elev=5807, kind="report",
                        url=REPORT + "customMultiTimeSeriesGroupByStationReport/daily/start_of_period/"
                            "2A06P:BC:MSNT%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
+    "sunvalley_h": dict(title="Sun Valley (Hyndman)", station="Hyndman", elev=None, kind="plot",
+                        url=SITE_PLOTS + "ID/Hyndman.csv"),
+    "sunvalley_l": dict(title="Sun Valley (Lost-Wood Divide)", station="Lost-Wood Divide", elev=None, kind="plot",
+                        url=SITE_PLOTS + "ID/Lost-Wood%20Divide.csv"),
     "schweitzer": dict(title="Schweitzer", station="Schweitzer Basin", elev=6090, kind="plot", url=SITE_PLOTS + "ID/Schweitzer%20Basin.csv"),
     # --- Colorado (north-central) ---
     "steamboat":  dict(title="Steamboat", station="Dry Lake", elev=8240, kind="plot", url=SITE_PLOTS + "CO/Dry%20Lake.csv"),
@@ -112,6 +116,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
+    "sunvalley_h": None, "sunvalley_l": None,   # looked up by name from NRCS at run time
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "alyeska": "1103:AK:SNTL",
@@ -137,6 +142,7 @@ RESORTS = {
     "Whistler Blackcomb": (50.115, -122.949, ["whistler_n", "whistler_w"]),
     "Revelstoke": (50.958, -118.163, ["revelstoke"]),
     "Schweitzer": (48.368, -116.623, ["schweitzer"]),
+    "Sun Valley": (43.666, -114.402, ["sunvalley_h", "sunvalley_l"]),
     "Steamboat": (40.457, -106.804, ["steamboat"]),
     "Arapahoe Basin": (39.642, -105.872, ["abasin"]),
     "Vail": (39.606, -106.355, ["vail"]),
@@ -251,7 +257,7 @@ REGIONS = [
     ("oregon", "OREGON", ["mckenzie", "threecreek", "roaring", "irish"]),
     ("california", "CALIFORNIA", ["mammoth", "kirkwood", "heavenly", "palisades"]),
     ("bc", "BRITISH COLUMBIA", ["whistler_n", "whistler_w", "revelstoke"]),
-    ("idaho", "IDAHO", ["schweitzer"]),
+    ("idaho", "IDAHO", ["schweitzer", "sunvalley_h", "sunvalley_l"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
