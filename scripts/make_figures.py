@@ -264,8 +264,9 @@ REGIONS = [
     ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
 
-# Stations within each region are listed alphabetically by chart title
-REGIONS = [(f, h, sorted(keys, key=lambda k: STATIONS[k]["title"].lower())) for f, h, keys in REGIONS]
+# Regions are listed alphabetically (by id, which sorts the same as their names),
+# and stations within each region alphabetically by chart title
+REGIONS = sorted([(f, h, sorted(keys, key=lambda k: STATIONS[k]["title"].lower())) for f, h, keys in REGIONS])
 
 # Styling (same RGB values as the MATLAB version)
 MEDIAN_FILL = (222 / 255, 235 / 255, 247 / 255)
