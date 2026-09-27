@@ -211,10 +211,16 @@
   ],
   "vermont": [
     {
+      "site": "Killington",
+      "station": "SNODAS grid cell",
+      "variable": "SNODAS",
+      "url": "data/snodas/killington.csv"
+    },
+    {
       "site": "Stowe",
-      "station": "Mount Mansfield",
-      "variable": "SNWD",
-      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/SNWD/VT/Mount%20Mansfield.csv"
+      "station": "SNODAS grid cell",
+      "variable": "SNODAS",
+      "url": "data/snodas/stowe.csv"
     }
   ],
   "washington": [
