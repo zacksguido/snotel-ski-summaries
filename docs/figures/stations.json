@@ -217,7 +217,13 @@
       "url": "data/snodas/killington.csv"
     },
     {
-      "site": "Stowe",
+      "site": "Stowe (Mount Mansfield snow depth)",
+      "station": "Mount Mansfield",
+      "variable": "SNWD",
+      "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/SNWD/VT/Mount%20Mansfield.csv"
+    },
+    {
+      "site": "Stowe (SNODAS)",
       "station": "SNODAS grid cell",
       "variable": "SNODAS",
       "url": "data/snodas/stowe.csv"

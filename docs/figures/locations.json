@@ -258,7 +258,8 @@
       "lat": 44.53,
       "lon": -72.781,
       "stations": [
-        "stowe"
+        "stowe",
+        "stowe_depth"
       ]
     },
     {
@@ -853,15 +854,31 @@
       "triplet": null,
       "resort": "Stowe",
       "variable": "SNODAS",
-      "chart_title": "Stowe",
+      "chart_title": "Stowe (SNODAS)",
       "region": "vermont",
       "elev": null,
-      "lat": 44.53,
-      "lon": -72.78,
+      "lat": 44.531,
+      "lon": -72.806,
       "nrcs_elev": null,
       "nrcs_name": "SNODAS grid cell",
       "page": "https://nsidc.org/data/g02158",
       "data": "data/snodas/stowe.csv"
+    },
+    {
+      "key": "stowe_depth",
+      "station": "Mount Mansfield",
+      "triplet": "2041:VT:SCAN",
+      "resort": "Stowe",
+      "variable": "SNWD",
+      "chart_title": "Stowe (Mount Mansfield snow depth)",
+      "region": "vermont",
+      "elev": 2310,
+      "lat": 44.53512,
+      "lon": -72.83462,
+      "nrcs_elev": 2310.0,
+      "nrcs_name": "Mount Mansfield",
+      "page": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/SNWD/VT/Mount%20Mansfield.csv",
+      "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/SNWD/VT/Mount%20Mansfield.csv"
     },
     {
       "key": "crystal",
