@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daily Snow Change · SNOTEL Ski Summaries</title>
+  <title>Snow Forecast · SNOTEL Ski Summaries</title>
   <script>
     // Apply a saved light/dark choice before the page draws (avoids a flash)
     try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -88,11 +88,11 @@
   <header>
     <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode"></button>
     <h1>SNOTEL Ski Summaries</h1>
-    <p class="sub">How much snow water each station gained or lost over the last few days.</p>
+    <p class="sub">How much new snow the ECMWF weather model expects at each station over the next week.</p>
     <nav class="pages" aria-label="Pages">
       <a href="./">Snow charts</a>
-      <a href="daily-change.html" aria-current="page">Daily Snow Change</a>
-      <a href="snow-forecast.html">Snow Forecast</a>
+      <a href="daily-change.html">Daily Snow Change</a>
+      <a href="snow-forecast.html" aria-current="page">Snow Forecast</a>
       <a href="map.html">Station map</a>
       <a href="archive.html">Archive</a>
       <a href="about.html">About the data</a>
@@ -100,8 +100,8 @@
   </header>
 
   <main>
-    <h2>Daily Snow Change</h2>
-    <p class="note" id="asof">Change in snow water equivalent (SWE), in inches, over the previous 1, 3, 5, and 7 days, ending on each station's latest reading. Stations are colored by region. Click on each day-header to sort by the highest or lowest changes.</p>
+    <h2>Snow Forecast</h2>
+    <p class="note" id="asof">Forecast new snowfall, in inches of snow, for the next 1, 3, 5, and 7 days at each station, from the ECMWF weather model. Stations are colored by region. Click on each day-header to sort by the highest or lowest forecast.</p>
     <div class="regions" id="regions" aria-label="Region colors"></div>
     <div class="table-wrap">
       <table>
@@ -109,31 +109,29 @@
           <tr>
             <th data-k="station"><button type="button">Ski area (station)</button></th>
             <th data-k="region"><button type="button">Region</button></th>
-            <th class="num" data-k="latest"><button type="button">SWE now</button></th>
-            <th data-k="date"><button type="button">As of</button></th>
-            <th class="num" data-k="d1"><button type="button">1 day</button></th>
-            <th class="num" data-k="d3"><button type="button">3 days</button></th>
-            <th class="num" data-k="d5"><button type="button">5 days</button></th>
-            <th class="num" data-k="d7"><button type="button">7 days</button></th>
+            <th class="num" data-k="elev_ft"><button type="button">Elevation</button></th>
+            <th class="num" data-k="f1"><button type="button">1 day</button></th>
+            <th class="num" data-k="f3"><button type="button">3 days</button></th>
+            <th class="num" data-k="f5"><button type="button">5 days</button></th>
+            <th class="num" data-k="f7"><button type="button">7 days</button></th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
     <div class="key">
-      <span><b class="up">▲ +1.2</b> gain (usually new snow)</span>
-      <span><b class="down">▼ −0.8</b> loss (usually melt)</span>
-      <span>— no reading that day</span>
-      <span><i>Dates in italics</i> are older than the newest reading</span>
-      <span id="model-note" hidden><span class="model-badge" style="margin:0 4px 0 0">Modeled</span> modeled SWE from NOAA SNODAS at a ~1 km grid cell, not a station</span>
-      <span id="depth-note" hidden><span class="depth-badge" style="margin:0 4px 0 0">Snow depth</span> this station reports snow depth, not SWE; its numbers are inches of snow, not water</span>
+      <span><b class="up">12.5</b> inches of new snow expected (darker = more)</span>
+      <span>0.0 none expected</span>
+      <span>— forecast not available</span>
+      <span>Elevation is the height the forecast was made for (the station's elevation where known)</span>
     </div>
   </main>
 
   <footer>
-    Changes compare each station's latest reading with its reading 1, 3, 5, and 7 days earlier. SWE measures the water in the snowpack,
-    so settling alone doesn't change it; a gain is roughly new snow's water content, not its depth.
-    Data: USDA NRCS National Water and Climate Center. Provisional data, subject to revision.
+    Forecast snowfall is new snow <em>depth</em>, not snow water equivalent, so these numbers aren't directly comparable with the SWE charts.
+    Forecasts beyond about 3 days are uncertain, especially in the mountains, and a single model can miss local effects.
+    Periods are counted from when the forecast was retrieved (1 day = next 24 hours).
+    Weather data by <a href="https://open-meteo.com/">Open-Meteo.com</a> (CC BY 4.0); model: ECMWF IFS.
     <a href="about.html">More about the data</a>.
   </footer>
 
@@ -153,24 +151,21 @@
 
     function label(r) {
       const st = r.station.replace(/\s*\([^)]*\)$/, "");
-      const badge = r.variable === "SNWD" ? '<span class="depth-badge">Snow depth</span>'
-                  : r.variable === "SNODAS" ? '<span class="model-badge">Modeled</span>' : "";
+      const badge = "";   // forecasts are the same kind of number for every station
       if (r.variable === "SNODAS") return esc(r.ski_area) + badge;         // modeled grid cell, no station name
       return (st.toLowerCase() === r.ski_area.toLowerCase() ? esc(r.ski_area) : `${esc(r.ski_area)} <span class="ski">(${esc(st)})</span>`) + badge;
     }
     function chg(v) {
       if (v == null) return `<td class="num na">—</td>`;
-      const cls = v > 0 ? "up" : v < 0 ? "down" : "zero";
-      const a = Math.min(Math.abs(v) / 3, 1);                         // tint strength, full at 3 in
-      const bg = v > 0 ? `rgba(var(--gain-bg),${(a * .22).toFixed(3)})` : v < 0 ? `rgba(var(--loss-bg),${(a * .22).toFixed(3)})` : "transparent";
-      const txt = v > 0 ? `▲ +${v.toFixed(1)}` : v < 0 ? `▼ −${Math.abs(v).toFixed(1)}` : "0.0";
-      return `<td class="num chg ${cls}" style="background:${bg}">${txt}</td>`;
+      if (v <= 0) return `<td class="num chg zero">0.0</td>`;
+      const a = Math.min(v / 12, 1);                                   // tint strength, full at 12 in of snow
+      return `<td class="num chg up" style="background:rgba(var(--gain-bg),${(0.05 + a * .3).toFixed(3)})">${v.toFixed(1)}</td>`;
     }
     function row(r) {
-      const stale = r.date && newest && r.date < newest;
       return `<tr style="--rc:${rc(r.region)}"><td class="st">${label(r)}</td>` +
-             `<td class="rg"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[r.region])}</td><td class="num">${r.latest == null ? "—" : r.latest.toFixed(1) + " in"}</td>` +
-             `<td class="${stale ? "stale" : ""}">${fmtDate(r.date)}</td>${chg(r.d1)}${chg(r.d3)}${chg(r.d5)}${chg(r.d7)}</tr>`;
+             `<td class="rg"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[r.region])}</td>` +
+             `<td class="num">${r.elev_ft ? Math.round(r.elev_ft).toLocaleString() + " ft" : (r.grid_elev_ft ? "~" + r.grid_elev_ft.toLocaleString() + " ft" : "—")}</td>` +
+             `${chg(r.f1)}${chg(r.f3)}${chg(r.f5)}${chg(r.f7)}</tr>`;
     }
     function draw() {
       const val = r => sortKey === "station" ? r.ski_area.toLowerCase() : sortKey === "region" ? RIDS.indexOf(r.region) : r[sortKey];
@@ -200,20 +195,18 @@
       draw();
     });
 
-    fetch("data/changes.json?v=" + Date.now().toString().slice(0, -5))
+    fetch("data/forecast.json?v=" + Date.now().toString().slice(0, -5))
       .then(r => r.json())
       .then(d => {
         rows = d.stations;
-        newest = rows.map(r => r.date).filter(Boolean).sort().pop() || null;
-        if (newest) document.getElementById("asof").insertAdjacentHTML("beforeend",
-          ` Latest readings are from <b>${fmtDate(newest)}, ${newest.slice(0, 4)}</b>.`);
+        const t = new Date(d.issued);
+        document.getElementById("asof").insertAdjacentHTML("beforeend",
+          ` Forecast retrieved <b>${t.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}</b>.`);
         document.getElementById("regions").innerHTML = RIDS.map(id =>
           `<span style="--rc:${rc(id)}"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[id])}</span>`).join("");
-        if (rows.some(r => r.variable === "SNWD")) document.getElementById("depth-note").hidden = false;
-        if (rows.some(r => r.variable === "SNODAS")) document.getElementById("model-note").hidden = false;
         draw();
       })
-      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="8">The table could not be loaded.</td></tr>`; console.error(err); });
+      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="7">The forecast could not be loaded.</td></tr>`; console.error(err); });
   </script>
   <script>
     // Light/dark mode toggle (remembers the choice on this device)
