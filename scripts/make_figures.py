@@ -93,6 +93,9 @@ STATIONS = {
     "wolfcreek":  dict(title="Wolf Creek", station="Wolf Creek Summit", elev=10930, kind="plot", url=SITE_PLOTS + "CO/Wolf%20Creek%20Summit.csv"),
     # --- Alaska ---
     # por="count": the record has one isolated early year (1967), so count only seasons with data
+    "alyeska":    dict(title="Alyeska", station="Mt. Alyeska", elev=1500, kind="report", por="count",
+                       url=REPORT + "customSingleStationReport/daily/start_of_period/"
+                           "1103:AK:SNTL%257Cid=%2522%2522%257Cname/POR_BEGIN,POR_END/WTEQ::value?fitToScreen=false"),
     "eaglecrest": dict(title="Eaglecrest", station="Long Lake", elev=None, kind="plot", por="count",
                        url=SITE_PLOTS + "AK/Long%20Lake.csv"),
     # --- Washington ---
@@ -111,6 +114,7 @@ TRIPLETS = {
     "schweitzer": "738:ID:SNTL",
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
+    "alyeska": "1103:AK:SNTL",
     "eaglecrest": None,   # looked up by name from NRCS at run time
     "crystal": "642:WA:SNTL", "stevens": "791:WA:SNTL", "baker": "909:WA:SNTL",
 }
@@ -148,6 +152,7 @@ RESORTS = {
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
     "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
+    "Alyeska": (60.970, -149.098, ["alyeska"]),
 }
 
 AWDB_STATIONS = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
@@ -250,7 +255,7 @@ REGIONS = [
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
-    ("alaska", "ALASKA", ["eaglecrest"]),
+    ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
 
 # Stations within each region are listed alphabetically by chart title
