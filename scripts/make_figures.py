@@ -108,11 +108,11 @@ STATIONS = {
     # extracted daily by update_snodas.py into docs/data/snodas/<key>.csv
     "killington": dict(title="Killington", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
                        url="data/snodas/killington.csv"),
-    "stowe":      dict(title="Stowe", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
+    "stowe":      dict(title="Stowe (SNODAS)", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
                        url="data/snodas/stowe.csv"),
-    # Snow-depth version of Stowe (Mount Mansfield SCAN station), kept for reference; not shown:
-    # dict(title="Stowe", station="Mount Mansfield", elev=None, kind="plot", var="SNWD",
-    #      url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv")
+    # Observed snow DEPTH (not SWE) at the Mount Mansfield SCAN station
+    "stowe_depth": dict(title="Stowe (Mount Mansfield snow depth)", station="Mount Mansfield", elev=None, kind="plot",
+                        var="SNWD", url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv"),
     # --- Washington ---
     "crystal":    dict(title="Crystal Mountain", station="Morse Lake", elev=5400, kind="plot", url=SITE_PLOTS + "WA/Morse%20Lake.csv"),
     "stevens":    dict(title="Stevens Pass", station="Stevens Pass", elev=3940, kind="plot", url=SITE_PLOTS + "WA/Stevens%20Pass.csv"),
@@ -127,7 +127,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "sunvalley_h": None, "sunvalley_l": None, "stowe": None, "killington": None,   # looked up by name from NRCS at run time
+    "sunvalley_h": None, "sunvalley_l": None, "stowe": None, "killington": None, "stowe_depth": "2041:VT:SCAN",   # looked up by name from NRCS at run time
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "alyeska": "1103:AK:SNTL",
@@ -168,7 +168,7 @@ RESORTS = {
     "Crystal Mountain": (46.935, -121.475, ["crystal"]),
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
-    "Stowe": (44.530, -72.781, ["stowe"]),
+    "Stowe": (44.530, -72.781, ["stowe", "stowe_depth"]),
     "Killington": (43.626, -72.796, ["killington"]),
     "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
     "Alyeska": (60.970, -149.098, ["alyeska"]),
@@ -277,7 +277,7 @@ REGIONS = [
     ("idaho", "IDAHO", ["schweitzer", "sunvalley_h", "sunvalley_l"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
-    ("vermont", "VERMONT", ["killington", "stowe"]),
+    ("vermont", "VERMONT", ["killington", "stowe", "stowe_depth"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
     ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
