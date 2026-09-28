@@ -15,7 +15,7 @@
    "variable": "WTEQ",
    "latest": 0.0,
    "date": "2026-09-28",
-   "d1": -0.1,
+   "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
    "d7": 0.0
@@ -42,9 +42,9 @@
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
    "latest": 0.1,
-   "date": "2026-09-27",
-   "d1": -0.4,
-   "d3": null,
+   "date": "2026-09-28",
+   "d1": 0.0,
+   "d3": 0.1,
    "d5": null,
    "d7": null
   },
@@ -56,7 +56,7 @@
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-09-27",
+   "date": "2026-09-28",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -70,7 +70,7 @@
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-09-27",
+   "date": "2026-09-28",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -85,7 +85,7 @@
    "variable": "WTEQ",
    "latest": 0.0,
    "date": "2026-09-28",
-   "d1": -0.1,
+   "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
    "d7": 0.0
@@ -97,12 +97,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": 0.1,
+   "latest": 0.0,
    "date": "2026-09-28",
-   "d1": 0.1,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "mammoth",
@@ -125,12 +125,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": 0.3,
+   "latest": 0.0,
    "date": "2026-09-28",
    "d1": 0.0,
-   "d3": 0.3,
-   "d5": 0.3,
-   "d7": 0.3
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "abasin",
@@ -239,9 +239,9 @@
    "variable": "WTEQ",
    "latest": 0.0,
    "date": "2026-09-28",
-   "d1": -0.1,
-   "d3": -0.1,
-   "d5": -0.1,
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
    "d7": 0.0
   },
   {
@@ -251,12 +251,12 @@
    "region": "colorado-south",
    "region_name": "Colorado (South-Central)",
    "variable": "WTEQ",
-   "latest": 0.1,
+   "latest": 0.0,
    "date": "2026-09-28",
-   "d1": -0.1,
-   "d3": -0.1,
-   "d5": -0.1,
-   "d7": 0.1
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "wolfcreek",
@@ -321,12 +321,12 @@
    "region": "montana",
    "region_name": "MONTANA",
    "variable": "WTEQ",
-   "latest": 0.1,
+   "latest": 0.0,
    "date": "2026-09-28",
-   "d1": 0.1,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "bridger",
@@ -349,12 +349,12 @@
    "region": "oregon",
    "region_name": "OREGON",
    "variable": "WTEQ",
-   "latest": 0.2,
+   "latest": 0.0,
    "date": "2026-09-28",
-   "d1": -0.1,
-   "d3": 0.2,
-   "d5": 0.2,
-   "d7": 0.2
+   "d1": 0.0,
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "mckenzie",
@@ -405,12 +405,12 @@
    "region": "utah",
    "region_name": "UTAH",
    "variable": "WTEQ",
-   "latest": 0.1,
+   "latest": 0.0,
    "date": "2026-09-28",
    "d1": 0.0,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "powder",
@@ -433,12 +433,12 @@
    "region": "utah",
    "region_name": "UTAH",
    "variable": "WTEQ",
-   "latest": 0.3,
+   "latest": 0.0,
    "date": "2026-09-28",
    "d1": 0.0,
-   "d3": 0.3,
-   "d5": 0.3,
-   "d7": 0.3
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "solitude",
@@ -549,7 +549,7 @@
    "date": "2026-09-28",
    "d1": 0.0,
    "d3": 0.0,
-   "d5": -0.1,
+   "d5": 0.0,
    "d7": 0.0
   },
   {
