@@ -72,6 +72,7 @@
     td.chg.down { color: var(--loss); }
     td.chg.zero, td.na { color: var(--muted); font-weight: 400; }
     td.stale { color: var(--muted); font-style: italic; }
+    th[data-k=grid_minus_mid_ft] button { white-space: normal; text-align: right; max-width: 120px; }
     td.diff.lower { color: var(--loss); font-weight: 600; }
     td.diff.higher { color: var(--gain); font-weight: 600; }
     .model-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
@@ -113,7 +114,7 @@
             <th data-k="region"><button type="button">Region</button></th>
             <th class="num" data-k="grid_elev_ft"><button type="button">Model grid elev.</button></th>
             <th class="num" data-k="mid_elev_ft"><button type="button">Ski area mid-elev.</button></th>
-            <th class="num" data-k="grid_minus_mid_ft"><button type="button">Grid vs. mid</button></th>
+            <th class="num" data-k="grid_minus_mid_ft"><button type="button">Approximate elevation difference</button></th>
             <th class="num" data-k="f1"><button type="button">1 day</button></th>
             <th class="num" data-k="f3"><button type="button">3 days</button></th>
             <th class="num" data-k="f5"><button type="button">5 days</button></th>
@@ -127,14 +128,14 @@
       <span><b class="up">12.5</b> inches of new snow expected (darker = more)</span>
       <span>0.0 none expected</span>
       <span>— forecast not available</span>
-      <span><b style="color:var(--loss)">−2,300 ft</b> model grid sits well below the middle of the ski area</span>
+      <span><b style="color:var(--loss)">−2,300 ft</b> approximate elevation difference: the model grid sits well below the middle of the ski area</span>
     </div>
   </main>
 
   <footer>
     <p><strong>Why the elevation columns?</strong> The ECMWF model divides the world into boxes about 25 km (15 miles) across and
     calculates snowfall for each box as a whole, at the box's <em>average</em> terrain height (“Model grid elev.”). In the mountains that
-    average is usually far below the actual slopes, because peaks and valleys are smoothed together. “Grid vs. mid” compares it with the
+    average is usually far below the actual slopes, because peaks and valleys are smoothed together. “Approximate elevation difference” compares it with the
     middle of each ski area's vertical (halfway between its base and summit, from published figures). A large negative number means the
     model is calculating snow for much lower, warmer terrain: it may call precipitation rain when it is snowing on the mountain, and it
     misses the extra snow that mountains squeeze out of storms, so totals are likely too low.</p>
