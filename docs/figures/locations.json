@@ -258,7 +258,7 @@
       "lat": 44.53,
       "lon": -72.781,
       "stations": [
-        "stowe",
+        "stowe_stake",
         "stowe_depth"
       ]
     },
@@ -849,20 +849,20 @@
       "data": "data/snodas/killington.csv"
     },
     {
-      "key": "stowe",
-      "station": "SNODAS grid cell",
+      "key": "stowe_stake",
+      "station": "Mansfield summit stake",
       "triplet": null,
       "resort": "Stowe",
-      "variable": "SNODAS",
-      "chart_title": "Stowe (SNODAS)",
+      "variable": "SNWD",
+      "chart_title": "Stowe (Mount Mansfield summit stake snow depth)",
       "region": "vermont",
-      "elev": null,
-      "lat": 44.531,
-      "lon": -72.806,
-      "nrcs_elev": null,
-      "nrcs_name": "SNODAS grid cell",
-      "page": "https://nsidc.org/data/g02158",
-      "data": "data/snodas/stowe.csv"
+      "elev": 3950,
+      "lat": 44.5248,
+      "lon": -72.8154,
+      "nrcs_elev": 3950,
+      "nrcs_name": "MOUNT MANSFIELD (NWS COOP USC00435416)",
+      "page": "https://www.ncei.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00435416/detail",
+      "data": "https://data.rcc-acis.org/StnData?sid=USC00435416&sdate=1954-10-01&edate=2100-09-30&elems=snwd&output=csv"
     },
     {
       "key": "stowe_depth",

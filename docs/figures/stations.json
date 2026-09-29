@@ -223,10 +223,10 @@
       "url": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/SNWD/VT/Mount%20Mansfield.csv"
     },
     {
-      "site": "Stowe (SNODAS)",
-      "station": "SNODAS grid cell",
-      "variable": "SNODAS",
-      "url": "data/snodas/stowe.csv"
+      "site": "Stowe (Mount Mansfield summit stake snow depth)",
+      "station": "Mansfield summit stake",
+      "variable": "SNWD",
+      "url": "https://data.rcc-acis.org/StnData?sid=USC00435416&sdate=1954-10-01&edate=2100-09-30&elems=snwd&output=csv"
     }
   ],
   "washington": [

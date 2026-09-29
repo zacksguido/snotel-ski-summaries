@@ -483,12 +483,12 @@
    "d7": 0.0
   },
   {
-   "key": "stowe",
-   "station": "SNODAS grid cell",
+   "key": "stowe_stake",
+   "station": "Mansfield summit stake",
    "ski_area": "Stowe",
    "region": "vermont",
    "region_name": "VERMONT",
-   "variable": "SNODAS",
+   "variable": "SNWD",
    "latest": 0.0,
    "date": "2026-09-28",
    "d1": 0.0,
