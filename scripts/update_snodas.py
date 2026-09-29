@@ -33,7 +33,6 @@ FIRST_DAY = date(2003, 10, 1)        # masked archive begins Sep 30, 2003; water
 # Points to extract: key -> (latitude, longitude). Keys match STATIONS in make_figures.py.
 POINTS = {
     "killington": (43.6176, -72.8034),
-    "stowe": (44.5310, -72.8060),       # upper mountain, near the top of the gondola
 }
 
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]

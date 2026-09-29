@@ -108,8 +108,12 @@ STATIONS = {
     # extracted daily by update_snodas.py into docs/data/snodas/<key>.csv
     "killington": dict(title="Killington", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
                        url="data/snodas/killington.csv"),
-    "stowe":      dict(title="Stowe (SNODAS)", station="SNODAS grid cell", elev=None, kind="snodas", var="SNODAS",
-                       url="data/snodas/stowe.csv"),
+    # kind="acis": observed snow DEPTH (not SWE) at the Mount Mansfield summit snow stake, an NWS cooperative
+    # observer station (USC00435416, 3,950 ft), read by hand daily since 1954; from NOAA's ACIS data service
+    "stowe_stake": dict(title="Stowe (Mount Mansfield summit stake snow depth)", station="Mansfield summit stake",
+                        elev=3950, kind="acis", var="SNWD", por="count", sid="USC00435416",
+                        url="https://data.rcc-acis.org/StnData?sid=USC00435416&sdate=1954-10-01&edate=2100-09-30"
+                            "&elems=snwd&output=csv"),
     # Observed snow DEPTH (not SWE) at the Mount Mansfield SCAN station
     "stowe_depth": dict(title="Stowe (Mount Mansfield snow depth)", station="Mount Mansfield", elev=None, kind="plot",
                         var="SNWD", url=SITE_PLOTS.replace("/WTEQ/", "/SNWD/") + "VT/Mount%20Mansfield.csv"),
@@ -127,7 +131,7 @@ TRIPLETS = {
     "mammoth": "MHP:CA:MSNT", "kirkwood": "1067:CA:SNTL", "heavenly": "518:CA:SNTL", "palisades": "784:CA:SNTL",
     "whistler_n": "1D06P:BC:MSNT", "whistler_w": "3A25P:BC:MSNT", "revelstoke": "2A06P:BC:MSNT",
     "schweitzer": "738:ID:SNTL",
-    "sunvalley_h": None, "sunvalley_l": None, "stowe": None, "killington": None, "stowe_depth": "2041:VT:SCAN",   # looked up by name from NRCS at run time
+    "sunvalley_h": None, "sunvalley_l": None, "stowe_stake": None, "killington": None, "stowe_depth": "2041:VT:SCAN",   # looked up by name from NRCS at run time
     "steamboat": "457:CO:SNTL", "abasin": "505:CO:SNTL", "vail": "842:CO:SNTL", "aspen": "542:CO:SNTL", "copper": "415:CO:SNTL", "berthoud": "335:CO:SNTL",
     "crested": "380:CO:SNTL", "telluride": "713:CO:SNTL", "silverton": "632:CO:SNTL", "wolfcreek": "874:CO:SNTL",
     "alyeska": "1103:AK:SNTL",
@@ -168,7 +172,7 @@ RESORTS = {
     "Crystal Mountain": (46.935, -121.475, ["crystal"]),
     "Stevens Pass": (47.745, -121.089, ["stevens"]),
     "Mt. Baker": (48.857, -121.665, ["baker"]),
-    "Stowe": (44.530, -72.781, ["stowe", "stowe_depth"]),
+    "Stowe": (44.530, -72.781, ["stowe_stake", "stowe_depth"]),
     "Killington": (43.626, -72.796, ["killington"]),
     "Eaglecrest": (58.275, -134.513, ["eaglecrest"]),
     "Alyeska": (60.970, -149.098, ["alyeska"]),
@@ -180,7 +184,7 @@ AWDB_STATIONS = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
 def resolve_triplets() -> None:
     """Find NRCS IDs for stations added by name only (TRIPLETS value None)."""
     for k, t in TRIPLETS.items():
-        if t or STATIONS[k]["kind"] == "snodas":
+        if t or STATIONS[k]["kind"] in ("snodas", "acis"):
             continue
         state = STATIONS[k]["url"].split("/POR/")[1].split("/")[1]
         try:
@@ -197,6 +201,11 @@ def resolve_triplets() -> None:
 
 _META = None
 
+# NWS cooperative observer stations (not in the NRCS system); location and elevation from NOAA ACIS metadata
+ACIS_POINTS = {
+    "stowe_stake": dict(lat=44.5248, lon=-72.8154, nrcs_elev=3950, nrcs_name="MOUNT MANSFIELD (NWS COOP USC00435416)"),
+}
+
 
 def station_metadata() -> dict:
     """Latitude/longitude/elevation for each station from the NRCS AWDB web service.
@@ -208,6 +217,8 @@ def station_metadata() -> dict:
     for k, (lat, lon) in SNODAS_POINTS.items():          # SNODAS grid cells: location is fixed
         if k in STATIONS:
             _META[k] = dict(lat=lat, lon=lon, nrcs_elev=None, nrcs_name="SNODAS grid cell")
+    for k, m in ACIS_POINTS.items():                      # NWS cooperative stations: location from NOAA ACIS
+        _META[k] = dict(m)
     return _META
 
 
@@ -259,7 +270,8 @@ def write_locations() -> None:
                              lat=m.get("lat"), lon=m.get("lon"), nrcs_elev=m.get("nrcs_elev"),
                              nrcs_name=m.get("nrcs_name"),
                              page=("https://nsidc.org/data/g02158" if st["kind"] == "snodas"
-                                   else station_page(TRIPLETS[k], st["url"])), data=st["url"]))
+                                   else f"https://www.ncei.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:{st['sid']}/detail"
+                                   if st["kind"] == "acis" else station_page(TRIPLETS[k], st["url"])), data=st["url"]))
     resorts = [dict(name=n, lat=lat, lon=lon, stations=keys) for n, (lat, lon, keys) in RESORTS.items()]
     (OUT_DIR / "locations.json").write_text(
         json.dumps(dict(resorts=resorts, stations=stations), indent=2) + "\n")
@@ -277,7 +289,7 @@ REGIONS = [
     ("idaho", "IDAHO", ["schweitzer", "sunvalley_h", "sunvalley_l"]),
     ("colorado-north", "Colorado (north-central)", ["steamboat", "abasin", "vail", "aspen", "copper", "berthoud"]),
     ("colorado-south", "Colorado (South-Central)", ["crested", "telluride", "silverton", "wolfcreek"]),
-    ("vermont", "VERMONT", ["killington", "stowe", "stowe_depth"]),
+    ("vermont", "VERMONT", ["killington", "stowe_stake", "stowe_depth"]),
     ("washington", "Washington", ["crystal", "stevens", "baker"]),
     ("alaska", "ALASKA", ["alyeska", "eaglecrest"]),
 ]
@@ -308,6 +320,8 @@ def fetch_csv(key: str, url: str) -> str:
         return (DATA_DIR / "snodas" / f"{key}.csv").read_text()
     if LOCAL_DATA_DIR:
         return (Path(LOCAL_DATA_DIR) / f"{key}.csv").read_text()
+    if STATIONS[key]["kind"] == "acis":
+        return fetch_acis(STATIONS[key]["sid"])
     # Short timeout with a few retries, so one slow NRCS response can't stall the whole run
     last_err = None
     for attempt in range(3):
@@ -319,6 +333,36 @@ def fetch_csv(key: str, url: str) -> str:
             last_err = err
             time.sleep(5 * (attempt + 1))
     raise last_err
+
+
+def fetch_acis(sid: str) -> str:
+    """Daily snow depth (inches) for an NWS cooperative station from NOAA ACIS, as a date,value CSV.
+    "T" (trace) is recorded as 0; "M" (missing) is left blank."""
+    last_err = None
+    for attempt in range(3):
+        try:
+            r = requests.post("https://data.rcc-acis.org/StnData", timeout=(10, 90),
+                              json={"sid": sid, "sdate": "1954-10-01", "edate": date.today().isoformat(), "elems": "snwd"},
+                              headers={"User-Agent": "snotel-ski-summaries"})
+            r.raise_for_status()
+            rows = r.json()["data"]
+            break
+        except (requests.RequestException, KeyError, ValueError) as err:
+            last_err = err
+            time.sleep(5 * (attempt + 1))
+    else:
+        raise last_err
+    out = ["date,value"]
+    for d, v in rows:
+        v = str(v).strip()
+        if v == "T":
+            v = "0"
+        try:
+            float(v)
+        except ValueError:
+            v = ""
+        out.append(f"{d},{v}")
+    return "\n".join(out) + "\n"
 
 
 def wide_from_site_plot(text: str) -> tuple[pd.DataFrame, int]:
@@ -415,8 +459,6 @@ def summarize(key: str, today: date) -> dict:
     text = fetch_csv(key, st["url"])
     if st["kind"] == "plot":
         wide, por = wide_from_site_plot(text)
-    elif st["kind"] == "snodas":
-        wide, por = wide_from_report(text)
     else:
         wide, por = wide_from_report(text)
 
