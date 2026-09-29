@@ -72,9 +72,6 @@
     td.chg.down { color: var(--loss); }
     td.chg.zero, td.na { color: var(--muted); font-weight: 400; }
     td.stale { color: var(--muted); font-style: italic; }
-    th[data-k=grid_minus_mid_ft] button { white-space: normal; text-align: right; max-width: 120px; }
-    td.diff.lower { color: var(--loss); font-weight: 600; }
-    td.diff.higher { color: var(--gain); font-weight: 600; }
     .model-badge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 8px; border-radius: 999px;
                    font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: #2c4a70; background: #eef3fa; border: 1px solid #9db5d6; }
     .depth-badge { display: inline-block; vertical-align: middle; margin-left: 6px; padding: 2px 8px; border-radius: 999px;
@@ -114,7 +111,6 @@
             <th data-k="region"><button type="button">Region</button></th>
             <th class="num" data-k="grid_elev_ft"><button type="button">Model grid elev.</button></th>
             <th class="num" data-k="mid_elev_ft"><button type="button">Ski area mid-elev.</button></th>
-            <th class="num" data-k="grid_minus_mid_ft"><button type="button">Approximate elevation difference</button></th>
             <th class="num" data-k="f1"><button type="button">1 day</button></th>
             <th class="num" data-k="f3"><button type="button">3 days</button></th>
             <th class="num" data-k="f5"><button type="button">5 days</button></th>
@@ -128,16 +124,15 @@
       <span><b class="up">12.5</b> inches of new snow expected (darker = more)</span>
       <span>0.0 none expected</span>
       <span>— forecast not available</span>
-      <span><b style="color:var(--loss)">−2,300 ft</b> approximate elevation difference: the model grid sits well below the middle of the ski area</span>
     </div>
   </main>
 
   <footer>
     <p><strong>Why the elevation columns?</strong> The ECMWF model divides the world into boxes about 25 km (15 miles) across and
     calculates snowfall for each box as a whole, at the box's <em>average</em> terrain height (“Model grid elev.”). In the mountains that
-    average is usually far below the actual slopes, because peaks and valleys are smoothed together. “Approximate elevation difference” compares it with the
-    middle of each ski area's vertical (halfway between its base and summit, from published figures). A large negative number means the
-    model is calculating snow for much lower, warmer terrain: it may call precipitation rain when it is snowing on the mountain, and it
+    average is often far below the actual slopes, because peaks and valleys are smoothed together. “Ski area mid-elev.” is the
+    middle of each ski area's vertical (halfway between its base and summit, from published figures, approximate). When the grid
+    elevation is well below the ski area's, the model is calculating snow for much lower, warmer terrain: it may call precipitation rain when it is snowing on the mountain, and it
     misses the extra snow that mountains squeeze out of storms, so totals are likely too low.</p>
     <p>Forecast snowfall is new snow <em>depth</em>, converted from the model's snow water at a fixed 7:1 ratio (7 inches of snow per inch of
     water). Cold, dry mountain snow is often 12:1 to 20:1, so totals may understate powder depth. Forecasts beyond about 3 days are uncertain.
@@ -173,16 +168,10 @@
       return `<td class="num chg up" style="background:rgba(var(--gain-bg),${(0.05 + a * .3).toFixed(3)})">${v.toFixed(1)}</td>`;
     }
     const ft = v => v == null ? "—" : Math.round(v).toLocaleString() + " ft";
-    function diffCell(v) {
-      if (v == null) return `<td class="num na">—</td>`;
-      const cls = v < -500 ? "lower" : v > 500 ? "higher" : "";
-      const txt = v === 0 ? "0 ft" : (v > 0 ? "+" : "−") + Math.abs(Math.round(v)).toLocaleString() + " ft";
-      return `<td class="num diff ${cls}">${txt}</td>`;
-    }
     function row(r) {
       return `<tr style="--rc:${rc(r.region)}"><td class="st">${label(r)}</td>` +
              `<td class="rg"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[r.region])}</td>` +
-             `<td class="num">${ft(r.grid_elev_ft)}</td><td class="num">${ft(r.mid_elev_ft)}</td>${diffCell(r.grid_minus_mid_ft)}` +
+             `<td class="num">${ft(r.grid_elev_ft)}</td><td class="num">${ft(r.mid_elev_ft)}</td>` +
              `${chg(r.f1)}${chg(r.f3)}${chg(r.f5)}${chg(r.f7)}</tr>`;
     }
     function draw() {
@@ -224,7 +213,7 @@
           `<span style="--rc:${rc(id)}"><span class="dot" aria-hidden="true"></span>${esc(REGION_NAMES[id])}</span>`).join("");
         draw();
       })
-      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="9">The forecast could not be loaded.</td></tr>`; console.error(err); });
+      .catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="8">The forecast could not be loaded.</td></tr>`; console.error(err); });
   </script>
   <script>
     // Light/dark mode toggle (remembers the choice on this device)
