@@ -13,12 +13,12 @@
    "region": "alaska",
    "region_name": "ALASKA",
    "variable": "WTEQ",
-   "latest": 0.7,
-   "date": "2026-10-30",
-   "d1": -0.1,
-   "d3": -0.2,
-   "d5": -0.5,
-   "d7": -0.5
+   "latest": 2.6,
+   "date": "2026-10-31",
+   "d1": 1.9,
+   "d3": 1.8,
+   "d5": 1.6,
+   "d7": 1.4
   },
   {
    "key": "eaglecrest",
@@ -27,12 +27,12 @@
    "region": "alaska",
    "region_name": "ALASKA",
    "variable": "WTEQ",
-   "latest": 0.0,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.0,
-   "d7": 0.0
+   "latest": 0.1,
+   "date": "2026-10-31",
+   "d1": 0.1,
+   "d3": 0.1,
+   "d5": 0.1,
+   "d7": 0.1
   },
   {
    "key": "revelstoke",
@@ -55,11 +55,11 @@
    "region": "bc",
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
-   "latest": 0.8,
-   "date": "2026-10-30",
+   "latest": 0.9,
+   "date": "2026-10-31",
    "d1": 0.1,
-   "d3": 0.5,
-   "d5": 0.5,
+   "d3": 0.2,
+   "d5": 0.6,
    "d7": null
   },
   {
@@ -83,12 +83,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": 0.0,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.0,
-   "d7": 0.0
+   "latest": 0.3,
+   "date": "2026-10-31",
+   "d1": 0.3,
+   "d3": 0.3,
+   "d5": 0.3,
+   "d7": 0.3
   },
   {
    "key": "kirkwood",
@@ -97,12 +97,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": 0.0,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.0,
-   "d7": 0.0
+   "latest": 0.5,
+   "date": "2026-10-31",
+   "d1": 0.5,
+   "d3": 0.5,
+   "d5": 0.5,
+   "d7": 0.5
   },
   {
    "key": "mammoth",
@@ -112,7 +112,7 @@
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -125,12 +125,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": 0.0,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.0,
-   "d7": 0.0
+   "latest": 0.9,
+   "date": "2026-10-31",
+   "d1": 0.9,
+   "d3": 0.9,
+   "d5": 0.9,
+   "d7": 0.9
   },
   {
    "key": "abasin",
@@ -140,7 +140,7 @@
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
    "latest": 0.1,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.1,
@@ -154,10 +154,10 @@
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
    "latest": 1.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
-   "d3": 0.1,
-   "d5": 0.2,
+   "d3": 0.0,
+   "d5": 0.1,
    "d7": 0.8
   },
   {
@@ -168,7 +168,7 @@
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -181,12 +181,12 @@
    "region": "colorado-north",
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
-   "latest": 0.1,
-   "date": "2026-10-30",
+   "latest": 0.2,
+   "date": "2026-10-31",
    "d1": 0.1,
-   "d3": 0.1,
-   "d5": 0.0,
-   "d7": -0.1
+   "d3": 0.2,
+   "d5": 0.1,
+   "d7": 0.1
   },
   {
    "key": "vail",
@@ -196,11 +196,11 @@
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
    "latest": 0.3,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": -0.1,
-   "d7": -0.1
+   "d7": 0.0
   },
   {
    "key": "berthoud",
@@ -210,10 +210,10 @@
    "region_name": "Colorado (north-central)",
    "variable": "WTEQ",
    "latest": 0.1,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
-   "d5": -0.1,
+   "d5": 0.0,
    "d7": 0.0
   },
   {
@@ -223,12 +223,12 @@
    "region": "colorado-south",
    "region_name": "Colorado (South-Central)",
    "variable": "WTEQ",
-   "latest": 0.4,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": -0.1,
-   "d5": -0.1,
-   "d7": 0.4
+   "latest": 0.3,
+   "date": "2026-10-31",
+   "d1": -0.1,
+   "d3": -0.2,
+   "d5": -0.2,
+   "d7": 0.3
   },
   {
    "key": "silverton",
@@ -237,12 +237,12 @@
    "region": "colorado-south",
    "region_name": "Colorado (South-Central)",
    "variable": "WTEQ",
-   "latest": 1.7,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.4,
-   "d7": 1.5
+   "latest": 1.8,
+   "date": "2026-10-31",
+   "d1": 0.1,
+   "d3": 0.2,
+   "d5": 0.1,
+   "d7": 1.6
   },
   {
    "key": "telluride",
@@ -251,12 +251,12 @@
    "region": "colorado-south",
    "region_name": "Colorado (South-Central)",
    "variable": "WTEQ",
-   "latest": 4.0,
-   "date": "2026-10-30",
-   "d1": -0.2,
-   "d3": -0.2,
-   "d5": 0.2,
-   "d7": 1.2
+   "latest": 4.3,
+   "date": "2026-10-31",
+   "d1": 0.3,
+   "d3": 0.1,
+   "d5": 0.0,
+   "d7": 1.6
   },
   {
    "key": "wolfcreek",
@@ -265,12 +265,12 @@
    "region": "colorado-south",
    "region_name": "Colorado (South-Central)",
    "variable": "WTEQ",
-   "latest": 4.0,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.4,
-   "d7": 2.4
+   "latest": 4.4,
+   "date": "2026-10-31",
+   "d1": 0.4,
+   "d3": 0.4,
+   "d5": 0.3,
+   "d7": 2.5
   },
   {
    "key": "schweitzer",
@@ -280,9 +280,9 @@
    "region_name": "IDAHO",
    "variable": "WTEQ",
    "latest": 1.6,
-   "date": "2026-10-30",
-   "d1": 0.2,
-   "d3": 1.6,
+   "date": "2026-10-31",
+   "d1": 0.0,
+   "d3": 1.2,
    "d5": 1.6,
    "d7": 1.6
   },
@@ -293,12 +293,12 @@
    "region": "idaho",
    "region_name": "IDAHO",
    "variable": "WTEQ",
-   "latest": 0.1,
-   "date": "2026-10-30",
+   "latest": 0.2,
+   "date": "2026-10-31",
    "d1": 0.1,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "d3": 0.2,
+   "d5": 0.2,
+   "d7": 0.2
   },
   {
    "key": "sunvalley_l",
@@ -307,12 +307,12 @@
    "region": "idaho",
    "region_name": "IDAHO",
    "variable": "WTEQ",
-   "latest": 0.1,
-   "date": "2026-10-30",
-   "d1": 0.1,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "latest": 0.5,
+   "date": "2026-10-31",
+   "d1": 0.4,
+   "d3": 0.5,
+   "d5": 0.5,
+   "d7": 0.5
   },
   {
    "key": "bigsky",
@@ -321,12 +321,12 @@
    "region": "montana",
    "region_name": "MONTANA",
    "variable": "WTEQ",
-   "latest": 0.6,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.0,
-   "d5": 0.4,
-   "d7": 0.6
+   "latest": 0.7,
+   "date": "2026-10-31",
+   "d1": 0.1,
+   "d3": 0.1,
+   "d5": 0.6,
+   "d7": 0.5
   },
   {
    "key": "bridger",
@@ -335,12 +335,12 @@
    "region": "montana",
    "region_name": "MONTANA",
    "variable": "WTEQ",
-   "latest": 0.5,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.1,
+   "latest": 0.4,
+   "date": "2026-10-31",
+   "d1": -0.1,
+   "d3": -0.2,
    "d5": 0.3,
-   "d7": 0.5
+   "d7": 0.2
   },
   {
    "key": "irish",
@@ -349,12 +349,12 @@
    "region": "oregon",
    "region_name": "OREGON",
    "variable": "WTEQ",
-   "latest": 0.5,
-   "date": "2026-10-30",
-   "d1": -0.1,
-   "d3": 0.2,
-   "d5": 0.5,
-   "d7": 0.5
+   "latest": 0.3,
+   "date": "2026-10-31",
+   "d1": -0.2,
+   "d3": -0.3,
+   "d5": 0.3,
+   "d7": 0.3
   },
   {
    "key": "mckenzie",
@@ -363,12 +363,12 @@
    "region": "oregon",
    "region_name": "OREGON",
    "variable": "WTEQ",
-   "latest": 0.2,
-   "date": "2026-10-30",
-   "d1": -0.3,
-   "d3": 0.1,
-   "d5": 0.2,
-   "d7": 0.2
+   "latest": 0.0,
+   "date": "2026-10-31",
+   "d1": -0.2,
+   "d3": -0.3,
+   "d5": -0.1,
+   "d7": 0.0
   },
   {
    "key": "roaring",
@@ -378,7 +378,7 @@
    "region_name": "OREGON",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -391,12 +391,12 @@
    "region": "oregon",
    "region_name": "OREGON",
    "variable": "WTEQ",
-   "latest": 0.1,
-   "date": "2026-10-30",
+   "latest": 0.0,
+   "date": "2026-10-31",
    "d1": 0.0,
-   "d3": 0.1,
-   "d5": 0.1,
-   "d7": 0.1
+   "d3": 0.0,
+   "d5": 0.0,
+   "d7": 0.0
   },
   {
    "key": "alta",
@@ -406,7 +406,7 @@
    "region_name": "UTAH",
    "variable": "WTEQ",
    "latest": 0.3,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.3,
    "d3": 0.3,
    "d5": 0.3,
@@ -420,7 +420,7 @@
    "region_name": "UTAH",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -434,7 +434,7 @@
    "region_name": "UTAH",
    "variable": "WTEQ",
    "latest": 0.1,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.1,
    "d3": 0.1,
    "d5": 0.1,
@@ -448,7 +448,7 @@
    "region_name": "UTAH",
    "variable": "WTEQ",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -462,7 +462,7 @@
    "region_name": "VERMONT",
    "variable": "SNODAS",
    "latest": 0.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -476,7 +476,7 @@
    "region_name": "VERMONT",
    "variable": "SNWD",
    "latest": 2.0,
-   "date": "2026-10-30",
+   "date": "2026-10-31",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -490,7 +490,7 @@
    "region_name": "VERMONT",
    "variable": "SNWD",
    "latest": 0.0,
-   "date": "2026-10-29",
+   "date": "2026-10-30",
    "d1": 0.0,
    "d3": 0.0,
    "d5": 0.0,
@@ -503,12 +503,12 @@
    "region": "washington",
    "region_name": "Washington",
    "variable": "WTEQ",
-   "latest": 2.6,
-   "date": "2026-10-30",
-   "d1": 0.3,
-   "d3": 1.5,
-   "d5": 2.6,
-   "d7": 2.6
+   "latest": 2.7,
+   "date": "2026-10-31",
+   "d1": 0.1,
+   "d3": 1.3,
+   "d5": 1.7,
+   "d7": 2.7
   },
   {
    "key": "baker",
@@ -517,12 +517,12 @@
    "region": "washington",
    "region_name": "Washington",
    "variable": "WTEQ",
-   "latest": 0.6,
-   "date": "2026-10-30",
-   "d1": 0.0,
-   "d3": 0.6,
-   "d5": 0.6,
-   "d7": 0.6
+   "latest": 0.8,
+   "date": "2026-10-31",
+   "d1": 0.2,
+   "d3": 0.5,
+   "d5": 0.8,
+   "d7": 0.8
   },
   {
    "key": "stevens",
@@ -532,8 +532,8 @@
    "region_name": "Washington",
    "variable": "WTEQ",
    "latest": 0.4,
-   "date": "2026-10-30",
-   "d1": -0.1,
+   "date": "2026-10-31",
+   "d1": 0.0,
    "d3": 0.4,
    "d5": 0.4,
    "d7": 0.4
@@ -545,12 +545,12 @@
    "region": "wyoming",
    "region_name": "WYOMING",
    "variable": "WTEQ",
-   "latest": 0.2,
-   "date": "2026-10-30",
-   "d1": 0.1,
-   "d3": 0.0,
-   "d5": 0.2,
-   "d7": 0.2
+   "latest": 0.1,
+   "date": "2026-10-31",
+   "d1": -0.1,
+   "d3": -0.1,
+   "d5": 0.1,
+   "d7": 0.1
   },
   {
    "key": "targhee",
@@ -559,12 +559,12 @@
    "region": "wyoming",
    "region_name": "WYOMING",
    "variable": "WTEQ",
-   "latest": 1.0,
-   "date": "2026-10-30",
+   "latest": 1.1,
+   "date": "2026-10-31",
    "d1": 0.1,
    "d3": 0.2,
-   "d5": 0.3,
-   "d7": 1.0
+   "d5": 0.4,
+   "d7": 0.4
   }
  ]
 }
