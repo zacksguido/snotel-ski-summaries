@@ -595,7 +595,7 @@
     {
       "key": "sunvalley_h",
       "station": "Hyndman",
-      "triplet": null,
+      "triplet": "537:ID:SNTL",
       "resort": "Sun Valley",
       "variable": "WTEQ",
       "chart_title": "Sun Valley (Hyndman)",
@@ -605,13 +605,13 @@
       "lon": -114.15894,
       "nrcs_elev": 7590.0,
       "nrcs_name": "Hyndman",
-      "page": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=537",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Hyndman.csv"
     },
     {
       "key": "sunvalley_l",
       "station": "Lost-Wood Divide",
-      "triplet": null,
+      "triplet": "601:ID:SNTL",
       "resort": "Sun Valley",
       "variable": "WTEQ",
       "chart_title": "Sun Valley (Lost-Wood Divide)",
@@ -621,7 +621,7 @@
       "lon": -114.26404,
       "nrcs_elev": 7870.0,
       "nrcs_name": "Lost-Wood Divide",
-      "page": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=601",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/ID/Lost-Wood%20Divide.csv"
     },
     {
@@ -819,7 +819,7 @@
     {
       "key": "eaglecrest",
       "station": "Long Lake",
-      "triplet": null,
+      "triplet": "1001:AK:SNTL",
       "resort": "Eaglecrest",
       "variable": "WTEQ",
       "chart_title": "Eaglecrest",
@@ -829,7 +829,7 @@
       "lon": -133.83217,
       "nrcs_elev": 840.0,
       "nrcs_name": "Long Lake",
-      "page": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv",
+      "page": "https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=1001",
       "data": "https://nwcc-apps.sc.egov.usda.gov/awdb/site-plots/POR/WTEQ/AK/Long%20Lake.csv"
     },
     {

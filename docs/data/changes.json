@@ -13,12 +13,12 @@
    "region": "alaska",
    "region_name": "ALASKA",
    "variable": "WTEQ",
-   "latest": null,
-   "date": null,
-   "d1": null,
-   "d3": null,
-   "d5": null,
-   "d7": null
+   "latest": 4.1,
+   "date": "2026-11-17",
+   "d1": 0.2,
+   "d3": 1.2,
+   "d5": 1.1,
+   "d7": 1.6
   },
   {
    "key": "eaglecrest",
@@ -41,12 +41,12 @@
    "region": "bc",
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
-   "latest": null,
-   "date": null,
-   "d1": null,
-   "d3": null,
-   "d5": null,
-   "d7": null
+   "latest": 3.2,
+   "date": "2026-11-17",
+   "d1": 0.0,
+   "d3": 0.8,
+   "d5": 0.7,
+   "d7": 0.9
   },
   {
    "key": "whistler_n",
@@ -55,12 +55,12 @@
    "region": "bc",
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
-   "latest": null,
-   "date": null,
-   "d1": null,
-   "d3": null,
-   "d5": null,
-   "d7": null
+   "latest": 3.7,
+   "date": "2026-11-17",
+   "d1": 0.0,
+   "d3": 0.9,
+   "d5": 0.5,
+   "d7": 0.4
   },
   {
    "key": "whistler_w",
@@ -69,12 +69,12 @@
    "region": "bc",
    "region_name": "BRITISH COLUMBIA",
    "variable": "WTEQ",
-   "latest": null,
-   "date": null,
-   "d1": null,
-   "d3": null,
-   "d5": null,
-   "d7": null
+   "latest": 0.4,
+   "date": "2026-11-17",
+   "d1": -0.1,
+   "d3": 0.4,
+   "d5": 0.4,
+   "d7": -0.6
   },
   {
    "key": "heavenly",
@@ -111,12 +111,12 @@
    "region": "california",
    "region_name": "CALIFORNIA",
    "variable": "WTEQ",
-   "latest": null,
-   "date": null,
-   "d1": null,
-   "d3": null,
-   "d5": null,
-   "d7": null
+   "latest": 1.9,
+   "date": "2026-11-17",
+   "d1": 0.5,
+   "d3": 0.6,
+   "d5": 1.4,
+   "d7": 1.4
   },
   {
    "key": "palisades",
@@ -462,8 +462,8 @@
    "region_name": "VERMONT",
    "variable": "SNODAS",
    "latest": 0.2,
-   "date": "2026-11-16",
-   "d1": -0.1,
+   "date": "2026-11-17",
+   "d1": 0.0,
    "d3": 0.0,
    "d5": 0.2,
    "d7": 0.2
@@ -490,8 +490,8 @@
    "region_name": "VERMONT",
    "variable": "SNWD",
    "latest": 7.0,
-   "date": "2026-11-15",
-   "d1": 3.0,
+   "date": "2026-11-16",
+   "d1": 0.0,
    "d3": 7.0,
    "d5": 7.0,
    "d7": 7.0
